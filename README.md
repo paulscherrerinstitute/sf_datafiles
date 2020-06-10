@@ -1,4 +1,4 @@
-# sf_datafiles
+# SwissFEL Data Files
 
 This module provides an easy way of dealing with SwissFEL data files.
 
