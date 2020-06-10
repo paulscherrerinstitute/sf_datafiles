@@ -13,7 +13,7 @@ with SFDataFile("run_000041.BSREAD.h5") as data:
     print(ch.pids)
     print(ch.data)
 
-    subset = data["SLAAR11-LTIM01-EVR0:DUMMY_PV1_NBS", "SLAAR11-LTIM01-EVR0:DUMMY_PV2_NBS"]
+    subset = data["SLAAR11-LTIM01-EVR0:DUMMY_PV1_NBS", "SLAAR11-LTIM01-EVR0:DUMMY_PV2_NBS", "SAR-CVME-TIFALL5:EvtSet"]
     print(subset)
 
     df = subset.to_dataframe()
