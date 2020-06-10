@@ -27,7 +27,7 @@ data.close()
 
 where they should be closed at the end.
 
-The channels within the HDF5 files are represented by the `SFChannel` class and can be retrieved from the SFData object like from a dictionary:
+The channels within the HDF5 files are represented by the `SFChannel` class and can be retrieved from the `SFData` object like from a dictionary:
 
 ```python
 ch = data["SLAAR11-LTIM01-EVR0:DUMMY_PV1_NBS"]
