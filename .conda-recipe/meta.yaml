@@ -1,0 +1,22 @@
+{% set data = load_setup_py_data() %}
+
+package:
+    name: sfdata
+    version: {{ data["version"] }}
+
+about:
+   home: {{ data["url"] }}
+   summary: {{ data["description"] }}
+
+source:
+    path: ..
+
+requirements:
+    build:
+        - python
+        - setuptools
+    run:
+        - python
+        - tqdm
+
+

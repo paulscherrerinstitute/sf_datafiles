@@ -1,0 +1,38 @@
+language: python
+
+python:
+  - 3.6
+
+# Build only tagged commits
+if: tag IS present
+
+before_install:
+  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - rm miniconda.sh # clean up here, so no warning is triggered during the final clean-up
+  - export PATH=$HOME/miniconda/bin:$PATH # if `source $HOME/miniconda/etc/profile.d/conda.sh` instead, anaconda is not found in deploy
+  - conda config --set always_yes yes
+  - conda config --set changeps1 no
+  - conda config --set anaconda_upload no
+  - conda config --append channels conda-forge
+  - conda config --append channels paulscherrerinstitute
+
+install:
+  - conda update -q conda
+  - conda install -q python=$TRAVIS_PYTHON_VERSION conda-build conda-verify anaconda-client
+  - conda info -a
+
+script:
+  - conda build .conda-recipe
+
+deploy:
+  provider: script
+  script: anaconda -t $ANACONDA_TOKEN upload $HOME/miniconda/conda-bld/**/sfdata-*.tar.bz2
+  on:
+    branch: master
+    tags: true
+
+notifications:
+  email: false
+
+
