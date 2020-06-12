@@ -33,12 +33,13 @@ class SFData:
         return reduce(np.union1d, iter_pids)
 
     def to_dataframe(self, show_progress=False):
-        df = pd.DataFrame(index=self.all_pids, columns=self.names, dtype=object) # object dtype makes sure NaN can be used as missing marker also for int/bool
+        all_pids = self.all_pids
+        df = pd.DataFrame(index=all_pids, columns=self.names, dtype=object) # object dtype makes sure NaN can be used as missing marker also for int/bool
         channels = self.channels.values()
         if show_progress:
             channels = tqdm(channels)
         for chan in channels:
-            which = np.isin(self.all_pids, chan.pids)
+            which = np.isin(all_pids, chan.pids)
             df[chan.name].loc[which] = chan.datasets.data[:].tolist() # TODO: workaround for pandas not dealing with ndim. columns
         return df
 
