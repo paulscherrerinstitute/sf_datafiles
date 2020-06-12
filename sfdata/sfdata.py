@@ -46,7 +46,7 @@ class SFData:
         return len(self.channels)
 
     def __getitem__(self, key):
-        if isinstance(key, tuple):
+        if isinstance(key, tuple) or isinstance(key, list): #TODO: decide for which types exactly
             chans = {k: self.channels[k] for k in key}
             return SFData(chans)
         return self.channels[key]
