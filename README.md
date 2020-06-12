@@ -40,11 +40,18 @@ ch.pids
 ch.data
 ```
 
-which are HDF5 datasets. In order to actually read the data from the file, standard HDF5 syntax applies:
+which reads the data from the HDF5 file (it should be noted that this currently not cached!). In case the underlying HDF5 datasets need to be accessed, e.g., for reading only specific parts of the data, channels have a `datasets` namespace attached: 
 
 ```python
-ch.pids[:]
-ch.data[100:200]
+ch.datasets.pids
+ch.datasets.data
+```
+
+In order to actually read the data from the file, standard HDF5 syntax applies:
+
+```python
+ch.datasets.pids[:]
+ch.datasets.data[100:200]
 ```
 
 Subsets of the data can be accessed by giving several channel names

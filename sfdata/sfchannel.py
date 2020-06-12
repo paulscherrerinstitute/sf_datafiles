@@ -1,3 +1,4 @@
+from types import SimpleNamespace
 from .utils import typename
 
 
@@ -5,6 +6,10 @@ class SFChannel:
 
     def __init__(self, group):
         self._group = group
+        self.datasets = SimpleNamespace(
+            data = self._group["data"],
+            pids = self._group["pulse_id"]
+        )
 
     @property
     def name(self):
@@ -14,15 +19,15 @@ class SFChannel:
 
     @property
     def data(self):
-        return self._group["data"]
+        return self.datasets.data[:]
 
     @property
     def pids(self):
-        return self._group["pulse_id"]
+        return self.datasets.pids[:]
 
     @property
     def shape(self):
-        return self.data.shape
+        return self.datasets.data.shape
 
     def __repr__(self):
         tn = typename(self)
