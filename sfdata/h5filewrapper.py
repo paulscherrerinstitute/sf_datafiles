@@ -5,9 +5,10 @@ from .utils import typename
 
 class H5FileWrapper:
 
-    def __init__(self, fname, *args, **kwargs):
+    #TODO: h5py 3.0 will change the default mode to "r". Once this is widely available we can remove our changed default here.
+    def __init__(self, fname, *args, mode="r", **kwargs):
         self.fname = fname
-        self.file = h5py.File(fname, *args, **kwargs)
+        self.file = h5py.File(fname, *args, mode=mode, **kwargs)
 
     def __repr__(self):
         tn = typename(self)
