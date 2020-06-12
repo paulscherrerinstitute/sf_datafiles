@@ -39,7 +39,7 @@ class SFData:
             channels = tqdm(channels)
         for chan in channels:
             which = np.isin(self.all_pids, chan.pids)
-            df[chan.name].loc[which] = chan.data.tolist() # TODO: workaround for pandas not dealing with ndim. columns
+            df[chan.name].loc[which] = chan.datasets.data[:].tolist() # TODO: workaround for pandas not dealing with ndim. columns
         return df
 
     def __len__(self):

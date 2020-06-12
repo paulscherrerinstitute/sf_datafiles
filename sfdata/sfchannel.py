@@ -20,8 +20,8 @@ class SFChannel:
     @property
     def data(self):
         data = self.datasets.data[:]
-        if data.ndim == 2 and data.shape[1] == 1:
-            return data.reshape(-1)
+        if data.ndim == 2 and data.shape[1] == 1: # transpose 1D column vectors to line vectors
+            data = data.reshape(-1)
         return data
 
     @property
