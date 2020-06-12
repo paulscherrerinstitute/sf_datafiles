@@ -1,3 +1,4 @@
+from functools import reduce
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
@@ -23,10 +24,8 @@ class SFData:
 
     @property
     def pids(self):
-        pids = set()
-        for chan in self.channels.values():
-            pids |= set(chan.pids)
-        return np.array(sorted(pids))
+        iter_pids = (c.pids for c in self.channels.values())
+        return reduce(np.intersect1d, iter_pids)
 
     def to_dataframe(self, show_progress=False):
         df = pd.DataFrame(index=self.pids, columns=self.names, dtype=object) # object dtype makes sure NaN can be used as missing marker also for int/bool
