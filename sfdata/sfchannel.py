@@ -10,6 +10,7 @@ class SFChannel:
             data = self._group["data"],
             pids = self._group["pulse_id"]
         )
+        self.valid = Ellipsis
 
     @property
     def name(self):
@@ -19,14 +20,14 @@ class SFChannel:
 
     @property
     def data(self):
-        data = self.datasets.data[:]
+        data = self.datasets.data[self.valid]
         if data.ndim == 2 and data.shape[1] == 1: # transpose 1D column vectors to line vectors
             data = data.reshape(-1)
         return data
 
     @property
     def pids(self):
-        return self.datasets.pids[:]
+        return self.datasets.pids[self.valid]
 
     @property
     def shape(self):
