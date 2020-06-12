@@ -27,13 +27,18 @@ class SFData:
         iter_pids = (c.pids for c in self.channels.values())
         return reduce(np.intersect1d, iter_pids)
 
+    @property
+    def all_pids(self):
+        iter_pids = (c.pids for c in self.channels.values())
+        return reduce(np.union1d, iter_pids)
+
     def to_dataframe(self, show_progress=False):
-        df = pd.DataFrame(index=self.pids, columns=self.names, dtype=object) # object dtype makes sure NaN can be used as missing marker also for int/bool
+        df = pd.DataFrame(index=self.all_pids, columns=self.names, dtype=object) # object dtype makes sure NaN can be used as missing marker also for int/bool
         channels = self.channels.values()
         if show_progress:
             channels = tqdm(channels)
         for chan in channels:
-            which = np.isin(self.pids, chan.pids)
+            which = np.isin(self.all_pids, chan.pids)
             df[chan.name].loc[which] = chan.data.tolist() # TODO: workaround for pandas not dealing with ndim. columns
         return df
 
