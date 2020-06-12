@@ -19,7 +19,10 @@ class SFChannel:
 
     @property
     def data(self):
-        return self.datasets.data[:]
+        data = self.datasets.data[:]
+        if data.ndim == 2 and data.shape[1] == 1:
+            return data.reshape(-1)
+        return data
 
     @property
     def pids(self):
