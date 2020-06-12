@@ -1,5 +1,7 @@
 # SwissFEL Data Files
 
+## Open (and close) a file
+
 This module provides an easy way of dealing with SwissFEL data files.
 
 The main entry point is the `SFDataFile` class:
@@ -26,6 +28,8 @@ data.close()
 ```
 
 where they should be closed at the end.
+
+## Channels
 
 The channels within the HDF5 files are represented by the `SFChannel` class and can be retrieved from the `SFData` object like from a dictionary:
 
@@ -56,6 +60,8 @@ ch.datasets.pids[:]
 ch.datasets.data[100:200]
 ```
 
+## Subsets
+
 Subsets of the data can be accessed by giving several channel names
 
 ```python
@@ -64,10 +70,24 @@ subset = data["SLAAR11-LTIM01-EVR0:DUMMY_PV1_NBS", "SLAAR11-LTIM01-EVR0:DUMMY_PV
 
 which returns an `SFData` object that contains only the specified channels.
 
-For correlating channels, a list of common pulse IDs needs to be created such that data points that belong to the same pulse can be matched. `SFData` can be converted to [pandas](https://pandas.pydata.org/) [DataFrames](https://pandas.pydata.org/docs/reference/frame.html) for this purpose:
+## Drop missing pulses
+
+For correlating channels, pulse IDs that are not available in all channels need to be removed. This can be achieved via
+
+```python
+subset.drop_missing()
+```
+
+resulting in data where data points that belong to the same pulse are matched.
+
+## Convert to DataFrame
+
+For more complex treatment of missing pulse IDs, e.g., imputation, `SFData` can be converted to [pandas](https://pandas.pydata.org/) [DataFrames](https://pandas.pydata.org/docs/reference/frame.html):
 
 ```python
 df = subset.to_dataframe()
 ```
 
 This way, missing entries will be marked as NaNs, and can be dealt with via, e.g., [`dropna()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.dropna.html) or [`fillna()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.fillna.html).
+
+
