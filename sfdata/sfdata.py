@@ -43,6 +43,16 @@ class SFData:
             df[chan.name].loc[which] = chan.datasets.data[:].tolist() # TODO: workaround for pandas not dealing with ndim. columns
         return df
 
+    def drop_missing(self, show_progress=False):
+        target_pids = self.pids
+        channels = self.channels.values()
+        if show_progress:
+            channels = tqdm(channels)
+        for chan in channels:
+            chan.valid = Ellipsis
+            _inters, ind1, _ind2 = np.intersect1d(chan.pids, target_pids, assume_unique=True, return_indices=True)
+            chan.valid = ind1
+
     def __len__(self):
         return len(self.channels)
 
