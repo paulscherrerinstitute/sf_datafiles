@@ -11,6 +11,9 @@ about:
 source:
     path: ..
 
+build:
+  noarch: python
+
 requirements:
     build:
         - python
