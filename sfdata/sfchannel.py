@@ -10,7 +10,7 @@ class SFChannel:
             data = self._group["data"],
             pids = self._group["pulse_id"]
         )
-        self.valid = Ellipsis
+        self.reset_valid()
 
     @property
     def name(self):
@@ -33,6 +33,10 @@ class SFChannel:
     def shape(self):
         return self.datasets.data.shape
 
+    def reset_valid(self):
+        #TODO: check "is_data_present" for valid entries, initialize from these
+        self.valid = Ellipsis
+
     def __repr__(self):
         tn = typename(self)
         name = self.name
@@ -40,4 +44,3 @@ class SFChannel:
 
 
 
-#TODO: check "is_data_present" for valid entries, return only those

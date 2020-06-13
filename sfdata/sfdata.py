@@ -49,15 +49,20 @@ class SFData:
         if show_progress:
             channels = tqdm(channels)
         for chan in channels:
-            chan.valid = Ellipsis
+            chan.reset_valid()
             _inters, ind1, _ind2 = np.intersect1d(chan.pids, target_pids, assume_unique=True, return_indices=True)
             chan.valid = ind1
+
+    def reset_valid(self):
+        channels = self.channels.values()
+        for chan in channels:
+            chan.reset_valid()
 
     def __len__(self):
         return len(self.channels)
 
     def __getitem__(self, key):
-        if isinstance(key, tuple) or isinstance(key, list): #TODO: decide for which types exactly
+        if isinstance(key, (list, tuple)): #TODO: decide for which types exactly
             chans = {k: self.channels[k] for k in key}
             return SFData(chans)
         return self.channels[key]
