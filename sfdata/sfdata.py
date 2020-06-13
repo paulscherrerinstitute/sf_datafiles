@@ -40,7 +40,7 @@ class SFData:
             channels = tqdm(channels)
         for chan in channels:
             which = np.isin(all_pids, chan.pids)
-            df[chan.name].loc[which] = chan.datasets.data[:].tolist() # TODO: workaround for pandas not dealing with ndim. columns
+            df[chan.name].loc[which] = chan.datasets.data[chan.valid].tolist() # TODO: workaround for pandas not dealing with ndim. columns
         return df
 
     def drop_missing(self, show_progress=False):
