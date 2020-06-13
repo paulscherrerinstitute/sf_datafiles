@@ -16,10 +16,10 @@ build:
 
 requirements:
     build:
-        - python
+        - python >= 3.6
         - setuptools
     run:
-        - python
+        - python >= 3.6
         - h5py
         - numpy
         - pandas
