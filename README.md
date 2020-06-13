@@ -31,20 +31,26 @@ where they should be closed at the end.
 
 ## Channels
 
+A list of available channels can be viewed via
+
+```python
+data.names
+```
+
 The channels within the HDF5 files are represented by the `SFChannel` class and can be retrieved from the `SFData` object like from a dictionary:
 
 ```python
 ch = data["SLAAR11-LTIM01-EVR0:DUMMY_PV1_NBS"]
 ```
 
-The pulse IDs and data content can be accessed via
+The pulse IDs and data contents can be accessed via
 
 ```python
 ch.pids
 ch.data
 ```
 
-which reads the full arrays at once from the HDF5 file (it should be noted that this currently not cached!). In most cases, this will be the preferred way of reading data.
+which reads the full arrays at once from the HDF5 file (it should be noted that this is currently not cached!). In most cases, this will be the preferred way of reading data.
 
 In case the underlying HDF5 datasets need to be accessed, e.g., for reading only specific parts of the data, channels have a `datasets` namespace attached: 
 
