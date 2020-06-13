@@ -17,6 +17,9 @@ requirements:
         - setuptools
     run:
         - python
+        - h5py
+        - numpy
+        - pandas
         - tqdm
 
 
