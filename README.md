@@ -43,6 +43,8 @@ The channels within the HDF5 files are represented by the `SFChannel` class and 
 ch = data["SLAAR11-LTIM01-EVR0:DUMMY_PV1_NBS"]
 ```
 
+Note that, here, the channel name can be tab completed in ipython or jupyter.
+
 The pulse IDs and data contents can be accessed via
 
 ```python
