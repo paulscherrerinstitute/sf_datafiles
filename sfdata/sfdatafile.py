@@ -14,7 +14,13 @@ class SFDataFile(H5FileWrapper, SFData):
 
 def load_from_file(h5):
     channels = {}
-    data = h5["data"]
+
+    #TODO: better way of doing this?
+    if "data" in h5:
+        data = h5["data"]
+    else:
+        data = h5
+
     for cn in data:
         c = data[cn]
         c = SFChannel(c)
