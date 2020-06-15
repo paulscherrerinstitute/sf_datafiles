@@ -56,10 +56,14 @@ class SFData(dict):
 
     def __getitem__(self, key):
         super_getitem = super().__getitem__
-        if isinstance(key, (list, tuple)): #TODO: decide for which types exactly
+        if isinstance(key, str):
+            return super_getitem(key)
+        try:
             chans = {k: super_getitem(k) for k in key}
+        except TypeError as e:
+            raise KeyError(key) from e
+        else:
             return SFData(chans)
-        return super_getitem(key)
 
     def __repr__(self):
         tn = typename(self)
