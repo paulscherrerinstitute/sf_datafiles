@@ -13,14 +13,12 @@ class SFDataFile(H5FileWrapper, SFData):
 
 
 def load_from_file(h5):
-    channels = {}
-
-    #TODO: better way of doing this?
     if "data" in h5:
-        data = h5["data"]
+        data = h5["data"] # some files have /data/, e.g., bsread
     else:
-        data = h5
+        data = h5 # some files do not, e.g., camera
 
+    channels = {}
     for cn in data:
         c = data[cn]
         c = SFChannel(c)
