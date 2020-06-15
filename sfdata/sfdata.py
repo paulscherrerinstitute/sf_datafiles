@@ -6,15 +6,10 @@ from tqdm import tqdm
 from .utils import typename
 
 
-class SFData:
+class SFData(dict):
 
-    def __init__(self, channels):
-        self.channels = channels
-
-    def keys(self):
-        return self.channels.keys()
-
-    names = property(keys)
+    names = property(dict.keys)
+    channels = property(dict.values)
 
     def save_names(self, fname, mode="x", **kwargs):
         with open(fname, mode=mode, **kwargs) as f:
@@ -24,18 +19,19 @@ class SFData:
 
     @property
     def pids(self):
-        iter_pids = (c.pids for c in self.channels.values())
-        return reduce(np.intersect1d, iter_pids)
+        return reduce(np.intersect1d, self._iter_pids())
 
     @property
     def all_pids(self):
-        iter_pids = (c.pids for c in self.channels.values())
-        return reduce(np.union1d, iter_pids)
+        return reduce(np.union1d, self._iter_pids())
+
+    def _iter_pids(self):
+        return (c.pids for c in self.values())
 
     def to_dataframe(self, show_progress=False):
         all_pids = self.all_pids
         df = pd.DataFrame(index=all_pids, columns=self.names, dtype=object) # object dtype makes sure NaN can be used as missing marker also for int/bool
-        channels = self.channels.values()
+        channels = self.values()
         if show_progress:
             channels = tqdm(channels)
         for chan in channels:
@@ -45,7 +41,7 @@ class SFData:
 
     def drop_missing(self, show_progress=False):
         target_pids = self.pids
-        channels = self.channels.values()
+        channels = self.values()
         if show_progress:
             channels = tqdm(channels)
         for chan in channels:
@@ -54,24 +50,21 @@ class SFData:
             chan.valid = ind1
 
     def reset_valid(self):
-        channels = self.channels.values()
+        channels = self.values()
         for chan in channels:
             chan.reset_valid()
 
-    def __len__(self):
-        return len(self.channels)
-
     def __getitem__(self, key):
+        super_getitem = super().__getitem__
         if isinstance(key, (list, tuple)): #TODO: decide for which types exactly
-            chans = {k: self.channels[k] for k in key}
+            chans = {k: super_getitem(k) for k in key}
             return SFData(chans)
-        return self.channels[key]
+        return super_getitem(key)
 
     def __repr__(self):
         tn = typename(self)
         entries = len(self)
         return f"{tn}: {entries} channels"
-#        return repr(self.channels)
 
 
 
