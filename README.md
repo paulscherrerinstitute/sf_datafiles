@@ -102,4 +102,5 @@ df = subset.to_dataframe()
 
 This way, missing entries will be marked as NaNs, and can be dealt with via, e.g., [`dropna()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.dropna.html) or [`fillna()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.fillna.html).
 
+Note: NaN is [only defined for floats](https://en.wikipedia.org/wiki/NaN). In order to use NaNs as missing marker for all data types (specifically, also for integers or booleans), the created dataframe has the dtype `object`. After dealing with the NaNs, the dtype can be corrected using the [infer_objects](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.infer_objects.html) method. Furthermore, dataframe columns can only hold 1D data natively. Thus, arrays of larger dimensionality are converted to regular lists before insertion. Depending on the use case, these lists might need to be converted to numpy arrays when taken out of the dataframe.
 
