@@ -11,12 +11,6 @@ class SFData(dict):
     names = property(dict.keys)
     channels = property(dict.values)
 
-    def save_names(self, fname, mode="x", **kwargs):
-        with open(fname, mode=mode, **kwargs) as f:
-            data = "\n".join(self.names)
-            data += "\n" * 2
-            f.writelines(data)
-
     @property
     def pids(self):
         return reduce(np.intersect1d, self._iter_pids())
@@ -46,13 +40,19 @@ class SFData(dict):
             channels = tqdm(channels)
         for chan in channels:
             chan.reset_valid()
-            _inters, ind1, _ind2 = np.intersect1d(chan.pids, target_pids, assume_unique=True, return_indices=True)
-            chan.valid = ind1
+            _inters, ind_chan, _ind_target = np.intersect1d(chan.pids, target_pids, assume_unique=True, return_indices=True)
+            chan.valid = ind_chan
 
     def reset_valid(self):
         channels = self.values()
         for chan in channels:
             chan.reset_valid()
+
+    def save_names(self, fname, mode="x", **kwargs):
+        with open(fname, mode=mode, **kwargs) as f:
+            data = "\n".join(self.names)
+            data += "\n" * 2
+            f.writelines(data)
 
     def __getitem__(self, key):
         super_getitem = super().__getitem__
