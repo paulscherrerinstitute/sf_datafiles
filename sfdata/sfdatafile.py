@@ -1,14 +1,27 @@
-from .h5filewrapper import H5FileWrapper
+import h5py
+
+from .h5filewrapper import FileContext
+from .utils import typename
 from .sfdata import SFData
 from .sfchannel import SFChannel
 
 
-class SFDataFile(H5FileWrapper, SFData):
+class SFDataFile(FileContext, SFData):
 
-    def __init__(self, *args, **kwargs):
-        H5FileWrapper.__init__(self, *args, **kwargs)
+    def __init__(self, fname):
+        self.fname = fname
+        self.file = h5py.File(fname, mode="r")
         channels = load_from_file(self.file)
-        SFData.__init__(self, channels)
+        super().__init__(channels)
+
+    def close(self):
+        self.file.close()
+
+    def __repr__(self):
+        tn = typename(self)
+        fn = self.fname
+        entries = len(self)
+        return f"{tn}(\"{fn}\"): {entries} channels"
 
 
 
