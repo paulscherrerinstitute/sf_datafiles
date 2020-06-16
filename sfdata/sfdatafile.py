@@ -1,6 +1,6 @@
 import h5py
 
-from .h5filewrapper import FileContext
+from .filecontext import FileContext
 from .utils import typename
 from .sfdata import SFData
 from .sfchannel import SFChannel
