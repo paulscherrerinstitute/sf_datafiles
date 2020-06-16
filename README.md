@@ -1,13 +1,34 @@
 # SwissFEL Data Files
 
-## Open (and close) a file
-
 This module provides an easy way of dealing with SwissFEL data files.
 
-The main entry point is the `SFDataFile` class:
+## Usage example
+
+The following example serves as illustration of the general work flow:
 
 ```python
-from sfdata import SFDataFile
+from matplotlib import pyplot as plt
+from sfdata import SFDataFiles
+
+with SFDataFiles("run_000041.BSREAD.h5") as data:
+    subset = data["SIGNAL_CHANNEL", "BACKGROUND_CHANNEL"]
+	subset.drop_missing()
+    pids = subset["SIGNAL_CHANNEL"].pids
+    sig = subset["SIGNAL_CHANNEL"].data
+	bkg = subset["BACKGROUND_CHANNEL"].data
+
+norm = sig - bkg
+
+plt.plot(pids, norm)
+plt.show()
+```
+
+## Open (and close) files
+
+The main entry point is the `SFDataFiles` class:
+
+```python
+from sfdata import SFDataFiles
 ```
 
 which itself is an `SFData` subclass that handles HDF5 files.
@@ -15,19 +36,30 @@ which itself is an `SFData` subclass that handles HDF5 files.
 Files can be opened as contexts:
 
 ```python
-with SFDataFile("run_000041.BSREAD.h5") as data:
+with SFDataFiles("run_000041.BSREAD.h5") as data:
     do_something_with(data)
 ```
 
 in which case, they don't need to be closed manually. Or assigned to a variable
 
 ```python
-data = SFDataFile("run_000041.BSREAD.h5")
+data = SFDataFiles("run_000041.BSREAD.h5")
 do_something_with(data)
 data.close()
 ```
 
 where they should be closed at the end.
+
+Besides a single filename as shown above, `SFDataFiles` also accepts several filenames and/or filenames with wildcards (`*`, `?`) in which case the channels of all given files will be merged into a single `SFData` object:
+
+```python
+SFDataFiles("run_000041.*.h5")
+SFDataFiles("run_000041.BSREAD.h5", "run_000041.CAMERA.h5")
+```
+
+Note that if channels occur in several files, only the last instance will available be in the `SFData` object. Channels will not be appended along the pulse ID axis. Thus, currently, it only makes sense to open files from one run at the same time.
+
+`SFDataFiles` is a convenience wrapper which internally creates one `SFDataFile` (note the missing s) object for each given filename. `SFDataFile` works identical to `SFDataFiles` but accepts only a single filename as argument.
 
 ## Channels
 
@@ -76,7 +108,7 @@ Subsets of the data can be accessed by giving several channel names
 subset = data["SLAAR11-LTIM01-EVR0:DUMMY_PV1_NBS", "SLAAR11-LTIM01-EVR0:DUMMY_PV2_NBS"]
 ```
 
-which returns an `SFData` object that contains only the specified channels.
+which returns an `SFData` object that contains only the specified channels. `SFData` works identical to `SFDataFile(s)`. Specifically, further subsets can be created from a subset. All subsets are real subsets of the original data. This means in particular that the data has to be read also for subsets within the file context (created by the `with` statement) or before closing the files.
 
 ## Drop missing pulses
 

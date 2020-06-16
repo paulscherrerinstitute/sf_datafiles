@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
-from sfdata import SFDataFile
+from sfdata import SFDataFiles
 
 
-with SFDataFile("run_000041.BSREAD.h5") as data:
+with SFDataFiles("run_000041.BSREAD.h5") as data:
     print(data)
     print("#entries:", len(data))
 #    print(data.names)
