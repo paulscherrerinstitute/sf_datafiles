@@ -12,10 +12,10 @@ from sfdata import SFDataFiles
 
 with SFDataFiles("run_000041.BSREAD.h5") as data:
     subset = data["SIGNAL_CHANNEL", "BACKGROUND_CHANNEL"]
-	subset.drop_missing()
+    subset.drop_missing()
     pids = subset["SIGNAL_CHANNEL"].pids
     sig = subset["SIGNAL_CHANNEL"].data
-	bkg = subset["BACKGROUND_CHANNEL"].data
+    bkg = subset["BACKGROUND_CHANNEL"].data
 
 norm = sig - bkg
 
