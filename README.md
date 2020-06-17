@@ -57,7 +57,7 @@ SFDataFiles("run_000041.*.h5")
 SFDataFiles("run_000041.BSREAD.h5", "run_000041.CAMERA.h5")
 ```
 
-Note that if channels occur in several files, only the last instance will available be in the `SFData` object. Channels will not be appended along the pulse ID axis. Thus, currently, it only makes sense to open files from one run at the same time.
+Note that if channels occur in several files, only the last instance will be available in the `SFData` object. Channels will not be appended along the pulse ID axis. Thus, currently, it only makes sense to open files from one run at the same time.
 
 `SFDataFiles` is a convenience wrapper which internally creates one `SFDataFile` (note the missing s) object for each given filename. `SFDataFile` works identical to `SFDataFiles` but accepts only a single filename as argument.
 
