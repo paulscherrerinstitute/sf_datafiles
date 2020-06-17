@@ -14,9 +14,7 @@ class SFChannel:
 
     @property
     def name(self):
-        base = self._group.parent.name + "/"
-        name = self._group.name
-        return name[len(base):]
+        return self._group.name.split("/")[-1]
 
     @property
     def data(self):
