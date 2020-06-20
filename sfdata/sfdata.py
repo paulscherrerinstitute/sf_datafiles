@@ -33,7 +33,7 @@ class SFData(dict):
             df[chan.name].loc[which] = chan.datasets.data[chan.valid].tolist() # TODO: workaround for pandas not dealing with ndim. columns
         return df
 
-    def drop_missing(self, show_progress=False):
+    def drop_missing(self, show_progress=False): #TODO: count / list dropped
         target_pids = self.pids
         channels = self.values()
         if show_progress:
@@ -50,7 +50,8 @@ class SFData(dict):
 
     def save_names(self, fname, mode="x", **kwargs):
         with open(fname, mode=mode, **kwargs) as f:
-            data = "\n".join(self.names)
+            names = sorted(self.names)
+            data = "\n".join(names)
             data += "\n" * 2
             f.writelines(data)
 
