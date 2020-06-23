@@ -110,6 +110,29 @@ subset = data["SLAAR11-LTIM01-EVR0:DUMMY_PV1_NBS", "SLAAR11-LTIM01-EVR0:DUMMY_PV
 
 which returns an `SFData` object that contains only the specified channels. `SFData` works identical to `SFDataFile(s)`. Specifically, further subsets can be created from a subset. All subsets are real subsets of the original data. This means in particular that the data has to be read also for subsets within the file context (created by the `with` statement) or before closing the files.
 
+## Statistics
+
+For an overview of which channel has how many missing shots, `SFData` has a `print_stats` method:
+
+```python
+from sfdata import SFDataFile
+
+channels = (
+    "SAR-CVME-TIFALL5:EvtSet",
+    "SARES11-SPEC125-M1.roi_background_x_profile",
+	"SLAAR11-LTIM01-EVR0:DUMMY_PV1_NBS",
+    "SLAAR11-LTIM01-EVR0:DUMMY_PV2_NBS"
+)
+
+with SFDataFile("run_000041.BSREAD.h5") as data:
+	subset = data[channels]
+	subset.print_stats(show_complete=True)
+```
+
+This results in output like this:
+
+![print_stats](docs/figs/print_stats.png)
+
 ## Drop missing pulses
 
 For correlating channels, pulse IDs that are not available in all channels need to be removed. This can be achieved via
