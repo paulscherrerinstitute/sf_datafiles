@@ -20,8 +20,9 @@ requirements:
         - setuptools
     run:
         - python >=3.6
+        - colorama
         - h5py
-        - numpy
+        - numpy >=1.15.0 # for return_indices arg in intersect1d
         - pandas
         - tqdm
 
