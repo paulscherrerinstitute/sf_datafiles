@@ -1,9 +1,10 @@
-from functools import reduce
+from functools import reduce, partial
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
-from .utils import typename
+from .utils import typename, percentage_missing, strlen, maxstrlen, decide_color, print_line, dip
+from .cprint import cprint
 
 
 class SFData(dict):
@@ -13,7 +14,8 @@ class SFData(dict):
 
     @property
     def pids(self):
-        return reduce(np.intersect1d, self._iter_pids())
+        unique_intersect1d = partial(np.intersect1d, assume_unique=True)
+        return reduce(unique_intersect1d, self._iter_pids())
 
     @property
     def all_pids(self):
@@ -33,15 +35,51 @@ class SFData(dict):
             df[chan.name].loc[which] = chan.datasets.data[chan.valid].tolist() # TODO: workaround for pandas not dealing with ndim. columns
         return df
 
-    def drop_missing(self, show_progress=False): #TODO: count / list dropped
-        target_pids = self.pids
+    def drop_missing(self, show_progress=False):
+        shared_pids = self.pids
         channels = self.values()
         if show_progress:
             channels = tqdm(channels)
         for chan in channels:
             chan.reset_valid()
-            _inters, ind_chan, _ind_target = np.intersect1d(chan.pids, target_pids, assume_unique=True, return_indices=True)
+            _inters, ind_chan, _ind_shared = np.intersect1d(chan.pids, shared_pids, assume_unique=True, return_indices=True)
             chan.valid = ind_chan
+
+
+    def print_stats(self, show_complete=False):
+        print_line()
+        shared_pids = self.pids
+        all_pids = self.all_pids
+
+        n_shared_pids = len(shared_pids)
+        n_all_pids = len(all_pids)
+        max_perc = percentage_missing(n_shared_pids, n_all_pids)
+
+        len_pids = strlen(n_all_pids)
+        len_perc = strlen(max_perc)
+        len_name = maxstrlen(self.names)
+
+        for n in sorted(self.names):
+            chan = self[n]
+            chan.reset_valid()
+            inters = np.intersect1d(chan.pids, all_pids, assume_unique=True)
+            n_inters = len(inters)
+
+            if n_inters == n_all_pids and not show_complete:
+                continue
+
+            perc = percentage_missing(n_inters, n_all_pids)
+            s_n_inters = str(n_inters).rjust(len_pids)
+            s_perc = str(perc).rjust(len_perc)
+
+            color = decide_color(n_inters, n_shared_pids, n_all_pids)
+            cprint(chan.name.ljust(len_name), f"{s_n_inters} / {n_all_pids} -> {s_perc}% loss", dip(perc), color=color)
+
+        print()
+        color = decide_color(n_shared_pids, n_shared_pids, n_all_pids)
+        cprint(f"over the whole data set: {n_shared_pids} / {n_all_pids} -> {max_perc}% loss", color=color)
+        print_line()
+
 
     def reset_valid(self):
         channels = self.values()
