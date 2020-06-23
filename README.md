@@ -133,6 +133,8 @@ This results in output like this:
 
 ![print_stats](docs/figs/print_stats.png)
 
+The statistics overview can also be directly accessed via the included command line tools `sfdstats.py`.
+
 ## Drop missing pulses
 
 For correlating channels, pulse IDs that are not available in all channels need to be removed. This can be achieved via
