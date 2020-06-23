@@ -120,7 +120,7 @@ from sfdata import SFDataFile
 channels = (
     "SAR-CVME-TIFALL5:EvtSet",
     "SARES11-SPEC125-M1.roi_background_x_profile",
-	"SLAAR11-LTIM01-EVR0:DUMMY_PV1_NBS",
+    "SLAAR11-LTIM01-EVR0:DUMMY_PV1_NBS",
     "SLAAR11-LTIM01-EVR0:DUMMY_PV2_NBS"
 )
 
