@@ -13,6 +13,8 @@ source:
 
 build:
   noarch: python
+  entry_points:
+    - sfdstats = sfdstats:main
 
 requirements:
     build:
