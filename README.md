@@ -133,7 +133,7 @@ This results in output like this:
 
 ![print_stats](docs/figs/print_stats.png)
 
-The statistics overview can also be directly accessed via the included command line tools `sfdstats.py`.
+The statistics overview can also be directly accessed via the included command line tool `sfdstats`.
 
 ## Drop missing pulses
 
