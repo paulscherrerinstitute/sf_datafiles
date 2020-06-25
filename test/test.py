@@ -2,6 +2,9 @@
 
 # coverage run --source sfdata -m unittest discover && coverage report -m
 
+#TODO:
+# add test for unique pids handling
+
 
 import os
 import sys
