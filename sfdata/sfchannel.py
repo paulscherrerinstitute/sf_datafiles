@@ -18,14 +18,14 @@ class SFChannel:
 
     @property
     def data(self):
-        data = self.datasets.data[self.valid]
+        data = self.datasets.data[:][self.valid] # TODO: workaround: access from h5 via indices is slow
         if data.ndim == 2 and data.shape[1] == 1: # transpose 1D column vectors to line vectors
             data = data.reshape(-1)
         return data
 
     @property
     def pids(self):
-        return self.datasets.pids[self.valid]
+        return self.datasets.pids[:][self.valid] # TODO: workaround: access from h5 via indices is slow
 
     @property
     def shape(self):
