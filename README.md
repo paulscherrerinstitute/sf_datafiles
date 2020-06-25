@@ -125,8 +125,8 @@ channels = (
 )
 
 with SFDataFile("run_000041.BSREAD.h5") as data:
-	subset = data[channels]
-	subset.print_stats(show_complete=True)
+    subset = data[channels]
+    subset.print_stats(show_complete=True)
 ```
 
 This results in output like this:
