@@ -1,10 +1,14 @@
-from functools import reduce, partial
+from functools import reduce #, partial
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
 from .utils import typename, percentage_missing, strlen, maxstrlen, decide_color, print_line, dip
 from .cprint import cprint
+
+
+#unique_intersect1d = partial(np.intersect1d, assume_unique=True)
+#TODO: how to handle non-unique pids?
 
 
 class SFData(dict):
@@ -14,8 +18,7 @@ class SFData(dict):
 
     @property
     def pids(self):
-        unique_intersect1d = partial(np.intersect1d, assume_unique=True)
-        return reduce(unique_intersect1d, self._iter_pids())
+        return reduce(np.intersect1d, self._iter_pids())
 
     @property
     def all_pids(self):
@@ -42,7 +45,7 @@ class SFData(dict):
             channels = tqdm(channels)
         for chan in channels:
             chan.reset_valid()
-            _inters, ind_chan, _ind_shared = np.intersect1d(chan.pids, shared_pids, assume_unique=True, return_indices=True)
+            _inters, ind_chan, _ind_shared = np.intersect1d(chan.pids, shared_pids, return_indices=True)
             chan.valid = ind_chan
 
 
@@ -62,7 +65,7 @@ class SFData(dict):
         for n in sorted(self.names):
             chan = self[n]
             chan.reset_valid()
-            inters = np.intersect1d(chan.pids, all_pids, assume_unique=True)
+            inters = np.intersect1d(chan.pids, all_pids)
             n_inters = len(inters)
 
             if n_inters == n_all_pids and not show_complete:
