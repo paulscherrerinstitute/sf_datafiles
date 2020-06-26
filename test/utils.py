@@ -46,7 +46,9 @@ class TestCase(unittest.TestCase):
     def assertAllEqual(self, left, right):
         return np.testing.assert_array_equal(left, right)
 
-    def assertNotRaises(self, exc=(Exception,)):
+    def assertNotRaises(self, *exc):
+        if not exc:
+            exc = (Exception,)
         return _AssertNotRaisesContext(self, *exc)
 
 
