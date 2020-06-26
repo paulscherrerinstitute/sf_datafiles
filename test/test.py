@@ -18,7 +18,7 @@ import unittest
 import unittest.mock
 import numpy as np
 
-from utils import TestCase, identity, make_temp_filename, read_names, load_df_from_csv
+from utils import TestCase, identity, make_temp_filename, read_names, load_df_from_csv, SettingWithCopyError
 
 from sfdata import SFDataFiles, SFDataFile
 from sfdata.filecontext import FileContext
@@ -196,6 +196,10 @@ class TestSFChannel(TestCase):
         self.assertEqual(
             repr(self.ch), REPR_CHANNEL
         )
+
+    def test_dataframe_setting(self):
+        with self.assertNotRaises(SettingWithCopyError):
+            self.data.to_dataframe()
 
     def test_to_dataframe(self):
         df_ref = self.df_ref
