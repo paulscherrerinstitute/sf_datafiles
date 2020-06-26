@@ -6,8 +6,8 @@ import numpy as np
 import pandas as pd
 
 
-pd.options.mode.chained_assignment = "raise"
-SettingWithCopyError = pd.core.common.SettingWithCopyError
+from pandas.core.common import SettingWithCopyError
+pd.options.mode.chained_assignment = "raise" # make SettingWithCopyWarning an exception
 
 
 identity = lambda iterable: iterable
