@@ -29,7 +29,12 @@ class SFChannel:
 
     @property
     def shape(self):
-        return self.datasets.data.shape
+        shape = self.datasets.data.shape
+        if self.valid is not Ellipsis: # correct shape for valid
+            first_dim = len(self.valid)
+            other_dims = shape[1:]
+            shape = (first_dim, *other_dims)
+        return shape
 
     def reset_valid(self):
         #TODO: check "is_data_present" for valid entries, initialize from these

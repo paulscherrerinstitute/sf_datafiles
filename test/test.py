@@ -182,10 +182,21 @@ class TestSFChannel(TestCase):
             self.ch.datasets.data.shape, self.ch.data.shape
         )
 
-    def test_shape(self):
+    def test_shape_all_valid(self):
         self.assertEqual(
             self.ch.shape, CH_ND_SHAPE
         )
+
+    def test_shape_partial_valid(self):
+        replacement_valid = [0, 1]
+        new_shape = list(CH_ND_SHAPE)
+        new_shape[0] = len(replacement_valid)
+        new_shape = tuple(new_shape)
+        self.ch.valid = replacement_valid
+        self.assertEqual(
+            self.ch.shape, new_shape
+        )
+        self.ch.reset_valid()
 
     def test_name(self):
         self.assertEqual(
