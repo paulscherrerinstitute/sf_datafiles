@@ -1,15 +1,18 @@
 from glob import glob
 
 from .filecontext import FileContext
-from .utils import typename
+from .utils import typename, printable_string_sequence
 from .sfdata import SFData
 from .sfdatafile import SFDataFile
 
 
 class SFDataFiles(FileContext, SFData):
 
-    def __init__(self, *fnames):
-        self.fnames = fnames = explode_filenames(fnames)
+    def __init__(self, *patterns):
+        self.fnames = fnames = explode_filenames(patterns)
+        if not fnames:
+            patterns = printable_string_sequence(patterns)
+            raise ValueError(f"No matching file for patterns: {patterns}")
         self.files = [SFDataFile(fn) for fn in fnames]
         super().__init__()
         for f in self.files:
