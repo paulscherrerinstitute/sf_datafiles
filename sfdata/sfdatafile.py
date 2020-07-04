@@ -33,7 +33,7 @@ def load_from_file(h5):
 
     channels = {}
     for cn in data:
-        if cn == "pulse_id": #TODO: workaround for a spurious pulse_ids group in bsread files
+        if cn == "pulse_id": #TODO: workaround for a spurious pulse_id group in bsread files
             continue
         c = data[cn]
         c = SFChannel(c)
