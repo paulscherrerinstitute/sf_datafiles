@@ -10,7 +10,7 @@ The following example serves as illustration of the general work flow:
 from matplotlib import pyplot as plt
 from sfdata import SFDataFiles
 
-with SFDataFiles("run_000041.BSREAD.h5") as data:
+with SFDataFiles("/sf/instrument/data/p12345/raw/something/run_000041.*.h5") as data:
     subset = data["SIGNAL_CHANNEL", "BACKGROUND_CHANNEL"]
     subset.drop_missing()
     pids = subset["SIGNAL_CHANNEL"].pids
