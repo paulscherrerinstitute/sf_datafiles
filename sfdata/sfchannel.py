@@ -47,3 +47,9 @@ class SFChannel:
 
 
 
+#TODO: better handle closed h5 files:
+#- _group.name gives None
+#- datasets.data[...] / datasets.pids[...] / shapes raise ValueError: Not a dataset (not a dataset)
+
+
+
