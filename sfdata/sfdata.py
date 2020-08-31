@@ -1,6 +1,7 @@
 from functools import reduce #, partial
 import numpy as np
 import pandas as pd
+import xarray as xr
 from tqdm import tqdm
 
 from .utils import typename, percentage_missing, strlen, maxstrlen, decide_color, print_line, dip
@@ -37,6 +38,19 @@ class SFData(dict):
             which = np.isin(all_pids, chan.pids)
             df.loc[which, chan.name] = chan.data.tolist() # TODO: workaround for pandas not dealing with ndim. columns
         return df
+
+    def to_xarray(self, show_progress=False):
+        ds = xr.Dataset()
+        channels = self.values()
+        if show_progress:
+            channels = tqdm(channels)
+        for chan in channels:
+            data = chan.data
+            coords = {"pids": chan.pids}
+            dims = ["pids"] + [f"dim{i}" for i in range(1, data.ndim)]
+            da = xr.DataArray(data, coords=coords, dims=dims)
+            ds[chan.name] = da
+        return ds
 
     def drop_missing(self, show_progress=False):
         shared_pids = self.pids
