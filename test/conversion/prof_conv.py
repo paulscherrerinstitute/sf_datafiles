@@ -4,11 +4,12 @@
 # mprof plot
 
 
-import os
-import sys
+import argparse
 
-this_dir = os.path.dirname(__file__)
-sys.path.insert(0, (os.path.join(this_dir, "../..")))
+parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser.add_argument("filename", nargs='?', default="test_dump.h5", help="name of the file to run the profiling on")
+
+clargs = parser.parse_args()
 
 
 try:
@@ -17,11 +18,17 @@ except NameError:
     from memory_profiler import profile
 
 
+import os
+import sys
+
+this_dir = os.path.dirname(__file__)
+sys.path.insert(0, (os.path.join(this_dir, "../..")))
+
 from sfdata import SFDataFile
 
 
-def convprof():
-    fname = "test_dump.h5"
+
+def convprof(fname):
     sfd = SFDataFile(fname)
 
     run_all(
@@ -78,7 +85,11 @@ def check(val, ref):
 
 
 if __name__ == "__main__":
-    convprof()
+    fname = clargs.filename
+    if not os.path.isfile(fname):
+        msg = f"File \"{fname}\" does not exist. The script \"create_test_data.py\" may be used to create a default test file \"test_dump.h5\"."
+        raise ValueError(msg)
+    convprof(fname)
 
 
 
