@@ -80,7 +80,7 @@ class SFData(dict):
         return ds
 
     def to_xarray_accumulate(self, show_progress=False):
-        ds = xr.Dataset()
+        ds = xr.Dataset(coords={"pids": self.all_pids})
         channels = self.values()
         if show_progress:
             channels = tqdm(channels)
