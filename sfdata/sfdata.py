@@ -28,7 +28,32 @@ class SFData(dict):
     def _iter_pids(self):
         return (c.pids for c in self.values())
 
+
     def to_dataframe(self, show_progress=False):
+        data_series = {}
+        channels = self.values()
+        if show_progress:
+            channels = tqdm(channels)
+        for chan in channels:
+            name = chan.name
+            ds = pd.Series(data=chan.data.tolist(), index=chan.pids, dtype=object, name=name)
+            data_series[name] = ds
+        df = pd.DataFrame(data_series)
+        return df
+
+    def to_dataframe_accumulate(self, show_progress=False):
+        all_pids = self.all_pids
+        df = pd.DataFrame(index=all_pids, columns=self.names, dtype=object)
+        channels = self.values()
+        if show_progress:
+            channels = tqdm(channels)
+        for chan in channels:
+            name = chan.name
+            ds = pd.Series(data=chan.data.tolist(), index=chan.pids, dtype=object, name=name)
+            df[name] = ds
+        return df
+
+    def to_dataframe_fill(self, show_progress=False):
         all_pids = self.all_pids
         df = pd.DataFrame(index=all_pids, columns=self.names, dtype=object) # object dtype makes sure NaN can be used as missing marker also for int/bool
         channels = self.values()
@@ -40,17 +65,34 @@ class SFData(dict):
         return df
 
     def to_xarray(self, show_progress=False):
+        data_vars = {}
+        channels = self.values()
+        if show_progress:
+            channels = tqdm(channels)
+        for chan in channels:
+            name = chan.name
+            data = chan.data
+            coords = {"pids": chan.pids}
+            dims = ["pids"] + [f"_dim{i}_{name}" for i in range(1, data.ndim)]
+            da = xr.DataArray(data, coords=coords, dims=dims)
+            data_vars[name] = da
+        ds = xr.Dataset(data_vars)
+        return ds
+
+    def to_xarray_accumulate(self, show_progress=False):
         ds = xr.Dataset()
         channels = self.values()
         if show_progress:
             channels = tqdm(channels)
         for chan in channels:
+            name = chan.name
             data = chan.data
             coords = {"pids": chan.pids}
-            dims = ["pids"] + [f"dim{i}" for i in range(1, data.ndim)]
+            dims = ["pids"] + [f"_dim{i}_{name}" for i in range(1, data.ndim)]
             da = xr.DataArray(data, coords=coords, dims=dims)
-            ds[chan.name] = da
+            ds[name] = da
         return ds
+
 
     def drop_missing(self, show_progress=False):
         shared_pids = self.pids
