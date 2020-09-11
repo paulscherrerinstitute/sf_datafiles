@@ -149,9 +149,11 @@ The valid marker is per channel, and subsets are real subsets of the original da
 
 In case all `.drop_missing()` operations need to be reverted, both `SFChannel` and `SFData` have a `.reset_valid()` method (where the latter loops over the former). These reset the valid marker(s) to all pulse IDs that are in the respective underlying dataset. Note that each `.drop_missing()` calls `.reset_valid()` before calculating the new `valid` marker.
 
-## Convert to DataFrame
+## Convert to other data formats
 
-For more complex treatment of missing pulse IDs, e.g., imputation, `SFData` can be converted to [pandas](https://pandas.pydata.org/) [DataFrames](https://pandas.pydata.org/docs/reference/frame.html):
+For more complex treatment of missing pulse IDs, e.g., imputation, `SFData` can be converted to [pandas](https://pandas.pydata.org/) [DataFrames](https://pandas.pydata.org/docs/reference/frame.html) or [xarray](http://xarray.pydata.org/) [Dataset](http://xarray.pydata.org/en/stable/generated/xarray.Dataset.html).
+
+### Convert to pandas DataFrame
 
 ```python
 df = subset.to_dataframe()
@@ -160,4 +162,16 @@ df = subset.to_dataframe()
 This way, missing entries will be marked as NaNs, and can be dealt with via, e.g., [`dropna()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.dropna.html) or [`fillna()`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.fillna.html).
 
 Note: NaN is [only defined for floats](https://en.wikipedia.org/wiki/NaN). In order to use NaNs as missing marker for all data types (specifically, also for integers or booleans), the created dataframe has the dtype `object`. After dealing with the NaNs, the dtype can be corrected using the [infer_objects](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.infer_objects.html) method. Furthermore, dataframe columns can only hold 1D data natively. Thus, arrays of larger dimensionality are converted to regular lists before insertion. Depending on the use case, these lists might need to be converted to numpy arrays when taken out of the dataframe.
+
+### Convert to xarray Dataset
+
+```python
+ds = subset.to_xarray()
+```
+
+This way, missing entries will be marked as NaNs, and can be dealt with via, e.g., [`dropna()`](http://xarray.pydata.org/en/stable/generated/xarray.Dataset.dropna.html) or [`fillna()`](http://xarray.pydata.org/en/stable/generated/xarray.Dataset.fillna.html). For `dropna()` the `dim` parameter is most likely the `"pids"` axis:
+
+```python
+ds.dropna("pids", ...)
+```
 
