@@ -151,7 +151,7 @@ In case all `.drop_missing()` operations need to be reverted, both `SFChannel` a
 
 ## Convert to other data formats
 
-For more complex treatment of missing pulse IDs, e.g., imputation, `SFData` can be converted to [pandas](https://pandas.pydata.org/) [DataFrames](https://pandas.pydata.org/docs/reference/frame.html) or [xarray](http://xarray.pydata.org/) [Dataset](http://xarray.pydata.org/en/stable/generated/xarray.Dataset.html).
+For more complex treatment of missing pulse IDs, e.g., imputation, `SFData` can be converted to [pandas](https://pandas.pydata.org/) [DataFrames](https://pandas.pydata.org/docs/reference/frame.html) or [xarray](https://xarray.pydata.org/) [Dataset](https://xarray.pydata.org/en/stable/generated/xarray.Dataset.html).
 
 ### Convert to pandas DataFrame
 
@@ -169,7 +169,7 @@ Note: NaN is [only defined for floats](https://en.wikipedia.org/wiki/NaN). In or
 ds = subset.to_xarray()
 ```
 
-This way, missing entries will be marked as NaNs, and can be dealt with via, e.g., [`dropna()`](http://xarray.pydata.org/en/stable/generated/xarray.Dataset.dropna.html) or [`fillna()`](http://xarray.pydata.org/en/stable/generated/xarray.Dataset.fillna.html). For `dropna()` the `dim` parameter is most likely the `"pids"` axis:
+This way, missing entries will be marked as NaNs, and can be dealt with via, e.g., [`dropna()`](https://xarray.pydata.org/en/stable/generated/xarray.Dataset.dropna.html) or [`fillna()`](https://xarray.pydata.org/en/stable/generated/xarray.Dataset.fillna.html). For `dropna()` the `dim` parameter is most likely the `"pids"` axis:
 
 ```python
 ds.dropna("pids", ...)
