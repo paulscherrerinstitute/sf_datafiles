@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="sfdata",
-    version="0.0.9",
+    version="0.0.10",
     url="https://github.com/paulscherrerinstitute/sf_datafiles",
     description="SwissFEL Data Files",
     author="Paul Scherrer Institute",
