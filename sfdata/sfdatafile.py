@@ -1,4 +1,5 @@
 import h5py
+import bitshuffle.h5
 
 from .filecontext import FileContext
 from .utils import typename
