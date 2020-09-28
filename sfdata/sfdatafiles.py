@@ -10,16 +10,7 @@ class SFDataFiles(FileContext, SFData):
 
     def __init__(self, *patterns):
         self.fnames = fnames = explode_filenames(patterns)
-
-        self.files = files = []
-        for fn in fnames:
-            try:
-                f = SFDataFile(fn)
-            except Exception as exc:
-                excname = typename(exc)
-                print(f"Warning: Skipping \"{fn}\" since it caused {excname}: {exc}")
-            else:
-                files.append(f)
+        self.files = files = load_files(fnames)
 
         if not files:
             patterns = printable_string_sequence(patterns)
@@ -50,6 +41,19 @@ def explode_filenames(patterns):
         fnames.extend(fns)
     fnames = sorted(set(fnames))
     return fnames
+
+
+def load_files(fnames):
+    files = []
+    for fn in fnames:
+        try:
+            f = SFDataFile(fn)
+        except Exception as exc:
+            excname = typename(exc)
+            print(f"Warning: Skipping \"{fn}\" since it caused {excname}: {exc}")
+        else:
+            files.append(f)
+    return files
 
 
 
