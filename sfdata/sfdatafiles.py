@@ -9,12 +9,15 @@ from .sfdatafile import SFDataFile
 class SFDataFiles(FileContext, SFData):
 
     def __init__(self, *patterns):
-        self.fnames = fnames = explode_filenames(patterns)
-        self.files = files = load_files(fnames)
+        fnames = explode_filenames(patterns)
+        fnames, files = load_files(fnames)
 
         if not files:
             patterns = printable_string_sequence(patterns)
             raise ValueError(f"No matching file for patterns: {patterns}")
+
+        self.fnames = fnames
+        self.files = files
 
         super().__init__()
         for f in files:
@@ -44,7 +47,7 @@ def explode_filenames(patterns):
 
 
 def load_files(fnames):
-    files = []
+    res = {}
     for fn in fnames:
         try:
             f = SFDataFile(fn)
@@ -52,8 +55,15 @@ def load_files(fnames):
             excname = typename(exc)
             print(f"Warning: Skipping \"{fn}\" since it caused {excname}: {exc}")
         else:
-            files.append(f)
-    return files
+            res[fn] = f
+    fnames, files = dict_to_tuples(res)
+    return fnames, files
+
+
+def dict_to_tuples(d):
+    keys   = d.keys()
+    values = d.values()
+    return tuple(keys), tuple(values)
 
 
 
