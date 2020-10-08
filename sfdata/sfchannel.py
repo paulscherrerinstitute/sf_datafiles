@@ -1,5 +1,6 @@
 from types import SimpleNamespace
-from .utils import typename
+import numpy as np
+from .utils import typename, adjust_shape, batcher
 
 
 class SFChannel:
@@ -16,11 +17,17 @@ class SFChannel:
     def name(self):
         return self._group.name.split("/")[-1]
 
+    def in_batches(self, size=100):
+        dataset = self.datasets.data
+        valid = self.valid
+        if valid is Ellipsis:
+            valid = np.arange(self.nvalid)
+        return batcher(dataset, valid, size)
+
     @property
     def data(self):
         data = self.datasets.data[:][self.valid] # TODO: workaround: access from h5 via indices is slow
-        if data.ndim == 2 and data.shape[1] == 1: # transpose 1D column vectors to line vectors
-            data = data.reshape(-1)
+        data = adjust_shape(data)
         return data
 
     @property
@@ -29,12 +36,17 @@ class SFChannel:
 
     @property
     def shape(self):
-        shape = self.datasets.data.shape
-        if self.valid is not Ellipsis: # correct shape for valid
-            first_dim = len(self.valid)
-            other_dims = shape[1:]
-            shape = (first_dim, *other_dims)
+        first_dim = self.nvalid
+        other_dims = self.datasets.data.shape[1:]
+        shape = (first_dim, *other_dims)
         return shape
+
+    @property
+    def nvalid(self):
+        if self.valid is not Ellipsis:
+            return len(self.valid)
+        else:
+            return self.datasets.data.shape[0]
 
     def reset_valid(self):
         #TODO: check "is_data_present" for valid entries, initialize from these

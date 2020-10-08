@@ -1,6 +1,32 @@
 import numpy as np
 
 
+def batcher(dataset, indices, batch_size):
+    """
+    Iterate over dataset[indices] in batches of batch_size length
+    """
+    for i in range(0, len(indices), batch_size):
+        slice_valid = slice(i, i+batch_size)
+        batch_valid = indices[slice_valid]
+
+        start = min(batch_valid)
+        stop  = max(batch_valid) + 1
+
+        slice_batch = slice(start, stop)
+        valid_in_batch = batch_valid - batch_valid[0]
+
+        batch_data = dataset[slice_batch][valid_in_batch]
+        batch_data = adjust_shape(batch_data)
+        yield batch_data
+
+
+def adjust_shape(arr):
+    """transpose 1D column vectors to line vectors"""
+    if arr.ndim == 2 and arr.shape[1] == 1:
+        arr = arr.reshape(-1)
+    return arr
+
+
 def h5_boolean_indexing(ds, indices):
     """
     hdf5 does not support boolean indexing on the first axis for n-dim. datasets:
