@@ -9,11 +9,12 @@ def batcher(dataset, indices, batch_size):
         slice_valid = slice(i, i+batch_size)
         batch_valid = indices[slice_valid]
 
-        start = min(batch_valid)
-        stop  = max(batch_valid) + 1
+        # this assumes indices is sorted (otherwise min/max)
+        start = batch_valid[0]
+        stop  = batch_valid[-1] + 1
 
         slice_batch = slice(start, stop)
-        valid_in_batch = batch_valid - batch_valid[0]
+        valid_in_batch = batch_valid - start
 
         batch_data = dataset[slice_batch][valid_in_batch]
         batch_data = adjust_shape(batch_data)
