@@ -77,6 +77,8 @@ ch = data["SLAAR11-LTIM01-EVR0:DUMMY_PV1_NBS"]
 
 Note that, here, the channel name can be tab completed in ipython or jupyter.
 
+### Regular access
+
 The pulse IDs and data contents can be accessed via
 
 ```python
@@ -85,6 +87,24 @@ ch.data
 ```
 
 which reads the full arrays at once from the HDF5 file (it should be noted that this is currently not cached!). In most cases, this will be the preferred way of reading data.
+
+### Access in batches
+
+If the full data array is too large to be held in memory at once (which is mainly a concern for camera images), it can be read in batches of valid entries instead:
+
+```python
+for b in ch.in_batches():
+    for image in b:
+        do_something_with(image)
+```
+
+For adjusting the memory consumption, the batching method accepts the batch size as argument:
+
+```python
+SFChannel.in_batches(size=100)
+```
+
+### Access via datasets
 
 In case the underlying HDF5 datasets need to be accessed, e.g., for reading only specific parts of the data, channels have a `datasets` namespace attached: 
 
