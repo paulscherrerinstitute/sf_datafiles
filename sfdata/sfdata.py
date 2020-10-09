@@ -106,7 +106,8 @@ class SFData(dict):
 
 
     def print_stats(self, show_complete=False):
-        print_line()
+        hide_complete = not show_complete
+
         shared_pids = self.pids
         all_pids = self.all_pids
 
@@ -118,14 +119,21 @@ class SFData(dict):
         len_perc = strlen(max_perc)
         len_name = maxstrlen(self.names)
 
+        print_line()
+
+        n_total = len(self.names)
+        n_complete = 0
         for n in sorted(self.names):
             chan = self[n]
             chan.reset_valid()
             inters = np.intersect1d(chan.pids, all_pids)
             n_inters = len(inters)
 
-            if n_inters == n_all_pids and not show_complete:
-                continue
+            is_complete = (n_inters == n_all_pids)
+            if is_complete:
+                n_complete += 1
+                if hide_complete:
+                    continue
 
             perc = percentage_missing(n_inters, n_all_pids)
             s_n_inters = str(n_inters).rjust(len_pids)
@@ -137,6 +145,13 @@ class SFData(dict):
         print()
         color = decide_color(n_shared_pids, n_shared_pids, n_all_pids)
         cprint(f"over the whole data set: {n_shared_pids} / {n_all_pids} -> {max_perc}% loss", color=color)
+
+        perc_incomplete = percentage_missing(n_complete, n_total)
+        cprint(f"complete channels: {n_complete} / {n_total} -> {perc_incomplete}% incomplete", color=color)
+
+        if hide_complete and n_complete > 0:
+            cprint("complete channels are hidden", color="green")
+
         print_line()
 
 

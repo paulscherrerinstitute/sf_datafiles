@@ -6,7 +6,7 @@ def main():
     parser = argparse.ArgumentParser(description="Print statistics for SwissFEL data files")
 
     parser.add_argument("filenames", type=str, nargs="+", help="names of files to read, accepts wildcards")
-    parser.add_argument("-c", "--complete", action="store_true", help="also show channels which have the complete set of pulse IDs")
+    parser.add_argument("-c", "--complete", action="store_true", help="also show channels that have the complete set of pulse IDs")
 
     clargs = parser.parse_args()
 
