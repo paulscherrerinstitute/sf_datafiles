@@ -93,8 +93,8 @@ which reads the full arrays at once from the HDF5 file (it should be noted that 
 If the full data array is too large to be held in memory at once (which is mainly a concern for camera images), it can be read in batches of valid entries instead:
 
 ```python
-for b in ch.in_batches():
-    for image in b:
+for indices, batch in ch.in_batches():
+    for image in batch:
         do_something_with(image)
 ```
 
@@ -102,6 +102,16 @@ For adjusting the memory consumption, the batching method accepts the batch size
 
 ```python
 SFChannel.in_batches(size=100)
+```
+
+Batching yields `indices`, the current index slice within the whole valid data, and `batch`, a numpy array containing the current batch of valid data.
+
+In most cases a reducing operation is supposed to be applied to the data and the result is to be stored in an array with the first axis corresponding to the pulse IDs. For this, `indices` can be put to use. A simple example would be to sum over each image individually in order to get an intensity information per pulse:
+
+```python
+inten = np.empty(ch.nvalid)
+for indices, batch in ch.in_batches():
+    inten[indices] = batch.sum(axis=(1, 2))
 ```
 
 ### Access via datasets

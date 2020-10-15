@@ -5,20 +5,21 @@ def batcher(dataset, indices, batch_size):
     """
     Iterate over dataset[indices] in batches of batch_size length
     """
+    indices = np.asanyarray(indices) # see indices_in_batch below
     for i in range(0, len(indices), batch_size):
-        slice_valid = slice(i, i+batch_size)
-        batch_valid = indices[slice_valid]
+        index_slice = slice(i, i+batch_size)
+        batch_indices = indices[index_slice]
 
         # this assumes indices is sorted (otherwise min/max)
-        start = batch_valid[0]
-        stop  = batch_valid[-1] + 1
+        start = batch_indices[0]
+        stop  = batch_indices[-1] + 1
 
         slice_batch = slice(start, stop)
-        valid_in_batch = batch_valid - start
+        indices_in_batch = batch_indices - start # indices has to be numpy array for this to work
 
-        batch_data = dataset[slice_batch][valid_in_batch]
+        batch_data = dataset[slice_batch][indices_in_batch]
         batch_data = adjust_shape(batch_data)
-        yield batch_data
+        yield index_slice, batch_data
 
 
 def adjust_shape(arr):
