@@ -1,6 +1,6 @@
 from types import SimpleNamespace
 import numpy as np
-from .utils import typename, adjust_shape, batcher
+from .utils import typename, adjust_shape, batcher, apply_to_batches
 
 
 class SFChannel:
@@ -24,22 +24,9 @@ class SFChannel:
             valid = np.arange(self.nvalid)
         return batcher(dataset, valid, size)
 
-
     def apply_in_batches(self, func, size=100):
         batches = self.in_batches(size=size)
-
-        first_indices, first_batch = next(batches)
-        first_batch_res = func(first_batch)
-
-        single_res_shape = first_batch_res[0].shape
-        res_shape = (self.nvalid, *single_res_shape)
-        res = np.empty(res_shape)
-
-        res[first_indices] = first_batch_res
-        for indices, batch in batches:
-            res[indices] = func(batch)
-        return res
-
+        return apply_to_batches(func, batches, self.nvalid)
 
     @property
     def data(self):

@@ -1,6 +1,20 @@
 import numpy as np
 
 
+def apply_to_batches(func, batches, ntotal): #TODO: this should probably be (func, dataset, indices, batch_size)
+    first_indices, first_batch = next(batches)
+    first_batch_res = func(first_batch)
+
+    single_res_shape = first_batch_res[0].shape
+    res_shape = (ntotal, *single_res_shape)
+    res = np.empty(res_shape)
+
+    res[first_indices] = first_batch_res
+    for indices, batch in batches:
+        res[indices] = func(batch)
+    return res
+
+
 def batcher(dataset, indices, batch_size):
     """
     Iterate over dataset[indices] in batches of batch_size length
