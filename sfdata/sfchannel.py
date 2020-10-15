@@ -24,6 +24,23 @@ class SFChannel:
             valid = np.arange(self.nvalid)
         return batcher(dataset, valid, size)
 
+
+    def apply_in_batches(self, func, size=100):
+        batches = self.in_batches(size=size)
+
+        first_indices, first_batch = next(batches)
+        first_batch_res = func(first_batch)
+
+        single_res_shape = first_batch_res[0].shape
+        res_shape = (self.nvalid, *single_res_shape)
+        res = np.empty(res_shape)
+
+        res[first_indices] = first_batch_res
+        for indices, batch in batches:
+            res[indices] = func(batch)
+        return res
+
+
     @property
     def data(self):
         data = self.datasets.data[:][self.valid] # TODO: workaround: access from h5 via indices is slow
@@ -43,8 +60,9 @@ class SFChannel:
 
     @property
     def nvalid(self):
-        if self.valid is not Ellipsis:
-            return len(self.valid)
+        valid = self.valid
+        if valid is not Ellipsis:
+            return len(valid)
         else:
             return self.datasets.data.shape[0]
 

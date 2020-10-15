@@ -106,13 +106,24 @@ SFChannel.in_batches(size=100)
 
 Batching yields `indices`, the current index slice within the whole valid data, and `batch`, a numpy array containing the current batch of valid data.
 
-In most cases a reducing operation is supposed to be applied to the data and the result is to be stored in an array with the first axis corresponding to the pulse IDs. For this, `indices` can be put to use. A simple example would be to sum over each image individually in order to get an intensity information per pulse:
+In most cases a reducing operation is supposed to be applied to the data and the result is to be stored in an array with the first axis corresponding to the valid pulse IDs. For this, `indices` can be put to use. A simple example would be to sum over each image individually in order to get an intensity information per pulse:
 
 ```python
 inten = np.empty(ch.nvalid)
 for indices, batch in ch.in_batches():
     inten[indices] = batch.sum(axis=(1, 2))
 ```
+
+To simplify this workflow, the convenience method `apply_in_batches` is available:
+
+```python
+def proc(batch):
+    return batch.sum(axis=(1, 2))
+
+inten = ch.apply_in_batches(proc)
+```
+
+It should be noted that the processor function does **not** need to return a 1D array. If there are `nvalid` entries in the channel and a single processed entry is of the shape `single_shape`, the result will be of the shape `(nvalid, *single_shape)`.
 
 ### Access via datasets
 
