@@ -4,8 +4,7 @@ import pandas as pd
 import xarray as xr
 from tqdm import tqdm
 
-from .utils import typename, percentage_missing, strlen, maxstrlen, decide_color, print_line, dip
-from .cprint import cprint
+from .utils import typename, percentage_missing, strlen, maxstrlen, decide_color, print_line, dip, cprint
 
 
 #unique_intersect1d = partial(np.intersect1d, assume_unique=True)
