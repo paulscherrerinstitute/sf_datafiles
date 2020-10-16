@@ -19,10 +19,8 @@ class SFChannel:
 
     def in_batches(self, size=100):
         dataset = self.datasets.data
-        valid = self.valid
-        if valid is Ellipsis:
-            valid = np.arange(self.nvalid)
-        return batcher(dataset, valid, size)
+        valid_indices = self._get_valid_indices()
+        return batcher(dataset, valid_indices, size)
 
     def apply_in_batches(self, func, size=100):
         batches = self.in_batches(size=size)
@@ -46,16 +44,26 @@ class SFChannel:
         return shape
 
     @property
+    def ntotal(self):
+        return self.datasets.data.shape[0]
+
+    @property
     def nvalid(self):
         valid = self.valid
-        if valid is not Ellipsis:
-            return len(valid)
+        if valid is Ellipsis:
+            return self.ntotal
         else:
-            return self.datasets.data.shape[0]
+            return len(valid)
 
     def reset_valid(self):
         #TODO: check "is_data_present" for valid entries, initialize from these
         self.valid = Ellipsis
+
+    def _get_valid_indices(self):
+        valid = self.valid
+        if valid is Ellipsis:
+            valid = np.arange(self.ntotal)
+        return valid
 
     def __repr__(self):
         tn = typename(self)
