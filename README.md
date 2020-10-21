@@ -239,7 +239,7 @@ Since `step` is a `SFDataFiles` object, the [usage example](#usage-example) can 
 
 `SFScanInfo` gives access to the other contents of the json file via attributes. Specifically, `values` and `readbacks` are worth mentioning here as they come already converted to numpy arrays.
 
-Finally, it should be noted that **the iteration will simply skip over steps that do not contain files that can be opened**. This is to simplify plotting preliminary data from scans that are still running or finished scans where files are broken. Therefore, the following pattern is probably more versatile than the previous example:
+Finally, it should be noted that **the iteration will simply skip over steps that do not contain files that can be opened** (it will still print warnings). This is to simplify plotting preliminary data from scans that are still running or finished scans where files are broken. Therefore, the following pattern is probably more versatile than the previous example:
 
 ```python
 scan = SFScanInfo("/sf/instrument/data/p12345/raw/scan_info/a_scan.json")
