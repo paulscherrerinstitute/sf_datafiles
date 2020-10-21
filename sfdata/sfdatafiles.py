@@ -32,9 +32,9 @@ class SFDataFiles(FileContext, SFData):
     def __repr__(self):
         tn = typename(self)
         fns = self.fnames
-        fns = "\", \"".join(fns)
+        fns = printable_string_sequence(fns)
         entries = len(self)
-        return f"{tn}(\"{fns}\"): {entries} channels"
+        return f"{tn}({fns}): {entries} channels"
 
 
 
