@@ -216,3 +216,42 @@ This way, missing entries will be marked as NaNs, and can be dealt with via, e.g
 ds.dropna("pids", ...)
 ```
 
+## Scans
+
+For conveniently working with data from scans, which consist of several steps each a set of data files, `SFScanInfo` can be used:
+
+```python
+scan = SFScanInfo("/sf/instrument/data/p12345/raw/scan_info/a_scan.json")
+xs = scan.readbacks
+ys = []
+for step in scan:
+    # step is a SFDataFiles object
+    subset = step["SIGNAL_CHANNEL", "BACKGROUND_CHANNEL"]
+    ...
+    norm = sig - bkg
+    ys.append(norm)
+
+plt.plot(xs, ys)
+plt.show()
+```
+
+Since `step` is a `SFDataFiles` object, the [usage example](#usage-example) can be followed where `...` is given here.
+
+`SFScanInfo` gives access to the other contents of the json file via attributes. Specifically, `values` and `readbacks` are worth mentioning here as they come already converted to numpy arrays.
+
+Finally, it should be noted that **the iteration will simply skip over steps that do not contain files that can be opened**. This is to simplify plotting preliminary data from scans that are still running or finished scans where files are broken. Therefore, the following pattern is probably more versatile than the previous example:
+
+```python
+scan = SFScanInfo("/sf/instrument/data/p12345/raw/scan_info/a_scan.json")
+xs = scan.readbacks
+ys = np.zeros_like(xs) # or np.full(xs, np.nan)
+for i, step in enumerate(scan):
+    # step is a SFDataFiles object
+    subset = step["SIGNAL_CHANNEL", "BACKGROUND_CHANNEL"]
+    ...
+    norm = sig - bkg
+    ys[i] = norm
+
+plt.plot(xs, ys)
+plt.show()
+```
