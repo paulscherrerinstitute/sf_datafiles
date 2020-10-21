@@ -244,7 +244,7 @@ Finally, it should be noted that **the iteration will simply skip over steps tha
 ```python
 scan = SFScanInfo("/sf/instrument/data/p12345/raw/scan_info/a_scan.json")
 xs = scan.readbacks
-ys = np.zeros_like(xs) # or np.full(xs, np.nan)
+ys = np.zeros_like(xs) # or np.full_like(xs, np.nan)
 for i, step in enumerate(scan):
     # step is a SFDataFiles object
     subset = step["SIGNAL_CHANNEL", "BACKGROUND_CHANNEL"]
