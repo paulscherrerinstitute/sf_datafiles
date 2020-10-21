@@ -1,6 +1,7 @@
 from glob import glob
 
 from .filecontext import FileContext
+from .errors import NoMatchingFileError
 from .utils import typename, printable_string_sequence
 from .sfdata import SFData
 from .sfdatafile import SFDataFile
@@ -14,7 +15,7 @@ class SFDataFiles(FileContext, SFData):
 
         if not files:
             patterns = printable_string_sequence(patterns)
-            raise ValueError(f"No matching file for patterns: {patterns}")
+            raise NoMatchingFileError(patterns)
 
         self.fnames = fnames
         self.files = files
