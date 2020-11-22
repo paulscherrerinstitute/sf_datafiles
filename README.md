@@ -221,6 +221,8 @@ ds.dropna("pids", ...)
 For conveniently working with data from scans, which consist of several steps each a set of data files, `SFScanInfo` can be used:
 
 ```python
+from sfdata import SFScanInfo
+
 scan = SFScanInfo("/sf/instrument/data/p12345/raw/scan_info/a_scan.json")
 xs = scan.readbacks
 ys = []
@@ -242,6 +244,8 @@ Since `step` is a `SFDataFiles` object, the [usage example](#usage-example) can 
 Finally, it should be noted that **the iteration will simply skip over steps that do not contain files that can be opened** (it will still print warnings). This is to simplify plotting preliminary data from scans that are still running or finished scans where files are broken. Therefore, the following pattern is probably more versatile than the previous example:
 
 ```python
+from sfdata import SFScanInfo
+
 scan = SFScanInfo("/sf/instrument/data/p12345/raw/scan_info/a_scan.json")
 xs = scan.readbacks
 ys = np.zeros_like(xs) # or np.full_like(xs, np.nan)
