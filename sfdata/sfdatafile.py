@@ -21,10 +21,7 @@ class SFDataFile(FileContext, SFData):
         self.fname = fname
 
         if ju and ".JF" in fname: #TODO: might need better check
-            self.file = ju.File(fname,
-                gain_file="/home/augustin/Desktop/SwissFEL/ju/git/gains.2017.12.h5",
-                pedestal_file="/home/augustin/Desktop/SwissFEL/ju/git/pedestal_20181028_1746.JF02T09V01.res.h5"
-            ) #TODO remove test files
+            self.file = ju.File(fname)
             channels = load_from_ju_file(self.file)
         else:
             self.file = h5py.File(fname, mode="r")
