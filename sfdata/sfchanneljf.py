@@ -5,13 +5,8 @@ from .sfchannel import SFChannel
 class SFChannelJF(SFChannel):
 
     def __init__(self, name, group):
-        self.name = name
-        self._group = group
-        self.datasets = SimpleNamespace(
-            data = self._group,
-            pids = self._group["pulse_id"]
-        )
-        self.reset_valid()
+        super().__init__(name, group)
+        self.datasets.data = group # replace dataset with ju.File object
 
     @property
     def shape(self):
