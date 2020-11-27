@@ -46,7 +46,7 @@ class SFDataFile(FileContext, SFData):
 
 def load_from_ju_file(juf):
     name = juf.detector_name
-    chan = SFChannelJF(juf)
+    chan = SFChannelJF(name, juf)
     return {name: chan}
 
 
@@ -62,7 +62,7 @@ def load_from_file(h5):
         if cn == "pulse_id": #TODO: workaround for a spurious pulse_id group in bsread files
             continue
         c = data[cn]
-        c = SFChannel(c)
+        c = SFChannel(cn, c)
         channels[cn] = c
     return channels
 

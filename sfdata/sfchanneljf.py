@@ -4,17 +4,14 @@ from .sfchannel import SFChannel
 
 class SFChannelJF(SFChannel):
 
-    def __init__(self, group):
+    def __init__(self, name, group):
+        self.name = name
         self._group = group
         self.datasets = SimpleNamespace(
             data = self._group,
             pids = self._group["pulse_id"]
         )
         self.reset_valid()
-
-    @property
-    def name(self):
-        return self._group.detector_name
 
     @property
     def shape(self):

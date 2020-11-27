@@ -5,17 +5,14 @@ from .utils import typename, adjust_shape, batched, apply_batched
 
 class SFChannel:
 
-    def __init__(self, group):
+    def __init__(self, name, group):
+        self.name = name
         self._group = group
         self.datasets = SimpleNamespace(
             data = self._group["data"],
             pids = self._group["pulse_id"]
         )
         self.reset_valid()
-
-    @property
-    def name(self):
-        return self._group.name.split("/")[-1]
 
     def in_batches(self, size=100):
         dataset = self.datasets.data
