@@ -58,12 +58,12 @@ def load_from_file(h5):
         data = h5 # some files do not, e.g., camera
 
     channels = {}
-    for cn in data:
-        if cn == "pulse_id": #TODO: workaround for a spurious pulse_id group in bsread files
+    for name in data:
+        if name == "pulse_id": #TODO: workaround for a spurious pulse_id group in bsread files
             continue
-        c = data[cn]
-        c = SFChannel(cn, c)
-        channels[cn] = c
+        chan = data[name]
+        chan = SFChannel(name, chan)
+        channels[name] = chan
     return channels
 
 
