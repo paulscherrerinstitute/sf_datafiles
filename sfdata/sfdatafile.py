@@ -5,15 +5,33 @@ from .filecontext import FileContext
 from .utils import typename
 from .sfdata import SFData
 from .sfchannel import SFChannel
+from .sfchanneljf import SFChannelJF
+
+#TODO: treat ju as optional for now
+try:
+    import jungfrau_utils as ju
+except ImportError:
+    ju = None
+    print("Warning: Could not import jungfrau_utils, will treat JF files as regular files.")
 
 
 class SFDataFile(FileContext, SFData):
 
     def __init__(self, fname):
         self.fname = fname
-        self.file = h5py.File(fname, mode="r")
-        channels = load_from_file(self.file)
+
+        if ju and ".JF" in fname: #TODO: might need better check
+            self.file = ju.File(fname,
+                gain_file="/home/augustin/Desktop/SwissFEL/ju/git/gains.2017.12.h5",
+                pedestal_file="/home/augustin/Desktop/SwissFEL/ju/git/pedestal_20181028_1746.JF02T09V01.res.h5"
+            ) #TODO remove test files
+            channels = load_from_ju_file(self.file)
+        else:
+            self.file = h5py.File(fname, mode="r")
+            channels = load_from_file(self.file)
+
         super().__init__(channels)
+
 
     def close(self):
         self.file.close()
@@ -23,6 +41,13 @@ class SFDataFile(FileContext, SFData):
         fn = self.fname
         entries = len(self)
         return f"{tn}(\"{fn}\"): {entries} channels"
+
+
+
+def load_from_ju_file(juf):
+    name = juf.detector_name
+    chan = SFChannelJF(juf)
+    return {name: chan}
 
 
 
