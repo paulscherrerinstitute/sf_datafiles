@@ -46,7 +46,7 @@ class SFChannel:
 
     @property
     def ntotal(self):
-        return self.datasets.data.shape[0]
+        return self.datasets.pids.shape[0]
 
     @property
     def nvalid(self):
