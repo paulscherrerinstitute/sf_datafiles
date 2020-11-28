@@ -19,16 +19,8 @@ class SFDataFile(FileContext, SFData):
 
     def __init__(self, fname):
         self.fname = fname
-
-        if ju and ".JF" in fname: #TODO: might need better check
-            self.file = ju.File(fname)
-            channels = load_from_ju_file(self.file)
-        else:
-            self.file = h5py.File(fname, mode="r")
-            channels = load_from_file(self.file)
-
+        channels, self.file = load_from_file(fname)
         super().__init__(channels)
-
 
     def close(self):
         self.file.close()
@@ -41,6 +33,17 @@ class SFDataFile(FileContext, SFData):
 
 
 
+def load_from_file(fname):
+    if ju and ".JF" in fname: #TODO: might need better check
+        f = ju.File(fname)
+        channels = load_from_ju_file(f)
+    else:
+        f = h5py.File(fname, mode="r")
+        channels = load_from_generic_file(f)
+    return channels, f
+
+
+
 def load_from_ju_file(juf):
     name = juf.detector_name
     chan = SFChannelJF(name, juf)
@@ -48,7 +51,7 @@ def load_from_ju_file(juf):
 
 
 
-def load_from_file(h5):
+def load_from_generic_file(h5):
     if "data" in h5:
         data = h5["data"] # some files have /data/, e.g., bsread
     else:
