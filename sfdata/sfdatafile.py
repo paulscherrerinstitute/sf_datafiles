@@ -1,3 +1,5 @@
+from warnings import warn
+
 import h5py
 import bitshuffle.h5
 
@@ -37,7 +39,7 @@ def load_from_file(fname):
         if ju:
             return load_from_ju_file(fname)
         else:
-            print("Warning: Could not import jungfrau_utils, will treat JF files as regular files.")
+            warn("Warning: Could not import jungfrau_utils, will treat JF files as regular files.", stacklevel=2)
 
     return load_from_generic_file(fname)
 
