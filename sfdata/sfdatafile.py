@@ -12,7 +12,6 @@ try:
     import jungfrau_utils as ju
 except ImportError:
     ju = None
-    print("Warning: Could not import jungfrau_utils, will treat JF files as regular files.")
 
 
 class SFDataFile(FileContext, SFData):
@@ -34,11 +33,13 @@ class SFDataFile(FileContext, SFData):
 
 
 def load_from_file(fname):
-    if ju and ".JF" in fname: #TODO: might need better check
-        return load_from_ju_file(fname)
-    else:
-        return load_from_generic_file(fname)
+    if ".JF" in fname: #TODO: might need better check
+        if ju:
+            return load_from_ju_file(fname)
+        else:
+            print("Warning: Could not import jungfrau_utils, will treat JF files as regular files.")
 
+    return load_from_generic_file(fname)
 
 
 def load_from_ju_file(fname):
@@ -46,7 +47,6 @@ def load_from_ju_file(fname):
     name = juf.detector_name
     chan = SFChannelJF(name, juf)
     return juf, {name: chan}
-
 
 
 def load_from_generic_file(fname):
