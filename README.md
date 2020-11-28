@@ -141,6 +141,12 @@ ch.datasets.pids[:]
 ch.datasets.data[100:200]
 ```
 
+### Special channels
+
+#### Jungfrau data
+
+If the [jungfrau_utils](https://github.com/paulscherrerinstitute/jungfrau_utils/) module is [installed](https://github.com/paulscherrerinstitute/jungfrau_utils#installation), its [`File`](https://jungfrau-utils.readthedocs.io/en/latest/jungfrau_utils.html#jungfrau_utils.file_adapter.File) class will be used automatically to open Jungfrau data files (`*.JF*.h5`). Instead of `SFChannel`, these channels are represented by the `SFChannelJF` class. The difference should be fully transparent for the user as both channels act identically when subsetting, slicing, etc.
+
 ## Subsets
 
 Subsets of the data can be accessed by giving several channel names
