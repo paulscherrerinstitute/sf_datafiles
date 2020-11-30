@@ -26,15 +26,16 @@ class SFChannel:
 
     @property
     def data(self):
-        data = self.datasets.data[:][self.valid] # TODO: workaround: access from h5 via indices is slow
-        data = adjust_shape(data)
-        return data
+        return self_get(self.datasets.data)
 
     @property
     def pids(self):
-        pids = self.datasets.pids[:][self.valid] # TODO: workaround: access from h5 via indices is slow
-        pids = adjust_shape(pids)
-        return pids
+        return self._get(self.datasets.pids)
+
+    def _get(self, dataset):
+        res = dataset[:][self.valid] # TODO: workaround: access from h5 via indices is slow
+        res = adjust_shape(res)
+        return res
 
     @property
     def shape(self):
