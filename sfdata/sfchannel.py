@@ -26,7 +26,7 @@ class SFChannel:
 
     @property
     def data(self):
-        return self_get(self.datasets.data)
+        return self._get(self.datasets.data)
 
     @property
     def pids(self):
