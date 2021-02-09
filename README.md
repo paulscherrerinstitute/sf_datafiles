@@ -125,6 +125,14 @@ inten = ch.apply_in_batches(proc)
 
 It should be noted that the processor function does **not** need to return a 1D array. If there are `nvalid` entries in the channel and a single processed entry is of the shape `single_shape`, the result will be of the shape `(nvalid, *single_shape)`.
 
+Finally, if the pulse IDs for each batch are needed, the following pattern can be used:
+
+```python
+all_pids = ch.pids
+for indices, batch in ch.in_batches():
+    current_pids = all_pids[indices]
+```
+
 ### Access via datasets
 
 In case the underlying HDF5 datasets need to be accessed, e.g., for reading only specific parts of the data, channels have a `datasets` namespace attached: 
