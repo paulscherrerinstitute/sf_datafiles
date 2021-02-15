@@ -55,3 +55,17 @@ write_file("fake_data/run_test.ARRAYS.h5", data, pids, make_data=False)
 
 
 
+data = {
+    "ch1": [11, 12, 13, 14, 15],
+    "ch2": [10, 11,     13, 14] # channel delayed by one shot
+}
+
+pids = {
+    "ch1": [0, 1, 2, 3, 4],
+    "ch2": [0, 1,    3, 4]
+}
+
+write_file("fake_data/run_offset.SCALARS.h5", data, pids)
+
+
+
