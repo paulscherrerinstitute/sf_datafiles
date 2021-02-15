@@ -38,6 +38,10 @@ class SFChannel:
         return res
 
     @property
+    def dtype(self):
+        return self.datasets.data.dtype
+
+    @property
     def shape(self):
         first_dim = self.nvalid
         other_dims = self.datasets.data.shape[1:]
