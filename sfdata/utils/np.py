@@ -9,4 +9,8 @@ def adjust_shape(arr):
     return arr
 
 
+def nothing_like(arr):
+    return np.empty(0, dtype=arr.dtype)
+
+
 
