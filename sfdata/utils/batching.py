@@ -1,5 +1,5 @@
 import numpy as np
-from .np import adjust_shape
+from .np import adjust_shape, nothing_like
 
 
 def apply_batched(func, dataset, indices, batch_size, nbatches=None):
@@ -8,11 +8,18 @@ def apply_batched(func, dataset, indices, batch_size, nbatches=None):
     and apply func to each batch collecting the results in a numpy array
     limit the result to nbatches batches, the default nbatches=None means all batches
     """
+    if batch_size == 0 or nbatches == 0:
+        return nothing_like(dataset)
+
     batches = batched(dataset, indices, batch_size, nbatches=nbatches)
     first_indices, first_batch = next(batches)
     first_batch_res = func(first_batch)
 
-    ntotal = len(indices) if nbatches is None else nbatches * batch_size
+    ntotal = len(indices)
+    if nbatches is not None:
+        ntotal_batched = nbatches * batch_size
+        ntotal = min(ntotal, ntotal_batched)
+
     single_res_shape = first_batch_res[0].shape
     res_shape = (ntotal, *single_res_shape)
     res = np.empty(res_shape)
@@ -28,6 +35,9 @@ def batched(dataset, indices, batch_size, nbatches=None):
     Iterate over dataset[indices] in batches of batch_size length
     limit the result to nbatches batches, the default nbatches=None means all batches
     """
+    if batch_size == 0 or nbatches == 0:
+        return
+
     indices = np.asanyarray(indices) # see indices_in_batch below
     for i in range(0, len(indices), batch_size):
         if nbatches is not None and i >= nbatches * batch_size:
