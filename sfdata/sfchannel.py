@@ -14,15 +14,15 @@ class SFChannel:
         )
         self.reset_valid()
 
-    def in_batches(self, size=100):
+    def in_batches(self, size=100, n=None):
         dataset = self.datasets.data
         valid_indices = self._get_valid_indices()
-        return batched(dataset, valid_indices, size)
+        return batched(dataset, valid_indices, size, nbatches=n)
 
-    def apply_in_batches(self, func, size=100):
+    def apply_in_batches(self, func, size=100, n=None):
         dataset = self.datasets.data
         valid_indices = self._get_valid_indices()
-        return apply_batched(func, dataset, valid_indices, size)
+        return apply_batched(func, dataset, valid_indices, size, nbatches=n)
 
     @property
     def data(self):
