@@ -12,6 +12,7 @@ class SFChannel:
             data = self._group["data"],
             pids = self._group["pulse_id"]
         )
+        self.offset = 0
         self.reset_valid()
 
     def in_batches(self, size=100, n=None):
@@ -30,7 +31,7 @@ class SFChannel:
 
     @property
     def pids(self):
-        return self._get(self.datasets.pids)
+        return self._get(self.datasets.pids) - self.offset
 
     def _get(self, dataset):
         res = dataset[:][self.valid] # TODO: workaround: access from h5 via indices is slow
