@@ -226,14 +226,14 @@ In case one of the channels has a timing offsets (i.e., along the pids axis), th
 with SFDataFiles("/sf/instrument/data/p12345/raw/something/run_000041.*.h5") as data:
     subset = data["SIGNAL_CHANNEL", "BACKGROUND_CHANNEL"]
     ch_sig = subset["SIGNAL_CHANNEL"]
-	ch_bkg = subset["BACKGROUND_CHANNEL"]
+    ch_bkg = subset["BACKGROUND_CHANNEL"]
 
     ch_bkg.offset = 1 # channel is delayed by one pid
     subset.drop_missing() # takes offset into account
 
     sig = ch_sig.data
     bkg = ch_bkg.data
-	norm = sig - bkg
+    norm = sig - bkg
 ```
 
 ## Convert to other data formats
