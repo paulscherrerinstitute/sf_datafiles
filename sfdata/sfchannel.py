@@ -43,6 +43,14 @@ class SFChannel:
         return self.datasets.data.dtype
 
     @property
+    def ndim(self):
+        return self.datasets.data.ndim
+
+    @property
+    def size(self):
+        return self.datasets.data.size
+
+    @property
     def shape(self):
         first_dim = self.nvalid
         other_dims = self.datasets.data.shape[1:]
