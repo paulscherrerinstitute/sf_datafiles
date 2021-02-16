@@ -44,11 +44,11 @@ class SFChannel:
 
     @property
     def ndim(self):
-        return self.datasets.data.ndim
+        return len(self.shape)
 
     @property
     def size(self):
-        return self.datasets.data.size
+        return np.prod(self.shape)
 
     @property
     def shape(self):
