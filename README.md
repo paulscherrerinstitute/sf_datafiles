@@ -88,6 +88,14 @@ ch.data
 
 which reads the full arrays at once from the HDF5 file (it should be noted that this is currently not cached!). In most cases, this will be the preferred way of reading data.
 
+Mimicking numpy arrays, the following attributes are available:
+
+```python
+ch.dtype # data type of the individual elements
+ch.ndim  # number of dimensions: len(shape)
+ch.size  # number of elements: prod(shape)
+```
+
 ### Access in batches
 
 If the full data array is too large to be held in memory at once (which is mainly a concern for camera images), it can be read in batches of valid entries instead:
@@ -98,10 +106,16 @@ for indices, batch in ch.in_batches():
         do_something_with(image)
 ```
 
-For adjusting the memory consumption, the batching method accepts the batch size as argument:
+For adjusting the memory consumption, the batching method accepts the batch size `size` as argument:
 
 ```python
 SFChannel.in_batches(size=100)
+```
+
+Similarly, the number of batches `n` can be adjusted, e.g., for faster debugging of further processing steps:
+
+```python
+SFChannel.in_batches(n=3)
 ```
 
 Batching yields `indices`, the current index slice within the whole valid data, and `batch`, a numpy array containing the current batch of valid data.
@@ -203,6 +217,24 @@ resulting in data where data points that belong to the same pulse are matched. I
 The valid marker is per channel, and subsets are real subsets of the original data. Thus, valid markers set on a subset are also set for the larger parent data.
 
 In case all `.drop_missing()` operations need to be reverted, both `SFChannel` and `SFData` have a `.reset_valid()` method (where the latter loops over the former). These reset the valid marker(s) to all pulse IDs that are in the respective underlying dataset. Note that each `.drop_missing()` calls `.reset_valid()` before calculating the new `valid` marker.
+
+## Channels with timing offsets
+
+In case one of the channels has a timing offsets (i.e., along the pids axis), the `.offset` attribute can be used to correct for it:
+
+```python
+with SFDataFiles("/sf/instrument/data/p12345/raw/something/run_000041.*.h5") as data:
+    subset = data["SIGNAL_CHANNEL", "BACKGROUND_CHANNEL"]
+    ch_sig = subset["SIGNAL_CHANNEL"]
+	ch_bkg = subset["BACKGROUND_CHANNEL"]
+
+    ch_bkg.offset = 1 # channel is delayed by one pid
+    subset.drop_missing() # takes offset into account
+
+    sig = ch_sig.data
+    bkg = ch_bkg.data
+	norm = sig - bkg
+```
 
 ## Convert to other data formats
 
