@@ -1,14 +1,14 @@
 
 class ClosedH5:
     """
-    this class allows to better handle closed h5 files:
+    This class allows to better handle closed h5 files:
 
     originally:
     - ch._group.name gives None
     - ch.datasets.data[...] / ch.datasets.pids[...] / shapes etc. raise ValueError: Not a dataset
 
     here:
-    - any interaction with ch._group / ch.datasets.* (i.e., also ch.data or ch.shape) raises ClosedFileError
+    - any interaction with ch._group / ch.datasets.* (i.e., also ch.data or ch.shape) raises ClosedH5Error
     - error message contains helpful file name and group name
     - closing several times is possible, i.e., ClosedH5(ClosedH5(group)) -> ClosedH5(group)
     """
@@ -35,31 +35,23 @@ class ClosedH5:
 
 
     def _raise_error(self, *args, **kwargs):
-        raise ClosedFileError(self.fname, self.gname)
+        raise ClosedH5Error(self.fname, self.gname)
 
     __getattr__ = __getitem__ = _raise_error
 
 
 
-class ClosedFileError(Exception):
+class ClosedH5Error(Exception):
 
     def __init__(self, fname, gname):
         fname = format_name("file", fname)
         gname = format_name("group", gname)
-        super().__init__(f"{fname} containing {gname} is closed...")
+        super().__init__(f"{fname} containing {gname} is closed...\nDid you try to access data outside of a with statement or after a close()?")
+
 
 
 def format_name(ntype, name):
     return f"{ntype} \"{name}\"" if name else f"unknown {ntype}"
-
-
-
-#import sfdata
-#sfd = sfdata.SFDataFiles("data-example.BSREAD.h5")
-#ch = sfd['SARES11-LSCP10-FNS:CH0:VAL_GET']
-#sfd.close()
-##ch._group[1]
-#ch.data
 
 
 
