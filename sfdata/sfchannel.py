@@ -1,6 +1,7 @@
 from types import SimpleNamespace
 import numpy as np
 from .utils import typename, adjust_shape, batched, apply_batched
+from .closedh5 import ClosedH5
 
 
 class SFChannel:
@@ -14,6 +15,11 @@ class SFChannel:
         )
         self.offset = 0
         self.reset_valid()
+
+    def close(self):
+        self._group = ClosedH5(self._group)
+        self.datasets.data = ClosedH5(self.datasets.data)
+        self.datasets.pids = ClosedH5(self.datasets.pids)
 
     def in_batches(self, size=100, n=None):
         dataset = self.datasets.data
@@ -83,12 +89,6 @@ class SFChannel:
         tn = typename(self)
         name = self.name
         return f"{tn}: {name}"
-
-
-
-#TODO: better handle closed h5 files:
-#- _group.name gives None
-#- datasets.data[...] / datasets.pids[...] / shapes raise ValueError: Not a dataset (not a dataset)
 
 
 
