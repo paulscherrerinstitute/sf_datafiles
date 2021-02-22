@@ -293,100 +293,55 @@ class TestSFChannel(TestCase):
                 func()
 
 
+    @unittest.mock.patch("sfdata.sfdata.tqdm", identity)
     def test_to_dataframe(self):
         df_ref = self.df_ref
         data = self.data
         methods = (data.to_dataframe, data.to_dataframe_accumulate, data.to_dataframe_fill)
         for func in methods:
-            df = func()
-            df.fillna(np.nan, inplace=True) #TODO: object array messes with df.equals below
+            for progress in (True, False):
+                df = func(show_progress=progress)
+                df.fillna(np.nan, inplace=True) #TODO: object array messes with df.equals below
 
-            self.assertEqual(
-                df.shape, df_ref.shape
-            )
-            self.assertAllEqual(
-                df.columns, df_ref.columns
-            )
-            self.assertAllEqual(
-                df.index, df_ref.index
-            )
-            self.assertTrue(
-                df.equals(df_ref)
-            )
+                self.assertEqual(
+                    df.shape, df_ref.shape
+                )
+                self.assertAllEqual(
+                    df.columns, df_ref.columns
+                )
+                self.assertAllEqual(
+                    df.index, df_ref.index
+                )
+                self.assertTrue(
+                    df.equals(df_ref)
+                )
 
 
     @unittest.mock.patch("sfdata.sfdata.tqdm", identity)
-    def test_to_dataframe_progressbar(self):
-        df_ref = self.df_ref
-        data = self.data
-        methods = (data.to_dataframe, data.to_dataframe_accumulate, data.to_dataframe_fill)
-        for func in methods:
-            df = func(show_progress=True)
-            df.fillna(np.nan, inplace=True) #TODO: object array messes with df.equals below
-
-            self.assertEqual(
-                df.shape, df_ref.shape
-            )
-            self.assertAllEqual(
-                df.columns, df_ref.columns
-            )
-            self.assertAllEqual(
-                df.index, df_ref.index
-            )
-            self.assertTrue(
-                df.equals(df_ref)
-            )
-
-
     def test_to_xarray(self):
         #TODO: reference only works for 1D arrays
         xr_ref = self.df_ref[["ch1", "ch2", "ch3"]].to_xarray().rename(index = "pids")
         data = self.data["ch1", "ch2", "ch3"]
         methods = (data.to_xarray, data.to_xarray_accumulate)
         for func in methods:
-            xr = func()
+            for progress in (True, False):
+                xr = func(show_progress=progress)
 
-            self.assertEqual(
-                xr.sizes, xr_ref.sizes
-            )
-            self.assertEqual(
-                xr.dims, xr_ref.dims
-            )
-            self.assertAllEqual(
-                xr.coords, xr_ref.coords
-            )
-            self.assertAllEqual(
-                xr.indexes, xr_ref.indexes
-            )
-            self.assertTrue(
-                xr.equals(xr_ref)
-            )
-
-
-    @unittest.mock.patch("sfdata.sfdata.tqdm", identity)
-    def test_to_xarray_progressbar(self):
-        #TODO: reference only works for 1D arrays
-        xr_ref = self.df_ref[["ch1", "ch2", "ch3"]].to_xarray().rename(index = "pids")
-        data = self.data["ch1", "ch2", "ch3"]
-        methods = (data.to_xarray, data.to_xarray_accumulate)
-        for func in methods:
-            xr = func(show_progress=True)
-
-            self.assertEqual(
-                xr.sizes, xr_ref.sizes
-            )
-            self.assertEqual(
-                xr.dims, xr_ref.dims
-            )
-            self.assertAllEqual(
-                xr.coords, xr_ref.coords
-            )
-            self.assertAllEqual(
-                xr.indexes, xr_ref.indexes
-            )
-            self.assertTrue(
-                xr.equals(xr_ref)
-            )
+                self.assertEqual(
+                    xr.sizes, xr_ref.sizes
+                )
+                self.assertEqual(
+                    xr.dims, xr_ref.dims
+                )
+                self.assertAllEqual(
+                    xr.coords, xr_ref.coords
+                )
+                self.assertAllEqual(
+                    xr.indexes, xr_ref.indexes
+                )
+                self.assertTrue(
+                    xr.equals(xr_ref)
+                )
 
 
     def test_drop_missing(self):
