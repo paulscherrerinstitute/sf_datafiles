@@ -38,8 +38,11 @@ def batched(dataset, indices, batch_size, nbatches=None):
     if batch_size == 0 or nbatches == 0:
         return
 
+    ntotal = len(indices)
+    batch_size = min(batch_size, ntotal)
+
     indices = np.asanyarray(indices) # see indices_in_batch below
-    for i in range(0, len(indices), batch_size):
+    for i in range(0, ntotal, batch_size):
         if nbatches is not None and i >= nbatches * batch_size:
             break
 

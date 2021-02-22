@@ -495,8 +495,8 @@ class TestUtils(TestCase):
                 (slice(2, 4), [2])
             ], [ # n = 3
                 (slice(0, 3), [0, 1, 2])
-            ], [ # n = 4
-                (slice(0, 4), [0, 1, 2]) #TODO is this correct? or also slice(0, 3) ?
+            ], [ # n = 4 (same as 3)
+                (slice(0, 3), [0, 1, 2])
             ]
         ]
 
