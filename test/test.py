@@ -22,6 +22,7 @@ from utils import TestCase, identity, make_temp_filename, read_names, load_df_fr
 
 from sfdata import SFDataFiles, SFDataFile
 from sfdata.errors import NoMatchingFileError, NoUsableFileError
+from sfdata.closedh5 import ClosedH5Error
 from sfdata.filecontext import FileContext
 from sfdata.utils import typename, h5_boolean_indexing, json_load, strlen, maxstrlen, print_line, cprint, dip, percentage_missing, decide_color, apply_batched, batched
 from sfdata.utils.progress import bar, percentage # not actually used anywhere
@@ -56,8 +57,20 @@ REPR_CHANNEL = 'SFChannel: ch5'
 
 
 
+def check_channel_closed(testcase, ch):
+    with testcase.assertRaises(ClosedH5Error):
+        ch.data
+    with testcase.assertRaises(ClosedH5Error):
+        ch.pids
 
-
+    with testcase.assertRaises(ClosedH5Error):
+        ch.shape
+    with testcase.assertRaises(ClosedH5Error):
+        ch.dtype
+    with testcase.assertRaises(ClosedH5Error):
+        ch.ndim
+    with testcase.assertRaises(ClosedH5Error):
+        ch.size
 
 
 
@@ -82,6 +95,41 @@ class TestSFDataFiles(TestCase):
             repr(self.data), REPR_FILES
         )
 
+    def test_error(self):
+        with self.assertRaises(NoMatchingFileError):
+            SFDataFiles("does not exist")
+        broken_file = "fake_data/run_broken.SCALARS.h5"
+        msg = f"Warning: Skipping \"{broken_file}\" since it caused OSError: Unable to open file (file signature not found)"
+        with self.assertRaises(NoMatchingFileError), self.assertPrint(msg):
+            SFDataFiles(broken_file)
+
+
+    def test_closed1(self):
+        with SFDataFiles(FNAME_ALL) as data:
+            ch = data[CH_1D_NAME]
+        check_channel_closed(self, ch)
+
+    def test_closed2(self):
+        data = SFDataFiles(FNAME_ALL)
+        ch = data[CH_1D_NAME]
+        data.close()
+        check_channel_closed(self, ch)
+
+    def test_closed_twice(self):
+        data = SFDataFiles(FNAME_ALL)
+        ch = data[CH_1D_NAME]
+        data.close()
+        data.close()
+        check_channel_closed(self, ch)
+
+    def test_closed_wrong(self):
+        data = SFDataFiles(FNAME_ALL)
+        ch = data[CH_1D_NAME]
+        for f in data.files:
+            f.file.close() # close only h5 file
+            f.close()      # also create ClosedH5, which cannot read file info
+        check_channel_closed(self, ch)
+
 
 
 class TestSFDataFile(TestCase):
@@ -101,6 +149,32 @@ class TestSFDataFile(TestCase):
         self.assertEqual(
             repr(self.data), REPR_FILE
         )
+
+
+    def test_closed1(self):
+        with SFDataFile(FNAME_SCALARS) as data:
+            ch = data[CH_1D_NAME]
+        check_channel_closed(self, ch)
+
+    def test_closed2(self):
+        data = SFDataFile(FNAME_SCALARS)
+        ch = data[CH_1D_NAME]
+        data.close()
+        check_channel_closed(self, ch)
+
+    def test_closed_twice(self):
+        data = SFDataFile(FNAME_SCALARS)
+        ch = data[CH_1D_NAME]
+        data.close()
+        data.close()
+        check_channel_closed(self, ch)
+
+    def test_closed_wrong(self):
+        data = SFDataFile(FNAME_SCALARS)
+        ch = data[CH_1D_NAME]
+        data.file.close() # close only h5 file
+        data.close()      # also create ClosedH5, which cannot read file info
+        check_channel_closed(self, ch)
 
 
 
