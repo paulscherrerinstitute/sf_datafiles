@@ -286,45 +286,54 @@ class TestSFChannel(TestCase):
         )
 
     def test_dataframe_setting(self):
-        with self.assertNotRaises(SettingWithCopyError):
-            self.data.to_dataframe()
+        data = self.data
+        methods = (data.to_dataframe, data.to_dataframe_accumulate, data.to_dataframe_fill)
+        for func in methods:
+            with self.assertNotRaises(SettingWithCopyError):
+                func()
 
     def test_to_dataframe(self):
         df_ref = self.df_ref
-        df = self.data.to_dataframe()
-        df.fillna(np.nan, inplace=True) #TODO: object array messes with df.equals below
+        data = self.data
+        methods = (data.to_dataframe, data.to_dataframe_accumulate, data.to_dataframe_fill)
+        for func in methods:
+            df = func()
+            df.fillna(np.nan, inplace=True) #TODO: object array messes with df.equals below
 
-        self.assertEqual(
-            df.shape, df_ref.shape
-        )
-        self.assertAllEqual(
-            df.columns, df_ref.columns
-        )
-        self.assertAllEqual(
-            df.index, df_ref.index
-        )
-        self.assertTrue(
-            df.equals(df_ref)
-        )
+            self.assertEqual(
+                df.shape, df_ref.shape
+            )
+            self.assertAllEqual(
+                df.columns, df_ref.columns
+            )
+            self.assertAllEqual(
+                df.index, df_ref.index
+            )
+            self.assertTrue(
+                df.equals(df_ref)
+            )
 
     @unittest.mock.patch("sfdata.sfdata.tqdm", identity)
     def test_to_dataframe_progressbar(self):
         df_ref = self.df_ref
-        df = self.data.to_dataframe(show_progress=True)
-        df.fillna(np.nan, inplace=True) #TODO: object array messes with df.equals below
+        data = self.data
+        methods = (data.to_dataframe, data.to_dataframe_accumulate, data.to_dataframe_fill)
+        for func in methods:
+            df = func(show_progress=True)
+            df.fillna(np.nan, inplace=True) #TODO: object array messes with df.equals below
 
-        self.assertEqual(
-            df.shape, df_ref.shape
-        )
-        self.assertAllEqual(
-            df.columns, df_ref.columns
-        )
-        self.assertAllEqual(
-            df.index, df_ref.index
-        )
-        self.assertTrue(
-            df.equals(df_ref)
-        )
+            self.assertEqual(
+                df.shape, df_ref.shape
+            )
+            self.assertAllEqual(
+                df.columns, df_ref.columns
+            )
+            self.assertAllEqual(
+                df.index, df_ref.index
+            )
+            self.assertTrue(
+                df.equals(df_ref)
+            )
 
     def test_drop_missing(self):
         self.data.drop_missing()
