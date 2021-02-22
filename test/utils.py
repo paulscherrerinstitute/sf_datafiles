@@ -1,5 +1,7 @@
-import os
 import ast
+import io
+import os
+import sys
 import tempfile
 import unittest
 import numpy as np
@@ -55,6 +57,12 @@ class TestCase(unittest.TestCase):
             exc = (Exception,)
         return _AssertNotRaisesContext(self, *exc)
 
+    def assertStdout(self, expected_output):
+        return _AssertStdoutContext(self, expected_output)
+
+    def assertPrint(self, expected_output):
+        return _AssertStdoutContext(self, expected_output + "\n")
+
 
 
 class _AssertNotRaisesContext:
@@ -74,6 +82,23 @@ class _AssertNotRaisesContext:
         # got the right type of exception, test fails; counts as FAILURE
         self.testcase.fail("Unexpected exception: {}: {}".format(exc_type.__name__, exc_value))
 
+
+
+class _AssertStdoutContext:
+
+    def __init__(self, testcase, expected):
+        self.testcase = testcase
+        self.expected = expected
+        self.captured = io.StringIO()
+
+    def __enter__(self):
+        sys.stdout = self.captured
+        return self
+
+    def __exit__(self, exc_type, exc_value, tb):
+        sys.stdout = sys.__stdout__
+        captured = self.captured.getvalue()
+        self.testcase.assertEqual(captured, self.expected)
 
 
 
