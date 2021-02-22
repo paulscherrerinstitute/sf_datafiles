@@ -23,7 +23,8 @@ from utils import TestCase, identity, make_temp_filename, read_names, load_df_fr
 from sfdata import SFDataFiles, SFDataFile
 from sfdata.errors import NoMatchingFileError, NoUsableFileError
 from sfdata.filecontext import FileContext
-from sfdata.utils import typename, h5_boolean_indexing, json_load, strlen, maxstrlen, print_line, apply_batched, batched
+from sfdata.utils import typename, h5_boolean_indexing, json_load, strlen, maxstrlen, print_line, cprint, dip, percentage_missing, decide_color, apply_batched, batched
+from sfdata.utils.progress import bar, percentage
 from sfdata.utils.np import nothing_like
 
 
@@ -438,6 +439,73 @@ class TestUtils(TestCase):
             print_line()
         with self.assertStdout("\nxxx\n\n"):
             print_line(3, "x")
+
+
+    def test_cprint(self):
+        with self.assertStdout("\x1b[32mtest\x1b[39m\n"):
+            cprint("test", color="green")
+        with self.assertStdout("\x1b[31mtest\x1b[39m\n"):
+            cprint("test", color="red")
+        with self.assertRaises(ValueError):
+            cprint("test", color="not a color")
+
+
+    def test_progress_dip(self):
+        block = "▇"
+        res = dip(0)
+        self.assertEqual(res, block * 10)
+        res = dip(10)
+        self.assertEqual(res, block * 9)
+        res = dip(100)
+        self.assertEqual(res, "")
+        res = dip(50, block="x", n_blocks_total=2)
+        self.assertEqual(res, "x")
+
+    def test_progress_bar(self):
+        block = "▇"
+        res = bar(0)
+        self.assertEqual(res, "")
+        res = bar(10)
+        self.assertEqual(res, block)
+        res = bar(100)
+        self.assertEqual(res, block * 10)
+        res = bar(50, block="x", n_blocks_total=2)
+        self.assertEqual(res, "x")
+
+    def test_progress_decide_color(self):
+        nmin, nmax = -1, 1
+        c = decide_color(-1, nmin, nmax)
+        self.assertEqual(c, "red")
+        c = decide_color( 0, nmin, nmax)
+        self.assertEqual(c, None)
+        c = decide_color(+1, nmin, nmax)
+        self.assertEqual(c, "green")
+
+    def test_progress_percentage_missing(self):
+        ntotal = 1000
+        pm = percentage_missing(ntotal, ntotal)
+        self.assertEqual(pm, 0)
+        pm = percentage_missing(0, ntotal)
+        self.assertEqual(pm, 100)
+        pm = percentage_missing(333, ntotal, decimals=0)
+        self.assertEqual(pm, 67)
+        pm = percentage_missing(333, ntotal, decimals=1)
+        self.assertEqual(pm, 66.7)
+        pm = percentage_missing(333, ntotal, decimals=2)
+        self.assertEqual(pm, 66.7)
+
+    def test_progress_percentage(self):
+        ntotal = 1000
+        pm = percentage(ntotal, ntotal)
+        self.assertEqual(pm, 100)
+        pm = percentage(0, ntotal)
+        self.assertEqual(pm, 0)
+        pm = percentage(333, ntotal, decimals=0)
+        self.assertEqual(pm, 33)
+        pm = percentage(333, ntotal, decimals=1)
+        self.assertEqual(pm, 33.3)
+        pm = percentage(333, ntotal, decimals=2)
+        self.assertEqual(pm, 33.3)
 
 
     def test_apply_batched(self):
