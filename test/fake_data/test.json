@@ -1,0 +1,9 @@
+{
+    "test int": 1,
+    "test float": 1.23,
+    "test dict": {
+        "element": "test"
+    },
+    "test none": null
+}
+
