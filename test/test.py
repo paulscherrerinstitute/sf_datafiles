@@ -24,7 +24,7 @@ from sfdata import SFDataFiles, SFDataFile
 from sfdata.errors import NoMatchingFileError, NoUsableFileError
 from sfdata.filecontext import FileContext
 from sfdata.utils import typename, h5_boolean_indexing, json_load, strlen, maxstrlen, print_line, cprint, dip, percentage_missing, decide_color, apply_batched, batched
-from sfdata.utils.progress import bar, percentage
+from sfdata.utils.progress import bar, percentage # not actually used anywhere
 from sfdata.utils.np import nothing_like
 
 
