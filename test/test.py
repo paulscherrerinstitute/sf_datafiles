@@ -464,6 +464,33 @@ class TestSFChannel(TestCase):
             )
 
 
+    def test_in_batches(self):
+        for i in range(4):
+            for j in range(4):
+                n = i + 1
+                m = j + 1
+
+                res = []
+                for index, batch in self.data[CH_1D_NAME].in_batches(n, m):
+                    res.extend(batch)
+                self.assertAllEqual(
+                    res, CH_1D_DATA[:n*m]
+                )
+
+
+    def test_apply_in_batches(self):
+        nop = lambda x: x
+        for i in range(4):
+            for j in range(4):
+                n = i + 1
+                m = j + 1
+
+                res = self.data[CH_1D_NAME].apply_in_batches(nop, n, m)
+                self.assertAllEqual(
+                    res, CH_1D_DATA[:n*m]
+                )
+
+
 
 class TestFileContext(TestCase):
 
