@@ -292,6 +292,7 @@ class TestSFChannel(TestCase):
             with self.assertNotRaises(SettingWithCopyError):
                 func()
 
+
     def test_to_dataframe(self):
         df_ref = self.df_ref
         data = self.data
@@ -312,6 +313,7 @@ class TestSFChannel(TestCase):
             self.assertTrue(
                 df.equals(df_ref)
             )
+
 
     @unittest.mock.patch("sfdata.sfdata.tqdm", identity)
     def test_to_dataframe_progressbar(self):
@@ -334,6 +336,58 @@ class TestSFChannel(TestCase):
             self.assertTrue(
                 df.equals(df_ref)
             )
+
+
+    def test_to_xarray(self):
+        #TODO: reference only works for 1D arrays
+        xr_ref = self.df_ref[["ch1", "ch2", "ch3"]].to_xarray().rename(index = "pids")
+        data = self.data["ch1", "ch2", "ch3"]
+        methods = (data.to_xarray, data.to_xarray_accumulate)
+        for func in methods:
+            xr = func()
+
+            self.assertEqual(
+                xr.sizes, xr_ref.sizes
+            )
+            self.assertEqual(
+                xr.dims, xr_ref.dims
+            )
+            self.assertAllEqual(
+                xr.coords, xr_ref.coords
+            )
+            self.assertAllEqual(
+                xr.indexes, xr_ref.indexes
+            )
+            self.assertTrue(
+                xr.equals(xr_ref)
+            )
+
+
+    @unittest.mock.patch("sfdata.sfdata.tqdm", identity)
+    def test_to_xarray_progressbar(self):
+        #TODO: reference only works for 1D arrays
+        xr_ref = self.df_ref[["ch1", "ch2", "ch3"]].to_xarray().rename(index = "pids")
+        data = self.data["ch1", "ch2", "ch3"]
+        methods = (data.to_xarray, data.to_xarray_accumulate)
+        for func in methods:
+            xr = func(show_progress=True)
+
+            self.assertEqual(
+                xr.sizes, xr_ref.sizes
+            )
+            self.assertEqual(
+                xr.dims, xr_ref.dims
+            )
+            self.assertAllEqual(
+                xr.coords, xr_ref.coords
+            )
+            self.assertAllEqual(
+                xr.indexes, xr_ref.indexes
+            )
+            self.assertTrue(
+                xr.equals(xr_ref)
+            )
+
 
     def test_drop_missing(self):
         self.data.drop_missing()
