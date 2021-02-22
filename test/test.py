@@ -209,6 +209,10 @@ class TestSFDataFile(TestCase):
         data.close()      # also create ClosedH5, which cannot read file info
         check_channel_closed(self, ch)
 
+    def test_spurios_pids(self):
+        with SFDataFile("fake_data/run_spurious_pids.ARRAYS.h5") as data:
+            self.assertTrue("pulse_id" not in data)
+
 
 
 class TestSFData(TestCase):
