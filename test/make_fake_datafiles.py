@@ -55,6 +55,12 @@ write_file("fake_data/run_test.ARRAYS.h5", data, pids, make_data=False)
 
 
 
+data["pulse_id"] = [0] # add spurious pids "channel"
+pids["pulse_id"] = [0]
+write_file("fake_data/run_spurious_pids.ARRAYS.h5", data, pids, make_data=False)
+
+
+
 data = {
     "ch1": [11, 12, 13, 14, 15],
     "ch2": [10, 11,     13, 14] # channel delayed by one shot
