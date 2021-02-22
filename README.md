@@ -91,6 +91,7 @@ which reads the full arrays at once from the HDF5 file (it should be noted that 
 Mimicking numpy arrays, the following attributes are available:
 
 ```python
+ch.shape
 ch.dtype # data type of the individual elements
 ch.ndim  # number of dimensions: len(shape)
 ch.size  # number of elements: prod(shape)
