@@ -56,6 +56,39 @@ REPR_SUBSET  = 'SFData: 6 channels'
 REPR_CHANNEL = 'SFChannel: ch5'
 
 
+PRINT_STATE_COMPLETE_FALSE = """
+--------------------------------------------------------------------------------
+
+\x1b[31mch3 2 / 3 -> 33% loss ▇▇▇▇▇▇\x1b[39m
+\x1b[31mch6 2 / 3 -> 33% loss ▇▇▇▇▇▇\x1b[39m
+
+\x1b[31mover the whole data set: 2 / 3 -> 33% loss\x1b[39m
+\x1b[31mcomplete channels: 4 / 6 -> 33% incomplete\x1b[39m
+\x1b[32mcomplete channels are hidden\x1b[39m
+
+--------------------------------------------------------------------------------
+
+"""
+
+
+PRINT_STATE_COMPLETE_TRUE = """
+--------------------------------------------------------------------------------
+
+\x1b[32mch1 3 / 3 ->  0% loss ▇▇▇▇▇▇▇▇▇▇\x1b[39m
+\x1b[32mch2 3 / 3 ->  0% loss ▇▇▇▇▇▇▇▇▇▇\x1b[39m
+\x1b[31mch3 2 / 3 -> 33% loss ▇▇▇▇▇▇\x1b[39m
+\x1b[32mch4 3 / 3 ->  0% loss ▇▇▇▇▇▇▇▇▇▇\x1b[39m
+\x1b[32mch5 3 / 3 ->  0% loss ▇▇▇▇▇▇▇▇▇▇\x1b[39m
+\x1b[31mch6 2 / 3 -> 33% loss ▇▇▇▇▇▇\x1b[39m
+
+\x1b[31mover the whole data set: 2 / 3 -> 33% loss\x1b[39m
+\x1b[31mcomplete channels: 4 / 6 -> 33% incomplete\x1b[39m
+
+--------------------------------------------------------------------------------
+
+"""
+
+
 
 def check_channel_closed(testcase, ch):
     with testcase.assertRaises(ClosedH5Error):
@@ -220,6 +253,12 @@ class TestSFData(TestCase):
             self.assertEqual(
                 data1.names, data2.names
             )
+
+    def test_print_stats(self):
+        with self.assertStdout(PRINT_STATE_COMPLETE_FALSE):
+            self.data.print_stats(show_complete=False)
+        with self.assertStdout(PRINT_STATE_COMPLETE_TRUE):
+            self.data.print_stats(show_complete=True)
 
 
 
