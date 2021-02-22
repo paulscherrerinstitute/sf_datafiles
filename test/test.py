@@ -21,8 +21,10 @@ import numpy as np
 from utils import TestCase, identity, make_temp_filename, read_names, load_df_from_csv, SettingWithCopyError
 
 from sfdata import SFDataFiles, SFDataFile
+from sfdata.errors import NoMatchingFileError, NoUsableFileError
 from sfdata.filecontext import FileContext
-from sfdata.utils import typename, h5_boolean_indexing
+from sfdata.utils import typename, h5_boolean_indexing, json_load, strlen, maxstrlen, print_line, apply_batched, batched
+from sfdata.utils.np import nothing_like
 
 
 FNAME_SCALARS = "fake_data/run_test.SCALARS.h5"
@@ -351,6 +353,18 @@ class TestFileContext(TestCase):
 
 
 
+class TestErrors(TestCase):
+
+    def test_NoMatchingFileError(self):
+        with self.assertRaises(NoMatchingFileError):
+            raise NoMatchingFileError("some pattern")
+
+    def test_NoUsableFileError(self):
+        with self.assertRaises(NoUsableFileError):
+            raise NoUsableFileError
+
+
+
 class TestUtils(TestCase):
 
     def test_typename(self):
@@ -387,6 +401,113 @@ class TestUtils(TestCase):
             self.assertAllEqual(
                 h5_boolean_indexing(ds, bool_indices), [CH_ND_DATA1]
             )
+
+
+    def test_np_nothing_like(self):
+        for dtype in (float, int):
+            ref = np.empty(0, dtype=dtype)
+            arr = np.ones((2, 2), dtype=dtype)
+            nl = nothing_like(arr)
+            self.assertAllEqual(
+                nl, ref
+            )
+
+
+    def test_json_load(self):
+        ref = {
+            "test int": 1,
+            "test float": 1.23,
+            "test dict": {
+                "element": "test"
+            },
+            "test none": None
+        }
+        data = json_load("fake_data/test.json")
+        self.assertEqual(data, ref)
+
+
+    def test_strlen(self):
+        self.assertEqual(strlen("test"), 4)
+
+    def test_maxstrlen(self):
+        strings = ("test", "tes", "te", "t")
+        self.assertEqual(maxstrlen(strings), 4)
+
+    def test_print_line(self):
+        with self.assertStdout("\n" + 80 * "-" + "\n\n"):
+            print_line()
+        with self.assertStdout("\nxxx\n\n"):
+            print_line(3, "x")
+
+
+    def test_apply_batched(self):
+        arr = np.arange(3)
+        nop = lambda x: x
+
+        res = apply_batched(nop, arr, arr, 0)
+        self.assertAllEqual(res, [])
+
+        res = apply_batched(nop, arr, arr, 1, nbatches=0)
+        self.assertAllEqual(res, [])
+
+        for i in range(4):
+            for j in range(4):
+                n = i + 1
+                m = j + 1
+
+                res = apply_batched(nop, arr, arr, m) # result is independent of batch size
+                self.assertAllEqual(res, arr)
+
+                res = apply_batched(nop, arr, arr, 1, nbatches=n)
+                self.assertAllEqual(res, arr[:n])
+
+                res = apply_batched(nop, arr, arr, 1, nbatches=100) # asking for too many batches
+                self.assertAllEqual(res, arr)
+
+                res = apply_batched(nop, arr, arr, m, nbatches=n)
+                self.assertAllEqual(res, arr[:m*n])
+
+
+    def test_batched(self):
+        arr = np.arange(3)
+
+        res = list(batched(arr, arr, 0)) # batch size zero -> nothing
+        self.assertEqual(res, [])
+
+        res = list(batched(arr, arr, 1, nbatches=0)) # number of batches zero -> nothing
+        self.assertEqual(res, [])
+
+        def compare(left, right):
+            self.assertEqual(len(left), len(right))
+            for l, r in zip(left, right):
+                lind, larr = l
+                rind, rarr = r
+                self.assertEqual(lind, rind)
+                self.assertAllEqual(larr, rarr)
+
+        refs = [
+            [ # n = 1
+                (slice(0, 1), [0]),
+                (slice(1, 2), [1]),
+                (slice(2, 3), [2])
+            ], [ # n = 2
+                (slice(0, 2), [0, 1]),
+                (slice(2, 4), [2])
+            ], [ # n = 3
+                (slice(0, 3), [0, 1, 2])
+            ], [ # n = 4
+                (slice(0, 4), [0, 1, 2]) #TODO is this correct? or also slice(0, 3) ?
+            ]
+        ]
+
+        for i, ref in enumerate(refs):
+            n = i + 1
+            res = list(batched(arr, arr, n))
+            compare(res, ref)
+            res = list(batched(arr, arr, n, nbatches=100)) # asking for too many batches
+            compare(res, ref)
+            res = list(batched(arr, arr, n, nbatches=1)) # asking only for first batch
+            compare(res, ref[:1])
 
 
 
