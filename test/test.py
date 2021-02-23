@@ -20,6 +20,7 @@ import numpy as np
 
 from utils import TestCase, identity, make_temp_filename, read_names, load_df_from_csv, SettingWithCopyError
 
+import sfdata
 from sfdata import SFDataFiles, SFDataFile, SFScanInfo
 from sfdata.errors import NoMatchingFileError, NoUsableFileError
 from sfdata.closedh5 import ClosedH5Error
@@ -133,7 +134,7 @@ class TestSFScanInfo(TestCase):
         )
 
     @unittest.mock.patch("sfdata.SFDataFiles.__init__", side_effect=Exception("test"))
-    def test_broken(self, bla):
+    def test_broken(self, _):
         msg_fmt = "Warning: Skipping step {} ['fake_data/run_test.ARRAYS.h5', 'fake_data/run_test.SCALARS.h5'] since it caused Exception: test"
         msg = (msg_fmt.format(i) for i in range(self.nsteps))
         with self.assertRaises(NoUsableFileError), self.assertPrints(*msg):
@@ -535,6 +536,39 @@ class TestSFChannel(TestCase):
                 res = self.data[CH_1D_NAME].apply_in_batches(nop, n, m)
                 self.assertAllEqual(
                     res, CH_1D_DATA[:n*m]
+                )
+
+
+
+class TestSFChannelJF(TestCase):
+
+    det_name = "JFxxx"
+    fname = f"fake_data/run_testjf.{det_name}.h5"
+
+    @unittest.mock.patch("jungfrau_utils.File")
+    def test_create(self, _):
+        with SFDataFile(self.fname) as data:
+            pass
+
+    @unittest.mock.patch("jungfrau_utils.File.detector_name", det_name)
+    @unittest.mock.patch("jungfrau_utils.file_adapter.JFDataHandler")
+    def test_shape(self, _):
+        with SFDataFile(self.fname) as data:
+            ch = data[self.det_name]
+            self.assertEqual(
+                ch.shape, (3,)
+            )
+
+    @unittest.mock.patch("sfdata.sfdatafile.ju", None)
+    def test_no_ju(self):
+        modfname = sfdata.sfdatafile.__file__
+        line = 23 #TODO this will break!
+        msg = f"{modfname}:{line}: UserWarning: Warning: Could not import jungfrau_utils, will treat JF files as regular files.\n  self.file, channels = load_from_file(fname)\n"
+        with self.assertStderr(msg):
+            with SFDataFile(self.fname) as data:
+                ch = data[self.det_name]
+                self.assertTrue(
+                    isinstance(ch, sfdata.sfchannel.SFChannel)
                 )
 
 
