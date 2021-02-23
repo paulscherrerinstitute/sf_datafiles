@@ -81,3 +81,17 @@ write_file("fake_data/run_offset.SCALARS.h5", data, pids)
 
 
 
+#det_name = "JF13T01V01"
+det_name = "JFxxx"
+fname = f"fake_data/run_testjf.{det_name}.h5"
+
+with h5py.File(fname, "w") as f:
+    f.create_dataset("/general/detector_name", data=det_name.encode())
+    gc = f.create_group(f"/data/{det_name}")
+    gc.create_dataset("data", data=[10, 11, 12])
+    gc.create_dataset("pulse_id", data=[0, 1, 2])
+
+    gc.create_dataset("daq_rec", data=[[0, 1, 2], [0, 1, 2], [0, 1, 2]])
+
+
+
