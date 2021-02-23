@@ -11,6 +11,7 @@ def write_file(fname, data, pids, make_data=True):
         print(f"{fname} exists... skipping!")
         return
 
+    print(f"creating {fname} ...")
     with h5py.File(fname, "w") as f:
         if make_data:
             gd = f.create_group("data")
@@ -77,6 +78,18 @@ pids = {
 }
 
 write_file("fake_data/run_offset.SCALARS.h5", data, pids)
+
+
+
+data = {
+    "JFxx": [11, 12, 13, 14, 15]
+}
+
+pids = {
+    "JFxx": [0, 1, 2, 3, 4]
+}
+
+write_file("fake_data/run_test.JFxx.h5", data, pids)
 
 
 
