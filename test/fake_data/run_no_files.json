@@ -1,0 +1,76 @@
+{
+    "pulseIds": [
+        [
+            10000000000
+        ], 
+        [
+            10000000001
+        ], 
+        [
+            10000000002
+        ]
+    ], 
+    "scan_files": [
+        [
+            "does not exist"
+        ], 
+        [
+            "does not exist"
+        ], 
+        [
+            "does not exist"
+        ]
+    ], 
+    "scan_parameters": {
+        "Id": [
+            "noId"
+        ], 
+        "conversion_factor": [
+            1
+        ], 
+        "name": [
+            "DEVICE:AXIS"
+        ], 
+        "offset": [
+            0
+        ]
+    }, 
+    "scan_readbacks": [
+        [
+            100.1
+        ], 
+        [
+            100.2
+        ], 
+        [
+            100.3
+        ]
+    ], 
+    "scan_readbacks_raw": [
+        [
+            100.1
+        ], 
+        [
+            100.2
+        ], 
+        [
+            100.3
+        ]
+    ], 
+    "scan_step_info": [
+        null, 
+        null, 
+        null
+    ], 
+    "scan_values": [
+        [
+            100.1
+        ], 
+        [
+            100.2
+        ], 
+        [
+            100.3
+        ]
+    ]
+}
