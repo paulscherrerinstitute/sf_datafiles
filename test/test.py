@@ -19,6 +19,7 @@ import unittest.mock
 import numpy as np
 
 from utils import TestCase, identity, make_temp_filename, read_names, load_df_from_csv, SettingWithCopyError
+from hiddenmod import HiddenModule
 
 import sfdata
 from sfdata import SFDataFiles, SFDataFile, SFScanInfo
@@ -256,6 +257,25 @@ class TestSFDataFile(TestCase):
     def test_spurios_pids(self):
         with SFDataFile("fake_data/run_spurious_pids.ARRAYS.h5") as data:
             self.assertTrue("pulse_id" not in data)
+
+    def test_missing_ju_import(self):
+        import sfdata.sfdatafile
+        self.assertNotEqual(
+            sfdata.sfdatafile.ju, None
+        )
+
+        with HiddenModule("jungfrau_utils"):
+            del sys.modules["sfdata.sfdatafile"]
+            import sfdata.sfdatafile
+            self.assertEqual(
+                sfdata.sfdatafile.ju, None
+            )
+
+        del sys.modules["sfdata.sfdatafile"]
+        import sfdata.sfdatafile
+        self.assertNotEqual(
+            sfdata.sfdatafile.ju, None
+        )
 
 
 
