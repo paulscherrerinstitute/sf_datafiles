@@ -81,15 +81,3 @@ write_file("fake_data/run_offset.SCALARS.h5", data, pids)
 
 
 
-data = {
-    "JFxx": [11, 12, 13, 14, 15]
-}
-
-pids = {
-    "JFxx": [0, 1, 2, 3, 4]
-}
-
-write_file("fake_data/run_test.JFxx.h5", data, pids)
-
-
-
