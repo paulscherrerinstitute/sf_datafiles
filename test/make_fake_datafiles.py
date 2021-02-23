@@ -1,10 +1,15 @@
 #!/usr/bin/env python
 
+import os.path
 import h5py
 
 
 def write_file(fname, data, pids, make_data=True):
     assert data.keys() == pids.keys()
+
+    if os.path.exists(fname):
+        print(f"{fname} exists... skipping!")
+        return
 
     with h5py.File(fname, "w") as f:
         if make_data:
