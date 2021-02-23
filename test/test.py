@@ -558,6 +558,9 @@ class TestSFChannelJF(TestCase):
             self.assertEqual(
                 ch.shape, (3,)
             )
+            self.assertAllEqual(
+                ch.pids, [0, 1, 2]
+            )
 
     @unittest.mock.patch("sfdata.sfdatafile.ju", None)
     def test_no_ju(self):
