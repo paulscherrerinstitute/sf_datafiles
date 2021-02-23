@@ -20,7 +20,7 @@ import numpy as np
 
 from utils import TestCase, identity, make_temp_filename, read_names, load_df_from_csv, SettingWithCopyError
 
-from sfdata import SFDataFiles, SFDataFile
+from sfdata import SFDataFiles, SFDataFile, SFScanInfo
 from sfdata.errors import NoMatchingFileError, NoUsableFileError
 from sfdata.closedh5 import ClosedH5Error
 from sfdata.filecontext import FileContext
@@ -104,6 +104,49 @@ def check_channel_closed(testcase, ch):
         ch.ndim
     with testcase.assertRaises(ClosedH5Error):
         ch.size
+
+
+
+class TestSFScanInfo(TestCase):
+
+    nsteps = 3
+    fname = "fake_data/run_test.json"
+    scan = SFScanInfo(fname)
+
+    def test_loop(self):
+        with self.assertNotRaises():
+            for step in self.scan:
+                pass
+
+    def test_getitem(self):
+        with self.assertNotRaises():
+            step = self.scan[0]
+
+    def test_length(self):
+        self.assertEqual(
+            len(self.scan), self.nsteps
+        )
+
+    def test_repr(self):
+        self.assertEqual(
+            repr(self.scan), f"SFScanInfo(\"{self.fname}\"): {self.nsteps} steps"
+        )
+
+    @unittest.mock.patch("sfdata.SFDataFiles.__init__", side_effect=Exception("test"))
+    def test_broken(self, bla):
+        msg_fmt = "Warning: Skipping step {} ['fake_data/run_test.ARRAYS.h5', 'fake_data/run_test.SCALARS.h5'] since it caused Exception: test"
+        msg = (msg_fmt.format(i) for i in range(self.nsteps))
+        with self.assertRaises(NoUsableFileError), self.assertPrints(*msg):
+            for step in self.scan:
+                pass
+
+    def test_no_files(self):
+        empty = SFScanInfo("fake_data/run_no_files.json")
+        msg_fmt = "Warning: Skipping step {} since it caused NoMatchingFileError: No matching file for patterns: \"does not exist\""
+        msg = (msg_fmt.format(i) for i in range(self.nsteps))
+        with self.assertRaises(NoUsableFileError), self.assertPrints(*msg):
+            for step in empty:
+                pass
 
 
 
