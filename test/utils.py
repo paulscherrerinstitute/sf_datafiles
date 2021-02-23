@@ -57,6 +57,9 @@ class TestCase(unittest.TestCase):
             exc = (Exception,)
         return _AssertNotRaisesContext(self, *exc)
 
+    def assertStderr(self, expected_output):
+        return _AssertStderrContext(self, expected_output)
+
     def assertStdout(self, expected_output):
         return _AssertStdoutContext(self, expected_output)
 
@@ -98,6 +101,24 @@ class _AssertStdoutContext:
 
     def __exit__(self, exc_type, exc_value, tb):
         sys.stdout = sys.__stdout__
+        captured = self.captured.getvalue()
+        self.testcase.assertEqual(captured, self.expected)
+
+
+
+class _AssertStderrContext:
+
+    def __init__(self, testcase, expected):
+        self.testcase = testcase
+        self.expected = expected
+        self.captured = io.StringIO()
+
+    def __enter__(self):
+        sys.stderr = self.captured
+        return self
+
+    def __exit__(self, exc_type, exc_value, tb):
+        sys.stderr = sys.__stderr__
         captured = self.captured.getvalue()
         self.testcase.assertEqual(captured, self.expected)
 
