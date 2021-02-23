@@ -133,7 +133,7 @@ class TestSFDataFiles(TestCase):
             SFDataFiles("does not exist")
         broken_file = "fake_data/run_broken.SCALARS.h5"
         msg = f"Warning: Skipping \"{broken_file}\" since it caused OSError: Unable to open file (file signature not found)"
-        with self.assertRaises(NoMatchingFileError), self.assertPrint(msg):
+        with self.assertRaises(NoMatchingFileError), self.assertPrints(msg):
             SFDataFiles(broken_file)
 
 
