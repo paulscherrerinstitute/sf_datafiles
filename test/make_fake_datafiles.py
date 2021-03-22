@@ -85,13 +85,49 @@ write_file("fake_data/run_offset.SCALARS.h5", data, pids)
 det_name = "JFxxx"
 fname = f"fake_data/run_testjf.{det_name}.h5"
 
-with h5py.File(fname, "w") as f:
-    f.create_dataset("/general/detector_name", data=det_name.encode())
-    gc = f.create_group(f"/data/{det_name}")
-    gc.create_dataset("data", data=[10, 11, 12])
-    gc.create_dataset("pulse_id", data=[0, 1, 2])
+if os.path.exists(fname):
+    print(f"{fname} exists... skipping!")
+else:
+    with h5py.File(fname, "w") as f:
+        f.create_dataset("/general/detector_name", data=det_name.encode())
+        gc = f.create_group(f"/data/{det_name}")
+        gc.create_dataset("data", data=[10, 11, 12])
+        gc.create_dataset("pulse_id", data=[0, 1, 2])
 
-    gc.create_dataset("daq_rec", data=[[0, 1, 2], [0, 1, 2], [0, 1, 2]])
+        gc.create_dataset("daq_rec", data=[[0, 1, 2], [0, 1, 2], [0, 1, 2]])
+
+
+
+# b: bool
+# i: int
+# f: float
+data = {
+    "b_ch1": [True] * 5,
+    "b_ch2": [False] * 5,
+    "b_ch3": [True, False, True, False, True],
+    "b_ch4": [False, True, False, True, False],
+    "b_ch3": [True, True, False, True],
+    "b_ch4": [False, False, True, False],
+    "i_ch1": [11, 12, 13, 14, 15],
+    "i_ch2": [11, 12,     14, 15],
+    "f_ch1": [11.1, 12.2, 13.3, 14.4, 15.5],
+    "f_ch2": [11.1, 12.2, 13.3,       15.5],
+}
+
+pids = {
+    "b_ch1": [0, 1, 2, 3, 4],
+    "b_ch2": [0, 1, 2, 3, 4],
+    "b_ch3": [0, 1, 2, 3, 4],
+    "b_ch4": [0, 1, 2, 3, 4],
+    "b_ch3": [0,    2, 3, 4],
+    "b_ch4": [0,    2, 3, 4],
+    "i_ch1": [0, 1, 2, 3, 4],
+    "i_ch2": [0, 1,    3, 4],
+    "f_ch1": [0, 1, 2, 3, 4],
+    "f_ch2": [0, 1, 2,    4],
+}
+
+write_file("fake_data/run_dtypes.SCALARS.h5", data, pids)
 
 
 
