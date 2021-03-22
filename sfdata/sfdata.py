@@ -35,7 +35,8 @@ class SFData(dict):
             channels = tqdm(channels)
         for chan in channels:
             name = chan.name
-            ds = pd.Series(data=chan.data.tolist(), index=chan.pids, dtype=object, name=name)
+            data = chan.data.tolist()
+            ds = pd.Series(data=data, index=chan.pids, dtype=object, name=name)
             data_series[name] = ds
         df = pd.DataFrame(data_series)
         return df
@@ -48,7 +49,8 @@ class SFData(dict):
             channels = tqdm(channels)
         for chan in channels:
             name = chan.name
-            ds = pd.Series(data=chan.data.tolist(), index=chan.pids, dtype=object, name=name)
+            data = chan.data.tolist()
+            ds = pd.Series(data=data, index=chan.pids, dtype=object, name=name)
             df[name] = ds
         return df
 
@@ -59,8 +61,9 @@ class SFData(dict):
         if show_progress:
             channels = tqdm(channels)
         for chan in channels:
+            data = chan.data.tolist()
             which = np.isin(all_pids, chan.pids)
-            df.loc[which, chan.name] = chan.data.tolist() # TODO: workaround for pandas not dealing with ndim. columns
+            df.loc[which, chan.name] = data # TODO: workaround for pandas not dealing with ndim. columns
         return df
 
     def to_xarray(self, show_progress=False):
