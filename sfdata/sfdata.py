@@ -28,20 +28,21 @@ class SFData(dict):
         return (c.pids for c in self.values())
 
 
-    def to_dataframe(self, show_progress=False):
+    def to_dataframe(self, as_lists=True, show_progress=False):
         data_series = {}
         channels = self.values()
         if show_progress:
             channels = tqdm(channels)
         for chan in channels:
             name = chan.name
-            data = chan.data.tolist()
+            data = chan.data
+            data = data.tolist() if as_lists else list(data)
             ds = pd.Series(data=data, index=chan.pids, dtype=object, name=name)
             data_series[name] = ds
         df = pd.DataFrame(data_series)
         return df
 
-    def to_dataframe_accumulate(self, show_progress=False):
+    def to_dataframe_accumulate(self, as_lists=True, show_progress=False):
         all_pids = self.all_pids
         df = pd.DataFrame(index=all_pids, columns=self.names, dtype=object)
         channels = self.values()
@@ -49,19 +50,21 @@ class SFData(dict):
             channels = tqdm(channels)
         for chan in channels:
             name = chan.name
-            data = chan.data.tolist()
+            data = chan.data
+            data = data.tolist() if as_lists else list(data)
             ds = pd.Series(data=data, index=chan.pids, dtype=object, name=name)
             df[name] = ds
         return df
 
-    def to_dataframe_fill(self, show_progress=False):
+    def to_dataframe_fill(self, as_lists=True, show_progress=False):
         all_pids = self.all_pids
         df = pd.DataFrame(index=all_pids, columns=self.names, dtype=object) # object dtype makes sure NaN can be used as missing marker also for int/bool
         channels = self.values()
         if show_progress:
             channels = tqdm(channels)
         for chan in channels:
-            data = chan.data.tolist()
+            data = chan.data
+            data = data.tolist() if as_lists else list(data)
             which = np.isin(all_pids, chan.pids)
             df.loc[which, chan.name] = data # TODO: workaround for pandas not dealing with ndim. columns
         return df
