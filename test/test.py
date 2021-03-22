@@ -335,10 +335,10 @@ class TestSFChannel(TestCase):
     df_ref_lists = load_df_from_csv(FNAME_DF)
 
     df_ref_arrays = df_ref_lists.copy()
-    for col in df_ref_arrays:
-        first_row_dat = df_ref_arrays[col][0]
+    for ch in df_ref_arrays:
+        first_row_dat = df_ref_arrays[ch][0]
         if isinstance(first_row_dat, list):
-            df_ref_arrays[col] = [np.array(i) for i in df_ref_arrays[col]]
+            df_ref_arrays[ch] = [np.array(i) for i in df_ref_arrays[ch]]
 
 
     def run(self, *args, **kwargs):
@@ -449,9 +449,12 @@ class TestSFChannel(TestCase):
                 self.assertAllEqual(
                     df.index, df_ref.index
                 )
-#                self.assertTrue(
-#                    df.equals(df_ref)
-#                )
+                # check each entry array individually, otherwise: "The truth value of an array with more than one element is ambiguous."
+                for ch in df:
+                    col = df[ch]
+                    col_ref = df_ref[ch]
+                    for row, row_ref in zip(col, col_ref):
+                        self.assertAllEqual(row, row_ref)
 
 
     @unittest.mock.patch("sfdata.sfdata.tqdm", identity)
