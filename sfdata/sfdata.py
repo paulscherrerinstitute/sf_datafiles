@@ -36,7 +36,8 @@ class SFData(dict):
         for chan in channels:
             name = chan.name
             data = chan.data
-            data = data.tolist() if as_lists else list(data)
+            if data.ndim > 1:
+                data = data.tolist() if as_lists else list(data)
             ds = pd.Series(data=data, index=chan.pids, dtype=object, name=name)
             data_series[name] = ds
         df = pd.DataFrame(data_series)
@@ -51,7 +52,8 @@ class SFData(dict):
         for chan in channels:
             name = chan.name
             data = chan.data
-            data = data.tolist() if as_lists else list(data)
+            if data.ndim > 1:
+                data = data.tolist() if as_lists else list(data)
             ds = pd.Series(data=data, index=chan.pids, dtype=object, name=name)
             df[name] = ds
         return df
@@ -64,7 +66,8 @@ class SFData(dict):
             channels = tqdm(channels)
         for chan in channels:
             data = chan.data
-            data = data.tolist() if as_lists else list(data)
+            if data.ndim > 1:
+                data = data.tolist() if as_lists else list(data)
             which = np.isin(all_pids, chan.pids)
             df.loc[which, chan.name] = data # TODO: workaround for pandas not dealing with ndim. columns
         return df
