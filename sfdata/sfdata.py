@@ -28,7 +28,7 @@ class SFData(dict):
         return (c.pids for c in self.values())
 
 
-    def to_dataframe(self, as_lists=True, show_progress=False):
+    def to_dataframe(self, as_lists=False, show_progress=False):
         data_series = {}
         channels = self.values()
         if show_progress:
@@ -42,7 +42,7 @@ class SFData(dict):
         df = pd.DataFrame(data_series)
         return df
 
-    def to_dataframe_accumulate(self, as_lists=True, show_progress=False):
+    def to_dataframe_accumulate(self, as_lists=False, show_progress=False):
         all_pids = self.all_pids
         df = pd.DataFrame(index=all_pids, columns=self.names, dtype=object)
         channels = self.values()
@@ -56,7 +56,7 @@ class SFData(dict):
             df[name] = ds
         return df
 
-    def to_dataframe_fill(self, as_lists=True, show_progress=False):
+    def to_dataframe_fill(self, as_lists=False, show_progress=False):
         all_pids = self.all_pids
         df = pd.DataFrame(index=all_pids, columns=self.names, dtype=object) # object dtype makes sure NaN can be used as missing marker also for int/bool
         channels = self.values()
