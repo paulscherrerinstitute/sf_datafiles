@@ -28,7 +28,7 @@ class SFData(dict):
         return (c.pids for c in self.values())
 
 
-    def to_dataframe(self, as_lists=False, show_progress=False):
+    def to_dataframe(self, as_lists=False, as_nullable=False, show_progress=False):
         data_series = {}
         channels = self.values()
         if show_progress:
@@ -36,14 +36,15 @@ class SFData(dict):
         for chan in channels:
             name = chan.name
             data = chan.data
+            dtype = decide_pandas_dtype(data) if as_nullable else object
             if data.ndim > 1:
                 data = data.tolist() if as_lists else list(data)
-            ds = pd.Series(data=data, index=chan.pids, dtype=object, name=name)
+            ds = pd.Series(data=data, index=chan.pids, dtype=dtype, name=name)
             data_series[name] = ds
         df = pd.DataFrame(data_series)
         return df
 
-    def to_dataframe_accumulate(self, as_lists=False, show_progress=False):
+    def to_dataframe_accumulate(self, as_lists=False, as_nullable=False, show_progress=False):
         all_pids = self.all_pids
         df = pd.DataFrame(index=all_pids, columns=self.names, dtype=object)
         channels = self.values()
@@ -52,24 +53,28 @@ class SFData(dict):
         for chan in channels:
             name = chan.name
             data = chan.data
+            dtype = decide_pandas_dtype(data) if as_nullable else object
             if data.ndim > 1:
                 data = data.tolist() if as_lists else list(data)
-            ds = pd.Series(data=data, index=chan.pids, dtype=object, name=name)
+            ds = pd.Series(data=data, index=chan.pids, dtype=dtype, name=name)
             df[name] = ds
         return df
 
-    def to_dataframe_fill(self, as_lists=False, show_progress=False):
+    def to_dataframe_fill(self, as_lists=False, as_nullable=False, show_progress=False):
         all_pids = self.all_pids
         df = pd.DataFrame(index=all_pids, columns=self.names, dtype=object) # object dtype makes sure NaN can be used as missing marker also for int/bool
         channels = self.values()
         if show_progress:
             channels = tqdm(channels)
         for chan in channels:
+            name = chan.name
             data = chan.data
             if data.ndim > 1:
                 data = data.tolist() if as_lists else list(data)
             which = np.isin(all_pids, chan.pids)
-            df.loc[which, chan.name] = data # TODO: workaround for pandas not dealing with ndim. columns
+            df.loc[which, name] = data
+            if as_nullable:
+                df[name] = df[name].astype(decide_pandas_dtype(data))
         return df
 
     def to_xarray(self, show_progress=False):
@@ -190,6 +195,32 @@ class SFData(dict):
         tn = typename(self)
         entries = len(self)
         return f"{tn}: {entries} channels"
+
+
+
+
+
+BooleanDtype = pd.BooleanDtype()
+
+def decide_pandas_dtype(arr):
+    if arr.ndim > 1: # ndim. columns need object dtype
+        return object
+
+    dtype = arr.dtype
+
+    if np.issubdtype(dtype, np.floating):
+        return dtype
+
+    if np.issubdtype(dtype, np.integer):
+        size = dtype.itemsize * 8 # itemsize is in bytes
+        if np.issubdtype(dtype, np.unsignedinteger):
+            return f"UInt{size}"
+        return f"Int{size}"
+
+    if np.issubdtype(dtype, bool): # covers: bool, np.bool and np.bool_
+        return BooleanDtype
+
+    return object
 
 
 

@@ -441,6 +441,32 @@ class TestSFChannel(TestCase):
                                 self.assertAllEqual(row, row_ref)
 
 
+    def test_to_dataframe_dtypes(self):
+        with SFDataFiles("fake_data/run_dtypes.SCALARS.h5") as data:
+            methods = (data.to_dataframe, data.to_dataframe_accumulate, data.to_dataframe_fill)
+            for func in methods:
+                df_objects  = func(as_nullable=False)
+                df_nullable = func(as_nullable=True)
+
+                for ch in df_objects:
+                    dtype = df_objects[ch].dtype
+                    self.assertEqual(
+                        dtype, object
+                    )
+
+                for ch in df_nullable:
+                    ref = ch[0] # first char in channel names is type code
+                    dtype = df_nullable[ch].dtype
+                    self.assertEqual(
+                        dtype.kind, ref
+                    )
+                    str_dtype = str(dtype).lower()
+                    char_dtype = str_dtype[0]
+                    self.assertEqual(
+                        char_dtype, ref
+                    )
+
+
     @unittest.mock.patch("sfdata.sfdata.tqdm", identity)
     def test_to_xarray(self):
         #TODO: reference only works for 1D arrays
