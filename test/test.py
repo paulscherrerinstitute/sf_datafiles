@@ -650,6 +650,10 @@ class TestUtils(TestCase):
             self.assertEqual(
                 h5_boolean_indexing(ds, bool_indices), ds[bool_indices]
             )
+            bool_indices = np.ones(len(ds)).astype(bool)
+            self.assertAllEqual(
+                h5_boolean_indexing(ds, bool_indices), ds[:]
+            )
 
     def test_h5_boolean_indexing_nd(self):
         """
@@ -663,6 +667,10 @@ class TestUtils(TestCase):
             ds = ch.datasets.data
             self.assertAllEqual(
                 h5_boolean_indexing(ds, bool_indices), [CH_ND_DATA1]
+            )
+            bool_indices = np.ones(len(ds)).astype(bool)
+            self.assertAllEqual(
+                h5_boolean_indexing(ds, bool_indices), ds[:]
             )
 
 

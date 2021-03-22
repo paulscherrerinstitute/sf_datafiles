@@ -13,7 +13,7 @@ def h5_boolean_indexing(ds, indices):
         return ds[indices]
     indices = np.asanyarray(indices)
     assert indices.ndim == 1, "indices needs to be 1D"
-    coords = np.nonzero(indices)[0].tolist()
+    coords = np.nonzero(indices)[0]
     return ds[coords]
 
 
