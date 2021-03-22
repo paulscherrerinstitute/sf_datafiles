@@ -251,7 +251,7 @@ This way, missing entries will be marked as NaNs, and can be dealt with via, e.g
 
 Note: NaN is [only defined for floats](https://en.wikipedia.org/wiki/NaN). In order to use NaNs as missing marker for all data types (specifically, also for integers or booleans), the created dataframe has the dtype `object`. After dealing with the NaNs, the dtype can be corrected using the [infer_objects](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.infer_objects.html) method.
 
-Furthermore, dataframe columns can only hold 1D data natively. However, with `object` dtype, numpy arrays of larger dimensionality can be stored. A few caveats apply and it might be easier to deal with regular lists instead of arrays in theses cases. Thus, there is a switch `as_lists` (which defaults to `False`) to enable a conversion to regular lists before insertion. Depending on the use case, these lists might need to be converted back to arrays when taken out of the dataframe.
+Furthermore, dataframe columns can only hold 1D data natively. However, with `object` dtype, numpy arrays of larger dimensionality can be stored. A few caveats apply (for instance, `df1.equals(df2)` will not work due to `arr1 == arr2` returning an array of booleans) and it might be easier to deal with regular lists instead of arrays in theses cases. Thus, there is a switch `as_lists` (which defaults to `False`) to enable a conversion to nested regular lists before insertion. Depending on the use case, these lists might need to be converted back to arrays when taken out of the dataframe.
 
 ### Convert to xarray Dataset
 
