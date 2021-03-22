@@ -407,7 +407,7 @@ class TestSFChannel(TestCase):
 
 
     @unittest.mock.patch("sfdata.sfdata.tqdm", identity)
-    def test_to_dataframe_lists(self):
+    def test_to_dataframe(self):
         df_ref = self.df_ref_lists
         data = self.data
         methods = (data.to_dataframe, data.to_dataframe_accumulate, data.to_dataframe_fill)
