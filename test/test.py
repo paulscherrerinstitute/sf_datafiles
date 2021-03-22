@@ -332,7 +332,13 @@ class TestSFData(TestCase):
 
 class TestSFChannel(TestCase):
 
-    df_ref = load_df_from_csv(FNAME_DF)
+    df_ref_lists = load_df_from_csv(FNAME_DF)
+
+    df_ref_arrays = df_ref_lists.copy()
+    for col in df_ref_arrays:
+        first_row_dat = df_ref_arrays[col][0]
+        if isinstance(first_row_dat, list):
+            df_ref_arrays[col] = [np.array(i) for i in df_ref_arrays[col]]
 
 
     def run(self, *args, **kwargs):
@@ -401,13 +407,13 @@ class TestSFChannel(TestCase):
 
 
     @unittest.mock.patch("sfdata.sfdata.tqdm", identity)
-    def test_to_dataframe(self):
-        df_ref = self.df_ref
+    def test_to_dataframe_lists(self):
+        df_ref = self.df_ref_lists
         data = self.data
         methods = (data.to_dataframe, data.to_dataframe_accumulate, data.to_dataframe_fill)
         for func in methods:
             for progress in (True, False):
-                df = func(show_progress=progress)
+                df = func(as_lists=True, show_progress=progress)
                 df.fillna(np.nan, inplace=True) #TODO: object array messes with df.equals below
 
                 self.assertEqual(
@@ -425,9 +431,33 @@ class TestSFChannel(TestCase):
 
 
     @unittest.mock.patch("sfdata.sfdata.tqdm", identity)
+    def test_to_dataframe_arrays(self):
+        df_ref = self.df_ref_arrays
+        data = self.data
+        methods = (data.to_dataframe, data.to_dataframe_accumulate, data.to_dataframe_fill)
+        for func in methods:
+            for progress in (True, False):
+                df = func(as_lists=False, show_progress=progress)
+                df.fillna(np.nan, inplace=True) #TODO: object array messes with df.equals below
+
+                self.assertEqual(
+                    df.shape, df_ref.shape
+                )
+                self.assertAllEqual(
+                    df.columns, df_ref.columns
+                )
+                self.assertAllEqual(
+                    df.index, df_ref.index
+                )
+#                self.assertTrue(
+#                    df.equals(df_ref)
+#                )
+
+
+    @unittest.mock.patch("sfdata.sfdata.tqdm", identity)
     def test_to_xarray(self):
         #TODO: reference only works for 1D arrays
-        xr_ref = self.df_ref[["ch1", "ch2", "ch3"]].to_xarray().rename(index = "pids")
+        xr_ref = self.df_ref_lists[["ch1", "ch2", "ch3"]].to_xarray().rename(index = "pids")
         data = self.data["ch1", "ch2", "ch3"]
         methods = (data.to_xarray, data.to_xarray_accumulate)
         for func in methods:
