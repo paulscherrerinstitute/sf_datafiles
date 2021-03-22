@@ -412,49 +412,33 @@ class TestSFChannel(TestCase):
         data = self.data
         methods = (data.to_dataframe, data.to_dataframe_accumulate, data.to_dataframe_fill)
         for func in methods:
-            for progress in (True, False):
-                df = func(as_lists=True, show_progress=progress)
-                df.fillna(np.nan, inplace=True) #TODO: object array messes with df.equals below
+            for as_lists in (True, False):
+                for show_progress in (True, False):
+                    df = func(as_lists=as_lists, show_progress=show_progress)
+                    df.fillna(np.nan, inplace=True) #TODO: object array messes with df.equals below
 
-                self.assertEqual(
-                    df.shape, df_ref.shape
-                )
-                self.assertAllEqual(
-                    df.columns, df_ref.columns
-                )
-                self.assertAllEqual(
-                    df.index, df_ref.index
-                )
-                self.assertTrue(
-                    df.equals(df_ref)
-                )
+                    self.assertEqual(
+                        df.shape, df_ref.shape
+                    )
+                    self.assertAllEqual(
+                        df.columns, df_ref.columns
+                    )
+                    self.assertAllEqual(
+                        df.index, df_ref.index
+                    )
 
-
-    @unittest.mock.patch("sfdata.sfdata.tqdm", identity)
-    def test_to_dataframe_arrays(self):
-        df_ref = self.df_ref_arrays
-        data = self.data
-        methods = (data.to_dataframe, data.to_dataframe_accumulate, data.to_dataframe_fill)
-        for func in methods:
-            for progress in (True, False):
-                df = func(as_lists=False, show_progress=progress)
-                df.fillna(np.nan, inplace=True) #TODO: object array messes with df.equals below
-
-                self.assertEqual(
-                    df.shape, df_ref.shape
-                )
-                self.assertAllEqual(
-                    df.columns, df_ref.columns
-                )
-                self.assertAllEqual(
-                    df.index, df_ref.index
-                )
-                # check each entry array individually, otherwise: "The truth value of an array with more than one element is ambiguous."
-                for ch in df:
-                    col = df[ch]
-                    col_ref = df_ref[ch]
-                    for row, row_ref in zip(col, col_ref):
-                        self.assertAllEqual(row, row_ref)
+                    if as_lists:
+                        # here lst1 == lst2 works directly
+                        self.assertTrue(
+                            df.equals(df_ref)
+                        )
+                    else:
+                        # check each entry array individually, otherwise: "The truth value of an array with more than one element is ambiguous."
+                        for ch in df:
+                            col = df[ch]
+                            col_ref = df_ref[ch]
+                            for row, row_ref in zip(col, col_ref):
+                                self.assertAllEqual(row, row_ref)
 
 
     @unittest.mock.patch("sfdata.sfdata.tqdm", identity)
