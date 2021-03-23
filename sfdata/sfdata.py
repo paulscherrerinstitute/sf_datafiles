@@ -74,7 +74,8 @@ class SFData(dict):
             which = np.isin(all_pids, chan.pids)
             df.loc[which, name] = data
             if as_nullable:
-                df[name] = df[name].astype(decide_pandas_dtype(data))
+                dtype = decide_pandas_dtype(data)
+                df[name] = df[name].astype(dtype)
         return df
 
     def to_xarray(self, show_progress=False):
