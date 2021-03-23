@@ -3,6 +3,7 @@ import pandas as pd
 
 
 BooleanDtype = pd.BooleanDtype()
+StringDtype  = pd.StringDtype()
 
 
 def decide_pandas_dtype(arr):
@@ -22,6 +23,9 @@ def decide_pandas_dtype(arr):
 
     if np.issubdtype(dtype, bool): # covers: bool, np.bool and np.bool_
         return BooleanDtype
+
+    if np.issubdtype(dtype, str): # covers: str, np.str and np.str_
+        return StringDtype
 
     return object
 

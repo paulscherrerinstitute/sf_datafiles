@@ -898,13 +898,18 @@ class TestUtils(TestCase):
         res = decide_pandas_dtype(arr)
         self.assertEqual(res, object)
 
+        class NotCoveredType:
+            pass
+
         mapping = {
+            object: object,
             bool: pd.BooleanDtype(),
+            str: pd.StringDtype(),
             float: float,
             int: "Int64",
             np.int8: "Int8",
             np.uint16: "UInt16",
-            str: object
+            NotCoveredType: object
         }
 
         for tin, tout in mapping.items():
