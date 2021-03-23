@@ -24,9 +24,8 @@ from hiddenmod import HiddenModule
 import sfdata
 from sfdata import SFDataFiles, SFDataFile, SFScanInfo
 from sfdata.errors import NoMatchingFileError, NoUsableFileError
-from sfdata.closedh5 import ClosedH5Error
-from sfdata.filecontext import FileContext
-from sfdata.utils import typename, h5_boolean_indexing, json_load, strlen, maxstrlen, print_line, cprint, dip, percentage_missing, decide_color, apply_batched, batched
+from sfdata.utils import typename, h5_boolean_indexing, json_load, strlen, maxstrlen, print_line, cprint, dip, percentage_missing, decide_color, apply_batched, batched, FileContext
+from sfdata.utils.closedh5 import ClosedH5Error
 from sfdata.utils.progress import bar, percentage # not actually used anywhere
 from sfdata.utils.np import nothing_like
 
@@ -628,7 +627,7 @@ class TestSFChannelJF(TestCase):
     @unittest.mock.patch("sfdata.sfdatafile.ju", None)
     def test_no_ju(self):
         modfname = sfdata.sfdatafile.__file__
-        line = 23 #TODO this will break!
+        line = 22 #TODO this will break!
         msg = f"{modfname}:{line}: UserWarning: Warning: Could not import jungfrau_utils, will treat JF files as regular files.\n  self.file, channels = load_from_file(fname)\n"
         with self.assertStderr(msg):
             with SFDataFile(self.fname) as data:

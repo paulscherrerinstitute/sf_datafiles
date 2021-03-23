@@ -3,8 +3,7 @@ from warnings import warn
 import h5py
 import bitshuffle.h5
 
-from .filecontext import FileContext
-from .utils import typename
+from .utils import typename, FileContext
 from .sfdata import SFData
 from .sfchannel import SFChannel
 from .sfchanneljf import SFChannelJF

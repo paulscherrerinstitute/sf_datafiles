@@ -1,8 +1,7 @@
 from glob import glob
 
-from .filecontext import FileContext
 from .errors import NoMatchingFileError
-from .utils import typename, printable_string_sequence
+from .utils import typename, printable_string_sequence, FileContext
 from .sfdata import SFData
 from .sfdatafile import SFDataFile
 

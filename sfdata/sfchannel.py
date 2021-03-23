@@ -1,7 +1,6 @@
 from types import SimpleNamespace
 import numpy as np
-from .utils import typename, adjust_shape, batched, apply_batched
-from .closedh5 import ClosedH5
+from .utils import typename, adjust_shape, batched, apply_batched, ClosedH5
 
 
 class SFChannel:
