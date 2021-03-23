@@ -17,6 +17,7 @@ import io
 import unittest
 import unittest.mock
 import numpy as np
+import pandas as pd
 
 from utils import TestCase, identity, make_temp_filename, read_names, load_df_from_csv, SettingWithCopyError
 from hiddenmod import HiddenModule
@@ -24,7 +25,7 @@ from hiddenmod import HiddenModule
 import sfdata
 from sfdata import SFDataFiles, SFDataFile, SFScanInfo
 from sfdata.errors import NoMatchingFileError, NoUsableFileError
-from sfdata.utils import typename, h5_boolean_indexing, json_load, strlen, maxstrlen, print_line, cprint, dip, percentage_missing, decide_color, apply_batched, batched, FileContext
+from sfdata.utils import typename, h5_boolean_indexing, json_load, strlen, maxstrlen, print_line, cprint, dip, percentage_missing, decide_color, apply_batched, batched, FileContext, decide_pandas_dtype
 from sfdata.utils.closedh5 import ClosedH5Error
 from sfdata.utils.progress import bar, percentage # not actually used anywhere
 from sfdata.utils.np import nothing_like
@@ -888,6 +889,28 @@ class TestUtils(TestCase):
             compare(res, ref)
             res = list(batched(arr, arr, n, nbatches=1)) # asking only for first batch
             compare(res, ref[:1])
+
+
+    def test_decide_pandas_dtype(self):
+        base_arr = np.arange(4)
+
+        arr = base_arr.reshape(2, 2)
+        res = decide_pandas_dtype(arr)
+        self.assertEqual(res, object)
+
+        mapping = {
+            bool: pd.BooleanDtype(),
+            float: float,
+            int: "Int64",
+            np.int8: "Int8",
+            np.uint16: "UInt16",
+            str: object
+        }
+
+        for tin, tout in mapping.items():
+            arr = base_arr.astype(tin)
+            res = decide_pandas_dtype(arr)
+            self.assertEqual(res, tout)
 
 
 
