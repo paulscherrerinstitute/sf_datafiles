@@ -4,7 +4,7 @@ import pandas as pd
 import xarray as xr
 from tqdm import tqdm
 
-from .utils import typename, percentage_missing, strlen, maxstrlen, decide_color, print_line, dip, cprint
+from .utils import typename, percentage_missing, strlen, maxstrlen, decide_color, print_line, dip, cprint, decide_pandas_dtype
 
 
 #unique_intersect1d = partial(np.intersect1d, assume_unique=True)
@@ -195,32 +195,6 @@ class SFData(dict):
         tn = typename(self)
         entries = len(self)
         return f"{tn}: {entries} channels"
-
-
-
-
-
-BooleanDtype = pd.BooleanDtype()
-
-def decide_pandas_dtype(arr):
-    if arr.ndim > 1: # ndim. columns need object dtype
-        return object
-
-    dtype = arr.dtype
-
-    if np.issubdtype(dtype, np.floating):
-        return dtype
-
-    if np.issubdtype(dtype, np.integer):
-        size = dtype.itemsize * 8 # itemsize is in bytes
-        if np.issubdtype(dtype, np.unsignedinteger):
-            return f"UInt{size}"
-        return f"Int{size}"
-
-    if np.issubdtype(dtype, bool): # covers: bool, np.bool and np.bool_
-        return BooleanDtype
-
-    return object
 
 
 
