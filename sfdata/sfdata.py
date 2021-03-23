@@ -46,7 +46,7 @@ class SFData(dict):
 
     def to_dataframe_accumulate(self, as_lists=False, as_nullable=False, show_progress=False):
         all_pids = self.all_pids
-        df = pd.DataFrame(index=all_pids, columns=self.names, dtype=object)
+        df = pd.DataFrame(index=all_pids, columns=self.names)
         channels = self.values()
         if show_progress:
             channels = tqdm(channels)
