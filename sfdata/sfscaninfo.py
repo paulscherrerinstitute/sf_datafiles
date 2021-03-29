@@ -29,6 +29,8 @@ class SFScanInfo(Sequence):
 
     def __getitem__(self, index):
         fns = self.files[index]
+        if isinstance(index, slice):
+            return generate_sfdata(fns)
         return SFDataFiles(*fns)
 
     def __len__(self):
