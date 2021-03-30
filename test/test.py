@@ -124,6 +124,25 @@ class TestSFScanInfo(TestCase):
         with self.assertNotRaises():
             step = self.scan[0]
 
+        for i, ref in enumerate(self.scan):
+            step = self.scan[i]
+            for sf, rf in zip(step.files, ref.files):
+                self.assertEqual(sf.file, rf.file)
+
+    def test_slice(self):
+        with self.assertNotRaises():
+            scan_slice = self.scan[1: ]
+            scan_slice = self.scan[ :1]
+            scan_slice = self.scan[1:2]
+
+        scan_iter = iter(self.scan)
+        next(scan_iter) # skip first entry of iterator
+
+        scan_slice = self.scan[1: ] # slice starts from second entry
+        for step, ref in zip(scan_slice, scan_iter):
+            for sf, rf in zip(step.files, ref.files):
+                self.assertEqual(sf.file, rf.file)
+
     def test_length(self):
         self.assertEqual(
             len(self.scan), self.nsteps
