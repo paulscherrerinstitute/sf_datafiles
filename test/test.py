@@ -325,7 +325,7 @@ class TestSFData(TestCase):
             self.data.all_pids, ALL_PIDS
         )
 
-    def test_name(self):
+    def test_names(self):
         self.assertEqual(
             sorted(self.data.names), CH_NAMES
         )
