@@ -52,8 +52,7 @@ def load_files(fnames):
         try:
             f = SFDataFile(fn)
         except Exception as exc:
-            excname = typename(exc)
-            print(f"Warning: Skipping \"{fn}\" since it caused {excname}: {exc}")
+            print_skip_warning(exc, fn)
         else:
             res[fn] = f
     fnames, files = dict_to_tuples(res)
@@ -64,6 +63,11 @@ def dict_to_tuples(d):
     keys   = d.keys()
     values = d.values()
     return tuple(keys), tuple(values)
+
+
+def print_skip_warning(exc, fname):
+    excname = typename(exc)
+    print(f"Warning: Skipping \"{fname}\" since it caused {excname}: {exc}")
 
 
 
