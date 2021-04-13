@@ -52,8 +52,6 @@ def generate_sfdata(fnames):
             with SFDataFiles(*fns) as data: #TODO: is this what we want? does it even work? maybe explict .close() after yield is better?
                 yield data
             nothing_opened = False
-        except NoMatchingFileError as exc:
-            print_skip_warning(exc, i)
         except Exception as exc:
             sn = f"{i} {fns}"
             print_skip_warning(exc, sn)

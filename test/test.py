@@ -163,7 +163,7 @@ class TestSFScanInfo(TestCase):
 
     def test_no_files(self):
         empty = SFScanInfo("fake_data/run_no_files.json")
-        msg_fmt = "Warning: Skipping step {} since it caused NoMatchingFileError: No matching file for patterns: \"does not exist\""
+        msg_fmt = "Warning: Skipping step {} ['does not exist'] since it caused NoMatchingFileError: No matching file for patterns: \"does not exist\""
         msg = (msg_fmt.format(i) for i in range(self.nsteps))
         with self.assertRaises(NoUsableFileError), self.assertPrints(*msg):
             for step in empty:
