@@ -14,7 +14,6 @@ sys.path.insert(0, (os.path.join(this_dir, "..")))
 
 
 import io
-import warnings
 import unittest
 import unittest.mock
 import numpy as np
@@ -171,13 +170,9 @@ class TestSFScanInfo(TestCase):
 
         msg_fmt = "Skipping step {} ['fake_data/run_test.ARRAYS.h5', 'fake_data/run_test.SCALARS.h5'] since it caused Exception: test"
         msg = (msg_fmt.format(i) for i in range(self.nsteps))
-        with self.assertRaises(NoUsableFileError), warnings.catch_warnings(record=True) as ws:
+        with self.assertRaises(NoUsableFileError), self.assertWarns(*msg):
             for step in self.scan:
                 pass
-        self.assertEqual(len(ws), self.nsteps)
-        for w, m in zip(ws, msg):
-            w = str(w.message)
-            self.assertEqual(w, m)
 
 
     def test_no_files(self):
@@ -196,13 +191,9 @@ class TestSFScanInfo(TestCase):
 
         msg_fmt = "Skipping step {} ['does not exist'] since it caused NoMatchingFileError: No matching file for patterns: \"does not exist\""
         msg = (msg_fmt.format(i) for i in range(self.nsteps))
-        with self.assertRaises(NoUsableFileError), warnings.catch_warnings(record=True) as ws:
+        with self.assertRaises(NoUsableFileError), self.assertWarns(*msg):
             for step in empty:
                 pass
-        self.assertEqual(len(ws), self.nsteps)
-        for w, m in zip(ws, msg):
-            w = str(w.message)
-            self.assertEqual(w, m)
 
 
 
@@ -242,11 +233,8 @@ class TestSFDataFiles(TestCase):
             SFDataFiles(broken_file)
 
         msg = f"Skipping \"{broken_file}\" since it caused OSError: Unable to open file (file signature not found)"
-        with self.assertRaises(NoMatchingFileError), warnings.catch_warnings(record=True) as w:
+        with self.assertRaises(NoMatchingFileError), self.assertWarns(msg):
             SFDataFiles(broken_file)
-        self.assertEqual(len(w), 1)
-        w = str(w[0].message)
-        self.assertEqual(w, msg)
 
 
     def test_closed1(self):
@@ -709,16 +697,12 @@ class TestSFChannelJF(TestCase):
                 )
 
         msg = "Could not import jungfrau_utils, will treat JF files as regular files."
-        with warnings.catch_warnings(record=True) as w:
+        with self.assertWarns(msg):
             with SFDataFile(self.fname) as data:
                 ch = data[self.det_name]
                 self.assertTrue(
                     isinstance(ch, sfdata.sfchannel.SFChannel)
                 )
-        self.assertEqual(len(w), 1)
-        w = str(w[0].message)
-        self.assertEqual(w, msg)
-
 
 
 class TestFileContext(TestCase):
