@@ -63,6 +63,10 @@ class TestCase(unittest.TestCase):
     def assertStdout(self, expected_output):
         return _AssertStdoutContext(self, expected_output)
 
+    def assertPrintsError(self, *expected_output):
+        expected_output = "\n".join(expected_output) + "\n"
+        return _AssertStderrContext(self, expected_output)
+
     def assertPrints(self, *expected_output):
         expected_output = "\n".join(expected_output) + "\n"
         return _AssertStdoutContext(self, expected_output)
