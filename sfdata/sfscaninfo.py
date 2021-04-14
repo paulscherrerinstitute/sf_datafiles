@@ -1,6 +1,6 @@
 from collections.abc import Sequence
 from .errors import NoMatchingFileError, NoUsableFileError
-from .utils import adjust_shape, json_load, typename
+from .utils import adjust_shape, json_load, typename, print_skip_warning
 from .sfdatafiles import SFDataFiles
 
 
@@ -57,11 +57,6 @@ def generate_sfdata(fnames):
             print_skip_warning(exc, sn)
     if nothing_opened:
         raise NoUsableFileError("No entry contained a usable file")
-
-
-def print_skip_warning(exc, name):
-    excname = typename(exc)
-    print(f"Warning: Skipping {name} since it caused {excname}: {exc}")
 
 
 

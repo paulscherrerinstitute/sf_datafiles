@@ -1,7 +1,7 @@
 from glob import glob
 
 from .errors import NoMatchingFileError
-from .utils import typename, printable_string_sequence, FileContext, enquote
+from .utils import typename, printable_string_sequence, FileContext, enquote, print_skip_warning
 from .sfdata import SFData
 from .sfdatafile import SFDataFile
 
@@ -64,11 +64,6 @@ def dict_to_tuples(d):
     keys   = d.keys()
     values = d.values()
     return tuple(keys), tuple(values)
-
-
-def print_skip_warning(exc, name):
-    excname = typename(exc)
-    print(f"Warning: Skipping {name} since it caused {excname}: {exc}")
 
 
 
