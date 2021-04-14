@@ -4,6 +4,7 @@ import os
 import sys
 import tempfile
 import unittest
+import warnings
 import numpy as np
 import pandas as pd
 
@@ -71,6 +72,9 @@ class TestCase(unittest.TestCase):
         expected_output = "\n".join(expected_output) + "\n"
         return _AssertStdoutContext(self, expected_output)
 
+    def assertWarns(self, *expected_output):
+        return _AssertWarningsContext(self, expected_output)
+
 
 
 class _AssertNotRaisesContext:
@@ -125,6 +129,31 @@ class _AssertStderrContext:
         sys.stderr = sys.__stderr__
         captured = self.captured.getvalue()
         self.testcase.assertEqual(captured, self.expected)
+
+
+
+class _AssertWarningsContext:
+
+    def __init__(self, testcase, expected):
+        self.testcase = testcase
+        self.expected = expected
+        self.catcher = warnings.catch_warnings(record=True)
+
+    def __enter__(self):
+        self.warnings = self.catcher.__enter__()
+        return self
+
+
+    def __exit__(self, exc_type, exc_value, tb):
+        self.catcher.__exit__(exc_type, exc_value, tb)
+
+        testcase = self.testcase
+        expected = self.expected
+        warnings = self.warnings
+
+        testcase.assertEqual(len(warnings), len(expected))
+        messages = tuple(str(w.message) for w in warnings)
+        testcase.assertEqual(messages, expected)
 
 
 
