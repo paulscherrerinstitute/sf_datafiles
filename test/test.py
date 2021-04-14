@@ -160,7 +160,7 @@ class TestSFScanInfo(TestCase):
         line = 57 #TODO this will break!
         prefix = f"{modfname}:{line}: UserWarning: "
         suffix = "\n  print_skip_warning(exc, sn)"
-        msg_fmt = "Warning: Skipping step {} ['fake_data/run_test.ARRAYS.h5', 'fake_data/run_test.SCALARS.h5'] since it caused Exception: test"
+        msg_fmt = "Skipping step {} ['fake_data/run_test.ARRAYS.h5', 'fake_data/run_test.SCALARS.h5'] since it caused Exception: test"
         msg_fmt = prefix + msg_fmt + suffix
         msg = (msg_fmt.format(i) for i in range(self.nsteps))
         with self.assertRaises(NoUsableFileError), self.assertPrintsError(*msg):
@@ -173,7 +173,7 @@ class TestSFScanInfo(TestCase):
         line = 57 #TODO this will break!
         prefix = f"{modfname}:{line}: UserWarning: "
         suffix = "\n  print_skip_warning(exc, sn)"
-        msg_fmt = "Warning: Skipping step {} ['does not exist'] since it caused NoMatchingFileError: No matching file for patterns: \"does not exist\""
+        msg_fmt = "Skipping step {} ['does not exist'] since it caused NoMatchingFileError: No matching file for patterns: \"does not exist\""
         msg_fmt = prefix + msg_fmt + suffix
         msg = (msg_fmt.format(i) for i in range(self.nsteps))
         empty = SFScanInfo("fake_data/run_no_files.json")
@@ -209,10 +209,10 @@ class TestSFDataFiles(TestCase):
             SFDataFiles("does not exist")
         modfname = sfdata.sfdatafiles.__file__
         line = 56 #TODO this will break!
-        prefix = f"{modfname}:{line}: "
+        prefix = f"{modfname}:{line}: UserWarning: "
         suffix = "\n  print_skip_warning(exc, quoted_fn)"
         broken_file = "fake_data/run_broken.SCALARS.h5"
-        msg = f"UserWarning: Warning: Skipping \"{broken_file}\" since it caused OSError: Unable to open file (file signature not found)"
+        msg = f"Skipping \"{broken_file}\" since it caused OSError: Unable to open file (file signature not found)"
         msg = prefix + msg + suffix
         with self.assertRaises(NoMatchingFileError), self.assertPrintsError(msg):
             SFDataFiles(broken_file)
@@ -665,9 +665,9 @@ class TestSFChannelJF(TestCase):
     def test_no_ju(self):
         modfname = sfdata.sfdatafile.__file__
         line = 22 #TODO this will break!
-        prefix = f"{modfname}:{line}: "
+        prefix = f"{modfname}:{line}: UserWarning: "
         suffix = "\n  self.file, channels = load_from_file(fname)"
-        msg = "UserWarning: Warning: Could not import jungfrau_utils, will treat JF files as regular files."
+        msg = "Could not import jungfrau_utils, will treat JF files as regular files."
         msg = prefix + msg + suffix
         with self.assertPrintsError(msg):
             with SFDataFile(self.fname) as data:

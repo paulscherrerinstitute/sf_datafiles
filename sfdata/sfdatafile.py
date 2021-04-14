@@ -40,7 +40,7 @@ def load_from_file(fname):
         if ju:
             return load_from_ju_file(fname)
         else:
-            warn("Warning: Could not import jungfrau_utils, will treat JF files as regular files.", stacklevel=2)
+            warn("Could not import jungfrau_utils, will treat JF files as regular files.", stacklevel=2)
 
     return load_from_generic_file(fname)
 
