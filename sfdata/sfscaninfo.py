@@ -53,15 +53,15 @@ def generate_sfdata(fnames):
                 yield data
             nothing_opened = False
         except Exception as exc:
-            sn = f"{i} {fns}"
+            sn = f"step {i} {fns}"
             print_skip_warning(exc, sn)
     if nothing_opened:
         raise NoUsableFileError("No entry contained a usable file")
 
 
-def print_skip_warning(exc, step_name):
+def print_skip_warning(exc, name):
     excname = typename(exc)
-    print(f"Warning: Skipping step {step_name} since it caused {excname}: {exc}")
+    print(f"Warning: Skipping {name} since it caused {excname}: {exc}")
 
 
 

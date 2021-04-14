@@ -1,7 +1,7 @@
 from glob import glob
 
 from .errors import NoMatchingFileError
-from .utils import typename, printable_string_sequence, FileContext
+from .utils import typename, printable_string_sequence, FileContext, enquote
 from .sfdata import SFData
 from .sfdatafile import SFDataFile
 
@@ -52,7 +52,8 @@ def load_files(fnames):
         try:
             f = SFDataFile(fn)
         except Exception as exc:
-            print_skip_warning(exc, fn)
+            quoted_fn = enquote(fn)
+            print_skip_warning(exc, quoted_fn)
         else:
             res[fn] = f
     fnames, files = dict_to_tuples(res)
@@ -65,9 +66,9 @@ def dict_to_tuples(d):
     return tuple(keys), tuple(values)
 
 
-def print_skip_warning(exc, fname):
+def print_skip_warning(exc, name):
     excname = typename(exc)
-    print(f"Warning: Skipping \"{fname}\" since it caused {excname}: {exc}")
+    print(f"Warning: Skipping {name} since it caused {excname}: {exc}")
 
 
 

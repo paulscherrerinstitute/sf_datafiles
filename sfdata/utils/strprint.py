@@ -18,4 +18,8 @@ def nice_string_repr(string):
     return repr(string).replace("'", '"')
 
 
+def enquote(s):
+    return f"\"{s}\""
+
+
 
