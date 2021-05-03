@@ -64,6 +64,8 @@ def load_from_generic_file(fname):
     for name in data:
         if name == "pulse_id": #TODO: workaround for a spurious pulse_id group in bsread files
             continue
+        if name == "file_create_date": #TODO: workaround for the timestamp (accidentally) being a group and not an attribute
+            continue
         chan = data[name]
         chan = SFChannel(name, chan)
         channels[name] = chan
