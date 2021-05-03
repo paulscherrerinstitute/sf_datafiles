@@ -9,8 +9,8 @@ class SFChannel:
         self.name = name
         self._group = group
         self.datasets = SimpleNamespace(
-            data = self._group["data"],
-            pids = self._group["pulse_id"]
+            data = group["data"],
+            pids = group["pulse_id"]
         )
         self.offset = 0
         self.reset_valid()
@@ -39,7 +39,7 @@ class SFChannel:
         return self._get(self.datasets.pids) - self.offset
 
     def _get(self, dataset):
-        res = dataset[:][self.valid] # TODO: workaround: access from h5 via indices is slow
+        res = dataset[:][self.valid] #TODO: workaround: access from h5 via indices is slow
         res = adjust_shape(res)
         return res
 
