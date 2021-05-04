@@ -187,8 +187,8 @@ class SFData(dict):
             return super_getitem(key)
         try:
             chans = {k: super_getitem(k) for k in key} #TODO: should subsetting copy channels (separate .valid)?
-        except TypeError as e:
-            raise KeyError(key) from e
+        except TypeError as exc:
+            raise KeyError(key) from exc
         else:
             return SFData(chans)
 

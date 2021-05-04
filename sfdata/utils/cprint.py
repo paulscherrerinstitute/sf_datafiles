@@ -23,10 +23,10 @@ def cprint(*objects, color=None, sep=" ", **kwargs):
 def get_color(color):
     try:
         return COLORS[color]
-    except KeyError as e:
+    except KeyError as exc:
         color = repr(color)
         allowed = tuple(COLORS.keys())
-        raise ValueError(f"{color} not from {allowed}") from e
+        raise ValueError(f"{color} not from {allowed}") from exc
 
 def flatten_strings(objects, sep):
     return sep.join(str(i) for i in objects)
