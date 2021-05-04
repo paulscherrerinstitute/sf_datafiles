@@ -309,8 +309,9 @@ class TestSFDataFile(TestCase):
         data.close()      # also create ClosedH5, which cannot read file info
         check_channel_closed(self, ch)
 
-    def test_spurios_pids(self):
-        with SFDataFile("fake_data/run_spurious_pids.ARRAYS.h5") as data:
+    def test_spurious_chans(self):
+        with SFDataFile("fake_data/run_spurious_chans.ARRAYS.h5") as data:
+            self.assertTrue("file_create_date" not in data)
             self.assertTrue("pulse_id" not in data)
 
     def test_missing_ju_import(self):

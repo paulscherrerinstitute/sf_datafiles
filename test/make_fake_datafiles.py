@@ -61,9 +61,14 @@ write_file("fake_data/run_test.ARRAYS.h5", data, pids, make_data=False)
 
 
 
-data["pulse_id"] = [0] # add spurious pids "channel"
-pids["pulse_id"] = [0]
-write_file("fake_data/run_spurious_pids.ARRAYS.h5", data, pids, make_data=False)
+# add spurious "channels"
+spurious_channels = (
+    "file_create_date",
+    "pulse_id"
+)
+for ch in spurious_channels:
+    data[ch] = pids[ch] = [0]
+write_file("fake_data/run_spurious_chans.ARRAYS.h5", data, pids, make_data=False)
 
 
 
