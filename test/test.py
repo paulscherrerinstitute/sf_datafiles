@@ -24,7 +24,8 @@ from hiddenmod import HiddenModule
 
 import sfdata
 from sfdata import SFDataFiles, SFDataFile, SFScanInfo
-from sfdata.errors import NoMatchingFileError, NoUsableFileError
+from sfdata.sfchannel import SFChannel
+from sfdata.errors import NoUsableFileError, NoMatchingFileError, DatasetNotInGroupError
 from sfdata.utils import typename, h5_boolean_indexing, json_load, strlen, maxstrlen, print_line, cprint, dip, percentage_missing, decide_color, apply_batched, batched, FileContext, decide_pandas_dtype
 from sfdata.utils.closedh5 import ClosedH5Error
 from sfdata.utils.progress import bar, percentage # not actually used anywhere
@@ -656,6 +657,14 @@ class TestSFChannel(TestCase):
                 self.assertAllEqual(
                     res, CH_1D_DATA[:n*m]
                 )
+
+
+    def test_broken(self):
+        ch = self.data[CH_1D_NAME]
+        with self.assertNotRaises():
+            SFChannel("test", ch._group)
+        with self.assertRaises(DatasetNotInGroupError):
+            SFChannel("test", ch.datasets.data)
 
 
 
