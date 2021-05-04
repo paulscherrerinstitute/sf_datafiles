@@ -56,7 +56,7 @@ def generate_sfdata(fnames):
             sn = f"step {i} {fns}"
             print_skip_warning(exc, sn)
     if nothing_opened:
-        raise NoUsableFileError("No entry contained a usable file")
+        raise NoUsableFileError
 
 
 

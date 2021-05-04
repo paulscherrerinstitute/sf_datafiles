@@ -1,5 +1,7 @@
 from types import SimpleNamespace
 import numpy as np
+
+from .errors import DatasetNotInGroupError
 from .utils import typename, adjust_shape, batched, apply_batched, ClosedH5
 
 
@@ -9,8 +11,8 @@ class SFChannel:
         self.name = name
         self._group = group
         self.datasets = SimpleNamespace(
-            data = group["data"],
-            pids = group["pulse_id"]
+            data = get_dataset("data", group),
+            pids = get_dataset("pulse_id", group)
         )
         self.offset = 0
         self.reset_valid()
@@ -88,6 +90,16 @@ class SFChannel:
         tn = typename(self)
         name = self.name
         return f"{tn}: {name}"
+
+
+
+def get_dataset(name, group):
+    try:
+        res = group[name]
+    except Exception as exc: #TODO: limit this to ValueError("Field names only allowed for compound types") ?
+        raise DatasetNotInGroupError(name, group) from exc
+    else:
+        return res
 
 
 
