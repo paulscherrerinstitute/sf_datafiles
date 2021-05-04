@@ -64,8 +64,8 @@ write_file("fake_data/run_test.ARRAYS.h5", data, pids, make_data=False)
 fname = "fake_data/run_spurious_chans.ARRAYS.h5"
 write_file(fname, data, pids, make_data=False)
 spurious_channels = (
-    "file_create_date",
-    "pulse_id"
+    "file_create_date", # timestamp (accidentally) is a group and not an attribute
+    "pulse_id"          # spurious pulse_id group in bsread files
 )
 # add additional spurious "channels"
 with h5py.File(fname, "w") as f:
