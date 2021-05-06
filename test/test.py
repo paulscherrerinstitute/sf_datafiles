@@ -25,7 +25,7 @@ from hiddenmod import HiddenModule
 import sfdata
 from sfdata import SFDataFiles, SFDataFile, SFScanInfo
 from sfdata.sfchannel import SFChannel
-from sfdata.errors import NoUsableFileError, NoMatchingFileError, DatasetNotInGroupError
+from sfdata.errors import NoUsableFileError, NoMatchingFileError, DatasetNotInGroupError, NoUsableChannelError
 from sfdata.utils import typename, h5_boolean_indexing, json_load, strlen, maxstrlen, print_line, cprint, dip, percentage_missing, decide_color, apply_batched, batched, FileContext, decide_pandas_dtype
 from sfdata.utils.closedh5 import ClosedH5Error
 from sfdata.utils.progress import bar, percentage # not actually used anywhere
@@ -311,9 +311,17 @@ class TestSFDataFile(TestCase):
         check_channel_closed(self, ch)
 
     def test_spurious_chans(self):
-        with SFDataFile("fake_data/run_spurious_chans.ARRAYS.h5") as data:
-            self.assertTrue("file_create_date" not in data)
-            self.assertTrue("pulse_id" not in data)
+        msg = [
+            'Skipping channel "file_create_date" since it caused DatasetNotInGroupError: Cannot get dataset "data" from: <HDF5 dataset "file_create_date": shape (1,), type "<i8">',
+            'Skipping channel "pulse_id" since it caused DatasetNotInGroupError: Cannot get dataset "data" from: <HDF5 dataset "pulse_id": shape (1,), type "<i8">'
+        ]
+        with self.assertWarns(*msg):
+            with SFDataFile("fake_data/run_spurious_chans.ARRAYS.h5") as data:
+                self.assertTrue("file_create_date" not in data)
+                self.assertTrue("pulse_id" not in data)
+        with self.assertRaises(NoUsableChannelError), self.assertWarns(*msg):
+            with SFDataFile("fake_data/run_spurious_chans_only.ARRAYS.h5") as data:
+                pass
 
     def test_missing_ju_import(self):
         import sfdata.sfdatafile
@@ -694,7 +702,7 @@ class TestSFChannelJF(TestCase):
     @unittest.mock.patch("sfdata.sfdatafile.ju", None)
     def test_no_ju(self):
         modfname = sfdata.sfdatafile.__file__
-        line = 22 #TODO this will break!
+        line = 23 #TODO this will break!
         prefix = f"{modfname}:{line}: UserWarning: "
         suffix = "\n  self.file, channels = load_from_file(fname)"
         msg = "Could not import jungfrau_utils, will treat JF files as regular files."

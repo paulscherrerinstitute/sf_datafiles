@@ -68,9 +68,22 @@ spurious_channels = (
     "pulse_id"          # spurious pulse_id group in bsread files
 )
 # add additional spurious "channels"
-with h5py.File(fname, "w") as f:
-    for ch in spurious_channels:
-        f.create_dataset(ch, data=[0])
+try:
+    with h5py.File(fname, "a") as f:
+        for ch in spurious_channels:
+            f.create_dataset(ch, data=[0])
+except OSError:
+    pass
+
+
+fname = "fake_data/run_spurious_chans_only.ARRAYS.h5"
+# add spurious "channels"
+if os.path.exists(fname):
+    print(f"{fname} exists... skipping!")
+else:
+    with h5py.File(fname, "w") as f:
+        for ch in spurious_channels:
+            f.create_dataset(ch, data=[0])
 
 
 
