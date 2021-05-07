@@ -13,6 +13,13 @@ class NoMatchingFileError(Exception):
         super().__init__(msg)
 
 
+class NoUsableChannelError(Exception):
+
+    def __init__(self, fname):
+        msg = f"No usable channel in: {fname}"
+        super().__init__(msg)
+
+
 class DatasetNotInGroupError(Exception):
 
     def __init__(self, name, group):

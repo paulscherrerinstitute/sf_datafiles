@@ -3,7 +3,8 @@ from warnings import warn
 import h5py
 import bitshuffle.h5
 
-from .utils import typename, FileContext
+from .errors import NoUsableChannelError
+from .utils import typename, FileContext, enquote, print_skip_warning
 from .sfdata import SFData
 from .sfchannel import SFChannel
 from .sfchanneljf import SFChannelJF
@@ -62,13 +63,18 @@ def load_from_generic_file(fname):
 
     channels = {}
     for name in data:
-        if name == "pulse_id": #TODO: workaround for a spurious pulse_id group in bsread files
-            continue
-        if name == "file_create_date": #TODO: workaround for the timestamp (accidentally) being a group and not an attribute
-            continue
-        chan = data[name]
-        chan = SFChannel(name, chan)
-        channels[name] = chan
+        group = data[name]
+        try:
+            chan = SFChannel(name, group)
+        except Exception as exc:
+            cn = enquote(name)
+            cn = f"channel {cn}"
+            print_skip_warning(exc, cn)
+        else:
+            channels[name] = chan
+
+    if not channels:
+        raise NoUsableChannelError(fname)
 
     return h5, channels
 
