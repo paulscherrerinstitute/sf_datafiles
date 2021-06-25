@@ -11,7 +11,7 @@ class SFChannelJF(SFChannel):
     def shape(self):
         nimages = self.nvalid
         juf = self._group
-        image_shape = juf.handler.get_shape_out(juf.gap_pixels, juf.geometry)
+        image_shape = juf.handler.get_shape_out(gap_pixels=juf.gap_pixels, geometry=juf.geometry)
         shape = (nimages, *image_shape)
         return shape
 
