@@ -4,7 +4,7 @@ import pandas as pd
 import xarray as xr
 from tqdm import tqdm
 
-from .utils import typename, percentage_missing, strlen, maxstrlen, decide_color, print_line, dip, cprint, decide_pandas_dtype
+from .utils import typename, percentage_missing, strlen, maxstrlen, decide_color, print_line, dip, cprint, ncprint, decide_pandas_dtype
 
 
 #unique_intersect1d = partial(np.intersect1d, assume_unique=True)
@@ -119,8 +119,10 @@ class SFData(dict):
             chan.valid = ind_chan
 
 
-    def print_stats(self, show_complete=False):
+    def print_stats(self, show_complete=False, color=True):
         hide_complete = not show_complete
+
+        fprint = cprint if color else ncprint
 
         shared_pids = self.pids
         all_pids = self.all_pids
@@ -154,17 +156,17 @@ class SFData(dict):
             s_perc = str(perc).rjust(len_perc)
 
             color = decide_color(n_inters, n_shared_pids, n_all_pids)
-            cprint(chan.name.ljust(len_name), f"{s_n_inters} / {n_all_pids} -> {s_perc}% loss", dip(perc), color=color)
+            fprint(chan.name.ljust(len_name), f"{s_n_inters} / {n_all_pids} -> {s_perc}% loss", dip(perc), color=color)
 
         print()
         color = decide_color(n_shared_pids, n_shared_pids, n_all_pids)
-        cprint(f"over the whole data set: {n_shared_pids} / {n_all_pids} -> {max_perc}% loss", color=color)
+        fprint(f"over the whole data set: {n_shared_pids} / {n_all_pids} -> {max_perc}% loss", color=color)
 
         perc_incomplete = percentage_missing(n_complete, n_total)
-        cprint(f"complete channels: {n_complete} / {n_total} -> {perc_incomplete}% incomplete", color=color)
+        fprint(f"complete channels: {n_complete} / {n_total} -> {perc_incomplete}% incomplete", color=color)
 
         if hide_complete and n_complete > 0:
-            cprint("complete channels are hidden", color="green")
+            fprint("complete channels are hidden", color="green")
 
         print_line()
 

@@ -15,6 +15,9 @@ COLORS = {
 }
 
 
+def ncprint(*objects, color=None, sep=" ", **kwargs):
+    return cprint(*objects, color=None, sep=sep, **kwargs)
+
 def cprint(*objects, color=None, sep=" ", **kwargs):
     color = get_color(color)
     text = flatten_strings(objects, sep)

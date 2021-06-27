@@ -13,6 +13,7 @@ this_dir = os.path.dirname(__file__)
 sys.path.insert(0, (os.path.join(this_dir, "..")))
 
 
+import re
 import io
 import unittest
 import unittest.mock
@@ -30,6 +31,7 @@ from sfdata.utils import typename, h5_boolean_indexing, json_load, strlen, maxst
 from sfdata.utils.closedh5 import ClosedH5Error
 from sfdata.utils.progress import bar, percentage # not actually used anywhere
 from sfdata.utils.np import nothing_like
+from sfdata.utils.cprint import COLORS
 
 
 FNAME_SCALARS = "fake_data/run_test.SCALARS.h5"
@@ -91,6 +93,10 @@ PRINT_STATE_COMPLETE_TRUE = """
 
 """
 
+
+def remove_color_codes(line):
+    ansi_chars = re.compile(r"\x1b\[[0-9;]*[mGKF]")
+    return ansi_chars.sub(COLORS[None], line)
 
 
 def check_channel_closed(testcase, ch):
@@ -387,11 +393,19 @@ class TestSFData(TestCase):
                 data1.names, data2.names
             )
 
+
     def test_print_stats(self):
+#        self.maxDiff = None
+
         with self.assertStdout(PRINT_STATE_COMPLETE_FALSE):
-            self.data.print_stats(show_complete=False)
+            self.data.print_stats(show_complete=False, color=True)
         with self.assertStdout(PRINT_STATE_COMPLETE_TRUE):
-            self.data.print_stats(show_complete=True)
+            self.data.print_stats(show_complete=True, color=True)
+
+        with self.assertStdout(remove_color_codes(PRINT_STATE_COMPLETE_FALSE)):
+            self.data.print_stats(show_complete=False, color=False)
+        with self.assertStdout(remove_color_codes(PRINT_STATE_COMPLETE_TRUE)):
+            self.data.print_stats(show_complete=True, color=False)
 
 
 
