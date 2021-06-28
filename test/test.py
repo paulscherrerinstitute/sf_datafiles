@@ -31,7 +31,6 @@ from sfdata.utils import typename, h5_boolean_indexing, json_load, strlen, maxst
 from sfdata.utils.closedh5 import ClosedH5Error
 from sfdata.utils.progress import bar, percentage # not actually used anywhere
 from sfdata.utils.np import nothing_like
-from sfdata.utils.cprint import COLORS
 
 
 FNAME_SCALARS = "fake_data/run_test.SCALARS.h5"
@@ -96,7 +95,7 @@ PRINT_STATE_COMPLETE_TRUE = """
 
 def remove_color_codes(line):
     ansi_chars = re.compile(r"\x1b\[[0-9;]*[mGKF]")
-    return ansi_chars.sub(COLORS[None], line)
+    return ansi_chars.sub("", line)
 
 
 def check_channel_closed(testcase, ch):

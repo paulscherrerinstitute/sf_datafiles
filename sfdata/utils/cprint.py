@@ -3,15 +3,14 @@ from colorama import Fore
 
 COLORS = {
     "black":   Fore.BLACK,
-    "red":     Fore.RED,
-    "green":   Fore.GREEN,
-    "yellow":  Fore.YELLOW,
     "blue":    Fore.BLUE,
-    "magenta": Fore.MAGENTA,
     "cyan":    Fore.CYAN,
+    "green":   Fore.GREEN,
+    "magenta": Fore.MAGENTA,
+    "red":     Fore.RED,
     "white":   Fore.WHITE,
-    "reset":   Fore.RESET,
-    None:      Fore.RESET
+    "yellow":  Fore.YELLOW,
+    None: None
 }
 
 
@@ -35,7 +34,9 @@ def flatten_strings(objects, sep):
     return sep.join(str(i) for i in objects)
 
 def _print(color, text, sep, kwargs):
-    return print(color + text + Fore.RESET, sep=sep, **kwargs)
+    if color is not None:
+        text = color + text + Fore.RESET
+    return print(text, sep=sep, **kwargs)
 
 
 
