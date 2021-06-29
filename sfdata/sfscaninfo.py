@@ -8,13 +8,13 @@ class SFScanInfo(Sequence):
 
     def __init__(self, fname):
         self.fname = fname
-        self.data = data = json_load(fname)
+        self.info = info = json_load(fname)
 
-        self.files      = data["scan_files"]
-        self.parameters = data["scan_parameters"]
+        self.files      = info["scan_files"]
+        self.parameters = info["scan_parameters"]
 
-        values    = data["scan_values"]
-        readbacks = data["scan_readbacks"]
+        values    = info["scan_values"]
+        readbacks = info["scan_readbacks"]
 
         self.values    = adjust_shape(values)
         self.readbacks = adjust_shape(readbacks)
