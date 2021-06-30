@@ -1,6 +1,6 @@
 from collections.abc import Sequence
 from .errors import NoMatchingFileError, NoUsableFileError
-from .utils import adjust_shape, json_load, typename, print_skip_warning
+from .utils import adjust_shape, json_load, typename, enquote, print_skip_warning
 from .sfdatafiles import SFDataFiles
 
 
@@ -36,9 +36,9 @@ class SFScanInfo(Sequence):
 
     def __repr__(self):
         tn = typename(self)
-        fn = self.fname
+        fn = enquote(self.fname)
         nsteps = len(self)
-        return f"{tn}(\"{fn}\"): {nsteps} steps"
+        return f"{tn}({fn}): {nsteps} steps"
 
 
 

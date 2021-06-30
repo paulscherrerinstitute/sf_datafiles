@@ -30,9 +30,9 @@ class SFDataFile(FileContext, SFData):
 
     def __repr__(self):
         tn = typename(self)
-        fn = self.fname
+        fn = enquote(self.fname)
         entries = len(self)
-        return f"{tn}(\"{fn}\"): {entries} channels"
+        return f"{tn}({fn}): {entries} channels"
 
 
 
