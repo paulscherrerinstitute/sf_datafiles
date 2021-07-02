@@ -157,3 +157,23 @@ class _AssertWarningsContext:
 
 
 
+from sfdata.utils.closedh5 import ClosedH5Error
+
+
+def check_channel_closed(testcase, ch):
+    with testcase.assertRaises(ClosedH5Error):
+        ch.data
+    with testcase.assertRaises(ClosedH5Error):
+        ch.pids
+
+    with testcase.assertRaises(ClosedH5Error):
+        ch.shape
+    with testcase.assertRaises(ClosedH5Error):
+        ch.dtype
+    with testcase.assertRaises(ClosedH5Error):
+        ch.ndim
+    with testcase.assertRaises(ClosedH5Error):
+        ch.size
+
+
+
