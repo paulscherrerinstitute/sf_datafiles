@@ -75,6 +75,9 @@ class TestCase(unittest.TestCase):
     def assertWarns(self, *expected_output):
         return _AssertWarningsContext(self, expected_output)
 
+    def assertCreatesTempFile(self, fname):
+        return _AssertCreatesTempFile(self, fname)
+
 
 
 class _AssertNotRaisesContext:
@@ -154,6 +157,23 @@ class _AssertWarningsContext:
         testcase.assertEqual(len(warnings), len(expected))
         messages = tuple(str(w.message) for w in warnings)
         testcase.assertEqual(messages, expected)
+
+
+
+class _AssertCreatesTempFile:
+
+    def __init__(self, testcase, fname):
+        self.testcase = testcase
+        self.fname = fname
+
+    def __enter__(self):
+        self.testcase.assertFalse(os.path.exists(self.fname))
+        return self
+
+    def __exit__(self, exc_type, exc_value, tb):
+        fname = self.fname
+        self.testcase.assertTrue(os.path.exists(fname))
+        os.remove(fname)
 
 
 
