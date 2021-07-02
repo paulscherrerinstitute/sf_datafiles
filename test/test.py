@@ -20,6 +20,7 @@ if __name__ == '__main__':
     from test_sfchannel import TestSFChannel
     from test_sfchanneljf import TestSFChannelJF
     from test_sfscaninfo import TestSFScanInfo
+    from test_sfprocfile import TestSFProcFile
     from test_errors import TestErrors
     from test_filecontext import TestFileContext
     from test_utils import TestUtils

@@ -31,4 +31,11 @@ class DatasetNotInGroupError(SFDataError):
         super().__init__(msg)
 
 
+class ArrayLengthMismatch(SFDataError):
+
+    def __init__(self, name, npids, ndata):
+        msg = f"Cannot create channel \"{name}\" due to array length mismatch: #pids = {npids} vs. #data = {ndata}"
+        super().__init__(msg)
+
+
 
