@@ -160,6 +160,8 @@ def stack_dicts(a, b):
 
 
 #TODO:
+#- add SFProcFile.update() !
+#- add SFProcFile.add_attribute() / .add_attributes() for consistency?
 #- allow mode="a" ?
 #  would need to read file's existing channels
 #- allow appending/changing ch.pids/ch.data ?
