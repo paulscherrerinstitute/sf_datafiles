@@ -91,6 +91,12 @@ class SFChannel:
         name = self.name
         return f"{tn}: {name}"
 
+    def __iter__(self):
+        def gen():
+            yield self.pids
+            yield self.data
+        return gen()
+
 
 
 def get_dataset(name, group):

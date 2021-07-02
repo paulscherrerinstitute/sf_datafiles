@@ -688,6 +688,15 @@ class TestSFChannel(TestCase):
             SFChannel("test", ch.datasets.data)
 
 
+    def test_iter(self):
+        ch = self.data[CH_1D_NAME]
+        gen = iter(ch)
+        self.assertAllEqual(next(gen), ch.pids)
+        self.assertAllEqual(next(gen), ch.data)
+        with self.assertRaises(StopIteration):
+            next(gen)
+
+
 
 class TestSFChannelJF(TestCase):
 
