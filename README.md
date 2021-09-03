@@ -8,7 +8,7 @@ The SwissFEL DAQ writes [hdf5](https://www.hdfgroup.org/solutions/hdf5/) data fi
 
 `/sf/{instrument}/data/{pgroup}/raw/...`
 
-In this folder user-defined subfolders are created, and files are named by a run number and distinguished by a data type (camera images, beam-synchronous data, detector images, [epics](https://epics-controls.org/) PV data):
+In this folder, user-defined subfolders are created, and files are named by a run number and distinguished by a data type (camera images, beam-synchronous data, detector images, [epics](https://epics-controls.org/) PV data):
 
 `.../{user_defined}/run_{number}.{data_type}.h5`
 
@@ -16,7 +16,7 @@ For [scans](#scans), an additional [json](https://www.json.org/) file is written
 
 `.../scan_info/{user_defined}.json`
 
-This module simplifies dealing with the [different data types](#open-(and-close)-files), [scan data](#scans), [missing pulses](#drop-missing-pulses), [memory limitations for very large datasets](#access-in-batches), [timing offsets](#channels-with-timing-offsets), [data format conversion](#convert-to-other-data-formats), etc.
+This module simplifies dealing with the [different data types](#open-and-close-files), [scan data](#scans), [missing pulses](#drop-missing-pulses), [memory limitations for very large datasets](#access-in-batches), [timing offsets](#channels-with-timing-offsets), [data format conversion](#convert-to-other-data-formats), etc.
 
 ## Usage example
 
