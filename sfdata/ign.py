@@ -54,7 +54,11 @@ def warn_ignore(nign, for_what):
 
 
 def get_filetype(fn):
-    return fn.split(".")[-2]
+    try:
+        return fn.split(".")[-2]
+    except IndexError as e:
+#        raise ValueError(f"cannot parse a file type from \"{fn}\"")
+        return None
 
 def make_printable_nfiles(n):
     printable = f"{n} file"
