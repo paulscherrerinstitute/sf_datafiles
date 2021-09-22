@@ -10,19 +10,10 @@ from .ign import remove_ignored_filetypes_run
 class SFDataFiles(FileContext, SFData):
 
     def __init__(self, *patterns):
-        fnames = explode_filenames(patterns)
-        fnames, files = load_files(fnames)
-
-        if not files:
-            patterns = printable_string_sequence(patterns)
-            raise NoMatchingFileError(patterns)
-
-        self.fnames = fnames
-        self.files = files
-
         super().__init__()
-        for f in files:
-            self.update(f)
+        self.fnames = []
+        self.files = []
+        self.load(*patterns)
 
 
     def close(self):
@@ -35,6 +26,21 @@ class SFDataFiles(FileContext, SFData):
         fns = printable_string_sequence(fns)
         entries = len(self)
         return f"{tn}({fns}): {entries} channels"
+
+
+    def load(self, *patterns):
+        fnames = explode_filenames(patterns)
+        fnames, files = load_files(fnames)
+
+        if not files:
+            patterns = printable_string_sequence(patterns)
+            raise NoMatchingFileError(patterns)
+
+        for f in files:
+            self.update(f)
+
+        self.fnames.extend(fnames)
+        self.files.extend(files)
 
 
 
