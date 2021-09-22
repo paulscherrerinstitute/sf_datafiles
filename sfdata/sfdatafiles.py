@@ -4,6 +4,7 @@ from .errors import NoMatchingFileError
 from .utils import typename, printable_string_sequence, FileContext, enquote, print_skip_warning
 from .sfdata import SFData
 from .sfdatafile import SFDataFile
+from .ign import remove_ignored_filetypes_run
 
 
 class SFDataFiles(FileContext, SFData):
@@ -47,6 +48,7 @@ def explode_filenames(patterns):
 
 
 def load_files(fnames):
+    fnames = remove_ignored_filetypes_run(fnames)
     res = {}
     for fn in fnames:
         try:

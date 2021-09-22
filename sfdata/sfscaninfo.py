@@ -2,6 +2,7 @@ from collections.abc import Sequence
 from .errors import NoMatchingFileError, NoUsableFileError
 from .utils import adjust_shape, json_load, typename, enquote, print_skip_warning
 from .sfdatafiles import SFDataFiles
+from .ign import remove_ignored_filetypes_scan
 
 
 class SFScanInfo(Sequence):
@@ -43,6 +44,7 @@ class SFScanInfo(Sequence):
 
 
 def generate_sfdata(fnames):
+    fnames = remove_ignored_filetypes_scan(fnames)
     nothing_opened = True
     for i, fns in enumerate(fnames):
         try:
