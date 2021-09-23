@@ -19,6 +19,7 @@ class SFDataFiles(FileContext, SFData):
     def close(self):
         for f in self.files:
             f.close()
+        #TODO: clear self.fnames/self.files or remove individual closed files?
 
     def __repr__(self):
         tn = typename(self)
@@ -28,7 +29,7 @@ class SFDataFiles(FileContext, SFData):
         return f"{tn}({fns}): {entries} channels"
 
 
-    def load(self, *patterns):
+    def load(self, *patterns): #TODO: check if fnames/file already in self.fnames/self.files?
         fnames = explode_filenames(patterns)
         fnames, files = load_files(fnames)
 
