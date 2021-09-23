@@ -32,6 +32,22 @@ class SFChannel:
         valid_indices = self._get_valid_indices()
         return apply_batched(func, dataset, valid_indices, size, nbatches=n)
 
+
+    def __getitem__(self, key):
+        if isinstance(key, tuple):
+            key = list(key)
+        else:
+            key = [key]
+
+        first = key[0]
+        indices = self._get_valid_indices()
+        key[0] = indices[first]
+
+        key = tuple(key)
+        res = self.datasets.data.__getitem__(key)
+        return res
+
+
     @property
     def data(self):
         return self._get(self.datasets.data)
