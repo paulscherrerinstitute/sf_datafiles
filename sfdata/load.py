@@ -2,21 +2,24 @@ from glob import iglob
 
 
 def make_loader(instrument="*a", pgroup="p*", run="*"):
+    def loader_wrapper(instrument=instrument, pgroup=pgroup, run=run, debug=False):
+        return loader(instrument, pgroup, run, debug)
+    return loader_wrapper
 
-    def loader(instrument=instrument, pgroup=pgroup, run=run, debug=False):
-        pgroup = harmonize(pgroup, "p", 5)
-        run = harmonize(run, "run", 4)
 
-        pattern = f"/sf/{instrument}/data/{pgroup}/raw/{run}"
-        res = sorted(iglob(pattern))
 
-        if debug:
-            print(pattern, "-> #runs:", len(res))
-            return pattern
-        else:
-            return res
+def loader(instrument, pgroup, run, debug):
+    pgroup = harmonize(pgroup, "p", 5)
+    run = harmonize(run, "run", 4)
 
-    return loader
+    pattern = f"/sf/{instrument}/data/{pgroup}/raw/{run}"
+    res = sorted(iglob(pattern))
+
+    if debug:
+        print(pattern, "-> #runs:", len(res))
+        return pattern
+    else:
+        return res
 
 
 
