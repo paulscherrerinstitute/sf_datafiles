@@ -1,11 +1,21 @@
 import collections
 import itertools
+import os.path
 from glob import iglob
+
+from .sfscaninfo import SFScanInfo
+
 
 
 def make_loader(instrument="*a", pgroup="p*", run="*"):
     def loader_wrapper(instrument=instrument, pgroup=pgroup, run=run, debug=False):
-        return list(load_many(instrument, pgroup, run, debug))
+        runs = load_many(instrument, pgroup, run, debug)
+        if debug:
+            yield from runs
+        else:
+            for run in runs:
+                fn = os.path.join(run, "meta/scan.json")
+                yield SFScanInfo(fn)
     return loader_wrapper
 
 
@@ -88,7 +98,8 @@ if __name__ == "__main__":
     from functools import partial
 
 
-    load = partial(load, debug=True)
+    iload = partial(load, debug=True)
+    load = lambda *args, **kwargs: list(iload(*args, **kwargs))
 
 
     assert load(instrument="TEST") == ["/sf/TEST/data/p*/raw/run*"]
