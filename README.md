@@ -113,6 +113,19 @@ ch.ndim  # number of dimensions: len(shape)
 ch.size  # number of elements: prod(shape)
 ```
 
+Furthermore, slices of **valid** data can be accessed via numpy array-slicing syntax on the channel object:
+
+```python
+ch[:100, 200:300, 400:500] # read only a 100x100 ROI of the first 100 images
+```
+
+Note that this is *not* identical to
+
+```python
+ch.data[:100, 200:300, 400:500] # read all data, then apply the slice
+```
+
+
 ### Access in batches
 
 If the full data array is too large to be held in memory at once (which is mainly a concern for camera images), it can be read in batches of valid entries instead:
