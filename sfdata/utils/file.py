@@ -1,5 +1,9 @@
 import os
+from datetime import datetime
 from pathlib import Path
+
+
+fromtimestamp = datetime.fromtimestamp
 
 
 class File:
@@ -24,17 +28,20 @@ class File:
     @property
     def atime(self):
         """Time of most recent access in seconds."""
-        return self._stat().st_atime
+        t = self._stat().st_atime
+        return fromtimestamp(t)
 
     @property
     def mtime(self):
         """Time of most recent content modification in seconds."""
-        return self._stat().st_mtime
+        t = self._stat().st_mtime
+        return fromtimestamp(t)
 
     @property
     def ctime(self):
         """Time of most recent metadata change in seconds."""
-        return self._stat().st_ctime
+        t = self._stat().st_ctime
+        return fromtimestamp(t)
 
     @property
     def size(self):
