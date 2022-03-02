@@ -11,6 +11,9 @@ class File:
     def __init__(self, fname):
         self.name = fname
 
+    def __repr__(self):
+        return self.name
+
 
     @property
     def group(self):
