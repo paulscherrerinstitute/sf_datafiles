@@ -45,7 +45,7 @@ class File:
 
     @property
     def size(self):
-        """Size of the file in bytes"""
+        """File size in bytes"""
         return self._stat().st_size
 
     def _stat(self):
