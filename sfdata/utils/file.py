@@ -23,18 +23,22 @@ class File:
 
     @property
     def atime(self):
+        """Time of most recent access in seconds."""
         return self._stat().st_atime
 
     @property
     def mtime(self):
+        """Time of most recent content modification in seconds."""
         return self._stat().st_mtime
 
     @property
     def ctime(self):
+        """Time of most recent metadata change in seconds."""
         return self._stat().st_ctime
 
     @property
     def size(self):
+        """Size of the file in bytes"""
         return self._stat().st_size
 
     def _stat(self):
