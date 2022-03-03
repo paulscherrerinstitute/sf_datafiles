@@ -1,6 +1,6 @@
 from collections.abc import Sequence
 from .errors import NoMatchingFileError, NoUsableFileError
-from .utils import adjust_shape, json_load, typename, enquote, print_skip_warning, File
+from .utils import adjust_shape, json_load, typename, enquote, print_skip_warning, FileStatus
 from .sfdatafiles import SFDataFiles
 from .ign import remove_ignored_filetypes_scan
 
@@ -9,7 +9,7 @@ class SFScanInfo(Sequence):
 
     def __init__(self, fname):
         self.fname = fname
-        self.fs = File(fname)
+        self.fs = FileStatus(fname)
         self.info = info = json_load(fname)
 
         self.files      = info["scan_files"]

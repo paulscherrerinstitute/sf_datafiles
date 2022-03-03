@@ -6,7 +6,7 @@ from pathlib import Path
 fromtimestamp = datetime.fromtimestamp
 
 
-class File:
+class FileStatus:
 
     def __init__(self, fname):
         self.name = fname
