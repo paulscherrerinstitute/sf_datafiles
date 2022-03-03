@@ -4,7 +4,7 @@ import h5py
 import bitshuffle.h5
 
 from .errors import NoUsableChannelError
-from .utils import typename, FileContext, enquote, print_skip_warning
+from .utils import typename, FileContext, File, enquote, print_skip_warning
 from .sfdata import SFData
 from .sfchannel import SFChannel
 from .sfchanneljf import SFChannelJF
@@ -20,6 +20,7 @@ class SFDataFile(FileContext, SFData):
 
     def __init__(self, fname):
         self.fname = fname
+        self.fs = File(fname)
         self.file, channels = load_from_file(fname)
         super().__init__(channels)
 

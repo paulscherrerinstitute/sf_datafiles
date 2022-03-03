@@ -1,7 +1,7 @@
 import h5py
 
 from .errors import ArrayLengthMismatch
-from .utils import typename, FileContext, enquote
+from .utils import typename, FileContext, File, enquote
 from .sfdata import SFData
 from .sfchannel import SFChannel
 
@@ -18,6 +18,7 @@ class SFProcFile(FileContext, SFData):
 
         super().__init__()
         self.fname = fname
+        self.fs = File(fname)
         self.file = h5py.File(fname, *args, mode=mode, **kwargs)
         self._data = None
         self._meta = None

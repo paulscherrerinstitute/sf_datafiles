@@ -2,7 +2,7 @@ from types import SimpleNamespace
 import numpy as np
 
 from .errors import DatasetNotInGroupError
-from .utils import typename, adjust_shape, batched, apply_batched, ClosedH5
+from .utils import typename, adjust_shape, batched, apply_batched, ClosedH5, File
 
 
 class SFChannel:
@@ -10,6 +10,7 @@ class SFChannel:
     def __init__(self, name, group):
         self.name = name
         self._group = group
+        self.fs = File(group.file.filename)
         self.datasets = SimpleNamespace(
             data = get_dataset("data", group),
             pids = get_dataset("pulse_id", group)
