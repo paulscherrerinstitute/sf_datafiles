@@ -48,7 +48,7 @@ class FileStatus:
 
     @property
     def size(self):
-        """File size in bytes"""
+        """File size in bytes."""
         return self._stat().st_size
 
     def _stat(self):
