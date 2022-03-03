@@ -1,7 +1,7 @@
 import h5py
 
 from .errors import ArrayLengthMismatch
-from .utils import typename, FileContext, FileStatus, enquote
+from .utils import typename, enquote, FileContext, FileStatus
 from .sfdata import SFData
 from .sfchannel import SFChannel
 

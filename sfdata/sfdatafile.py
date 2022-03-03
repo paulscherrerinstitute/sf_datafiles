@@ -4,7 +4,7 @@ import h5py
 import bitshuffle.h5
 
 from .errors import NoUsableChannelError
-from .utils import typename, FileContext, FileStatus, enquote, print_skip_warning
+from .utils import typename, enquote, print_skip_warning, FileContext, FileStatus
 from .sfdata import SFData
 from .sfchannel import SFChannel
 from .sfchanneljf import SFChannelJF

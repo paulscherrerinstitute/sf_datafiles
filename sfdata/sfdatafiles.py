@@ -1,7 +1,7 @@
 from glob import glob
 
 from .errors import NoMatchingFileError
-from .utils import typename, printable_string_sequence, FileContext, enquote, print_skip_warning
+from .utils import typename, enquote, printable_string_sequence, print_skip_warning, FileContext
 from .sfdata import SFData
 from .sfdatafile import SFDataFile
 from .ign import remove_ignored_filetypes_run
