@@ -13,7 +13,8 @@ class SFChannel:
         self.fs = FileStatus(group.file.filename)
         self.datasets = SimpleNamespace(
             data = get_dataset("data", group),
-            pids = get_dataset("pulse_id", group)
+            pids = get_dataset("pulse_id", group),
+            timestamps = group.get("timestamp") # treat timestamps as optional
         )
         self.offset = 0
         self.reset_valid()
@@ -56,6 +57,14 @@ class SFChannel:
     @property
     def pids(self):
         return self._get(self.datasets.pids) - self.offset
+
+    @property
+    def timestamps(self):
+        ts = self.datasets.timestamps
+        if ts is None:
+            return None
+        # 0123456789xyzABCDEF -> 0123456789 unix timestamp in seconds, xyz milliseconds, ABCDEF last 6 digits of pulse ID
+        return self._get(ts).astype("datetime64[ns]") 
 
     def _get(self, dataset):
         res = dataset[:][self.valid] #TODO: workaround: access from h5 via indices is slow
