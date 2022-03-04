@@ -25,8 +25,7 @@ class SFChannelJF(SFChannel):
         good = good[:]
         if good.all():
             return
-        good = good.reshape(-1).astype(bool)
-        good = np.where(good)[0]
+        good = good.reshape(-1).nonzero()[0]
         self.valid = good
 
 
