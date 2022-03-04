@@ -95,11 +95,12 @@ Note that, here, the channel name can be tab completed in ipython or jupyter.
 
 ### Regular access
 
-The pulse IDs and data contents can be accessed via
+The pulse IDs, data contents and timestamps can be accessed via
 
 ```python
 ch.pids
 ch.data
+ch.timestamps
 ```
 
 which reads the full arrays at once from the HDF5 file (it should be noted that this is currently not cached!). In most cases, this will be the preferred way of reading data.
@@ -124,7 +125,6 @@ Note that this is *not* identical to
 ```python
 ch.data[:100, 200:300, 400:500] # read all data, then apply the slice
 ```
-
 
 ### Access in batches
 
@@ -184,6 +184,7 @@ In case the underlying HDF5 datasets need to be accessed, e.g., for reading only
 ```python
 ch.datasets.pids
 ch.datasets.data
+ch.datasets.timestamps
 ```
 
 In order to actually read the data from the file in this case, standard HDF5 syntax applies:
@@ -198,6 +199,21 @@ ch.datasets.data[100:200]
 #### Jungfrau data
 
 If the [jungfrau_utils](https://github.com/paulscherrerinstitute/jungfrau_utils/) module is [installed](https://github.com/paulscherrerinstitute/jungfrau_utils#installation), its [`File`](https://jungfrau-utils.readthedocs.io/en/latest/jungfrau_utils.html#jungfrau_utils.file_adapter.File) class will be used automatically to open Jungfrau data files (`*.JF*.h5`). Instead of `SFChannel`, these channels are represented by the `SFChannelJF` class. The difference should be fully transparent for the user as both channels act identically when subsetting, slicing, etc.
+
+The valid entries for Jungfrau data are initialized from the dataset `is_good_frame` in the respective data file. This dataset is also taken into account when `SFChannelJF.reset_valid()` is called.
+
+Jungfrau data files do not contain timestamps. Thus, both `ch.timestamps` and `ch.datasets.timestamps` are `None` for `SFChannelJF` objects.
+
+### File system meta information
+
+All classes directly tied to a single file (`SFDataFile`, `SFChannel*` and `SFScanInfo`) have a member `.fs` that gives direct access to meta information from the file system:
+
+- access, change, modification time as datetime object: `.fs.atime`, `.fs.ctime`, `.fs.mtime`
+- filename as string: `.fs.name`
+- size in bytes: `.fs.size`
+- group and owner as readable name (will be the pgroup and root for data files): `.fs.group`, `.fs.owner`
+- the file as `pathlib.Path` object: `.fs.path`
+
 
 ## Subsets
 
