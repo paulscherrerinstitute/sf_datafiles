@@ -15,5 +15,18 @@ class SFChannelJF(SFChannel):
         shape = (nimages, *image_shape)
         return shape
 
+    def reset_valid(self):
+        self.valid = Ellipsis
+        # load "is_good_frame", check for any invalid entries, initialize from it
+        good = self._group.file.get(f"data/{self.name}/is_good_frame")
+        if good is None:
+            return
+        good = good[:]
+        if good.all():
+            return
+        good = good.reshape(-1).astype(bool)
+        good = np.where(good)
+        self.valid = good
+
 
 
