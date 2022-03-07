@@ -8,6 +8,11 @@ class SFChannelJF(SFChannel):
         super().__init__(name, group)
         self.datasets.data = group # replace dataset with ju.File object
 
+    @classmethod
+    def from_file(cls, juf):
+        name = juf.detector_name
+        return cls(name, juf)
+
     @property
     def shape(self):
         nimages = self.nvalid
