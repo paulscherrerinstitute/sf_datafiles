@@ -90,6 +90,9 @@ class SFChannel:
         shape = (first_dim, *other_dims)
         return shape
 
+    def __len__(self):
+        return self.nvalid
+
     @property
     def ntotal(self):
         return self.datasets.pids.shape[0]
