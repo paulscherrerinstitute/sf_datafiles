@@ -58,7 +58,7 @@ class TestSFScanInfo(TestCase):
     def test_broken(self, _):
 #        self.maxDiff = None
         modfname = sfdata.sfscaninfo.__file__
-        line = 56 #TODO this will break!
+        line = 57 #TODO this will break!
         prefix = f"{modfname}:{line}: UserWarning: "
         suffix = "\n  print_skip_warning(exc, sn)"
         msg_fmt = "Skipping step {} ['fake_data/run_test.ARRAYS.h5', 'fake_data/run_test.SCALARS.h5'] since it caused Exception: test"
@@ -78,7 +78,7 @@ class TestSFScanInfo(TestCase):
     def test_no_files(self):
 #        self.maxDiff = None
         modfname = sfdata.sfscaninfo.__file__
-        line = 56 #TODO this will break!
+        line = 57 #TODO this will break!
         prefix = f"{modfname}:{line}: UserWarning: "
         suffix = "\n  print_skip_warning(exc, sn)"
         msg_fmt = "Skipping step {} ['does not exist'] since it caused NoMatchingFileError: No matching file for patterns: \"does not exist\""

@@ -34,7 +34,7 @@ class TestSFChannelJF(TestCase):
     @unittest.mock.patch("sfdata.sfdatafile.ju", None)
     def test_no_ju(self):
         modfname = sfdata.sfdatafile.__file__
-        line = 23 #TODO this will break!
+        line = 24 #TODO this will break!
         prefix = f"{modfname}:{line}: UserWarning: "
         suffix = "\n  self.file, channels = load_from_file(fname)"
         msg = "Could not import jungfrau_utils, will treat JF files as regular files."
