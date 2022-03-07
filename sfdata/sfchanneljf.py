@@ -4,9 +4,10 @@ from .sfchannel import SFChannel
 
 class SFChannelJF(SFChannel):
 
-    def __init__(self, name, group):
-        super().__init__(name, group)
-        self.datasets.data = group # replace dataset with ju.File object
+    def __init__(self, name, juf):
+        self.juf = juf
+        super().__init__(name, juf)
+        self.datasets.data = juf # replace raw dataset with ju.File object
 
     @classmethod
     def from_file(cls, juf):
@@ -16,7 +17,7 @@ class SFChannelJF(SFChannel):
     @property
     def shape(self):
         nimages = self.nvalid
-        juf = self._group
+        juf = self.juf
         image_shape = juf.handler.get_shape_out(gap_pixels=juf.gap_pixels, geometry=juf.geometry)
         shape = (nimages, *image_shape)
         return shape
@@ -24,7 +25,7 @@ class SFChannelJF(SFChannel):
     def reset_valid(self):
         self.valid = Ellipsis
         # load "is_good_frame", check for any invalid entries, initialize from it
-        good = self._group.file.get(f"data/{self.name}/is_good_frame")
+        good = self.juf.file.get(f"data/{self.name}/is_good_frame")
         if good is None:
             return
         good = good[:]
