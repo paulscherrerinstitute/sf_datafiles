@@ -6,12 +6,22 @@ from tqdm import tqdm
 
 from .utils import typename, percentage_missing, strlen, maxstrlen, decide_color, print_line, dip, cprint, ncprint, decide_pandas_dtype
 
+from collections import UserDict
+
+
+class _Nooverwritedict(UserDict):
+
+    def __setitem__(self, key, val):
+        if key in self:
+            raise KeyError('Key "{}" already exists and data overwrite is not allowed.'.format(key))
+        else:
+            super().__setitem__(key, val)
 
 #unique_intersect1d = partial(np.intersect1d, assume_unique=True)
 #TODO: how to handle non-unique pids?
 
 
-class SFData(dict):
+class SFData(_Nooverwritedict):
 
     names = property(dict.keys)
     channels = property(dict.values)
@@ -198,6 +208,3 @@ class SFData(dict):
         tn = typename(self)
         entries = len(self)
         return f"{tn}: {entries} channels"
-
-
-
