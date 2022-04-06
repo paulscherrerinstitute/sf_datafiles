@@ -34,5 +34,10 @@ class SFChannelJF(SFChannel):
         good = good.reshape(-1).nonzero()[0] # nonzero returns a tuple of arrays, one for each dimension also for 1D
         self.valid = good
 
+    #TODO: this is workaround for a memory leak
+    def close(self):
+        super().close()
+        self.juf.handler = None # dereference handler as it holds pedestal/gain data
+
 
 
