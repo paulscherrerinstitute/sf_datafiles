@@ -183,6 +183,9 @@ class SFData(dict):
             data += "\n" * 2
             f.writelines(data)
 
+    def add(self, channel):
+        self[channel.name] = channel
+
     def __getitem__(self, key):
         super_getitem = super().__getitem__
         if isinstance(key, str):
