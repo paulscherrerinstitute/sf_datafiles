@@ -1,4 +1,5 @@
 from glob import glob
+from warnings import warn
 
 from .errors import NoMatchingFileError
 from .utils import typename, enquote, printable_string_sequence, print_skip_warning, FileContext
@@ -64,7 +65,9 @@ def load_files(fnames):
             quoted_fn = enquote(fn)
             print_skip_warning(exc, quoted_fn)
         else:
+            warn_masked_channels(fn, f, res)
             res[fn] = f
+
     fnames, files = dict_to_tuples(res)
     return fnames, files
 
@@ -73,6 +76,14 @@ def dict_to_tuples(d):
     keys   = d.keys()
     values = d.values()
     return tuple(keys), tuple(values)
+
+
+def warn_masked_channels(new_fn, new_f, collected):
+    for fn, f in collected.items():
+        overlap = new_f.keys() & f.keys()
+        if overlap:
+            overlap = tuple(overlap)
+            warn(f"The following channels from {fn} are masked by channels from {new_fn}: {overlap}", stacklevel=2)
 
 
 
