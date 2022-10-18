@@ -6,7 +6,7 @@ import numpy as np
 import unittest.mock
 
 from utils import TestCase, identity, make_temp_filename, read_names, load_df_from_csv, SettingWithCopyError
-from consts import FNAME_ALL, FNAME_SCALARS, FNAME_DF, CH_1D_COL_NAME, CH_1D_COL_DATA, CH_1D_NAME, CH_1D_PIDS, CH_1D_DATA, CH_ND_NAME, CH_ND_SHAPE, REPR_CHANNEL
+from consts import FNAME_ALL, FNAME_SCALARS, FNAME_DF, CH_1D_COL_NAME, CH_1D_COL_DATA, CH_1D_NAME, CH_1D_PIDS, CH_1D_DATA, CH_ND_NAME, CH_ND_SHAPE, CH_ND_DATA1, REPR_CHANNEL
 
 from sfdata import SFDataFiles
 from sfdata.sfchannel import SFChannel
@@ -250,6 +250,25 @@ class TestSFChannel(TestCase):
             names, rb
         )
         os.remove(fname)
+
+
+    def test_get_item_index(self):
+        data = self.ch[1]
+        self.assertAllEqual(
+            data, CH_ND_DATA1
+        )
+        self.assertAllEqual(
+            data, self.ch.data[1]
+        )
+
+    def test_get_item_tuple(self):
+        data = self.ch[1, 1]
+        self.assertAllEqual(
+            data, CH_ND_DATA1[1]
+        )
+        self.assertAllEqual(
+            data, self.ch.data[1, 1]
+        )
 
 
     def test_read_column_vector(self):
