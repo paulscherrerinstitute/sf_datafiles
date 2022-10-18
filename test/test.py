@@ -23,7 +23,9 @@ if __name__ == '__main__':
     from test_sfprocfile import TestSFProcFile
     from test_errors import TestErrors
     from test_filecontext import TestFileContext
+    from test_ign import TestIgn
     from test_utils import TestUtils
+    from test_utils_filestatus import TestUtilsFileStatus
 
     import unittest
     unittest.main()
