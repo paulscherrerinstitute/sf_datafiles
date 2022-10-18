@@ -82,7 +82,7 @@ def warn_masked_channels(new_fn, new_f, collected):
     for fn, f in collected.items():
         overlap = new_f.keys() & f.keys()
         if overlap:
-            overlap = tuple(overlap)
+            overlap = sorted(overlap)
             warn(f"The following channels from {fn} are masked by channels from {new_fn}: {overlap}", stacklevel=2)
 
 
