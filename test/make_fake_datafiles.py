@@ -4,7 +4,7 @@ import os.path
 import h5py
 
 
-def write_file(fname, data, pids, make_data=True):
+def write_file(fname, data, pids, timestamps=None, make_data=True):
     assert data.keys() == pids.keys()
 
     if os.path.exists(fname):
@@ -22,7 +22,10 @@ def write_file(fname, data, pids, make_data=True):
             gc = gd.create_group(cn)
             gcd = gc.create_dataset("data", data=data[cn])
             gcp = gc.create_dataset("pulse_id", data=pids[cn])
-
+            if timestamps:
+                ts = timestamps.get(cn)
+                if ts:
+                    gct = gc.create_dataset("timestamp", data=ts)
 
 
 data = {
@@ -38,6 +41,17 @@ pids = {
 }
 
 write_file("fake_data/run_test.SCALARS.h5", data, pids)
+
+
+
+timestamps = {
+    "ch1": [100, 101, 102],
+    "ch2": [100, 101, 102],
+    "ch3": [100, 102]
+}
+
+
+write_file("fake_data/run_timestamps.SCALARS.h5", data, pids, timestamps=timestamps)
 
 
 
