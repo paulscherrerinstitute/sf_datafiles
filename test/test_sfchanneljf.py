@@ -13,6 +13,8 @@ class TestSFChannelJF(TestCase):
 
     det_name = "JFxxx"
     fname = f"fake_data/run_testjf.{det_name}.h5"
+    fname_bad_frames = f"fake_data/run_testjf_bad_frames.{det_name}.h5"
+
 
     @unittest.mock.patch("jungfrau_utils.File")
     def test_create(self, _):
@@ -47,6 +49,32 @@ class TestSFChannelJF(TestCase):
     def test_shape(self, _):
         with SFDataFile(self.fname) as data:
             ch = data[self.det_name]
+            self.assertEqual(
+                ch.shape, (3,)
+            )
+            self.assertAllEqual(
+                ch.pids, [0, 1, 2]
+            )
+
+
+    @unittest.mock.patch("jungfrau_utils.File.detector_name", det_name)
+    @unittest.mock.patch("jungfrau_utils.file_adapter.JFDataHandler")
+    @unittest.mock.patch("jungfrau_utils.file_adapter.locate_gain_file", lambda path: "fn_gain")
+    @unittest.mock.patch("jungfrau_utils.file_adapter.locate_pedestal_file", lambda path: "fn_pedestal")
+    def test_bad_frames(self, _):
+        with SFDataFile(self.fname_bad_frames) as data:
+            ch = data[self.det_name]
+            self.assertAllEqual(
+                ch.valid, [0, 2]
+            )
+            self.assertEqual(
+                ch.shape, (2,)
+            )
+            self.assertAllEqual(
+                ch.pids, [0, 2]
+            )
+            # overwriting bad frame info should reset
+            ch.valid = Ellipsis
             self.assertEqual(
                 ch.shape, (3,)
             )
