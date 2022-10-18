@@ -89,6 +89,26 @@ class TestSFChannel(TestCase):
             repr(self.ch), REPR_CHANNEL
         )
 
+
+    def test_timestamps_optional(self):
+        self.assertEqual(
+            self.ch.timestamps, None
+        )
+
+    def test_timestamps_exists(self): #TODO: better constants?
+        with SFDataFiles("fake_data/run_timestamps.SCALARS.h5") as data:
+            ts = [
+                "1970-01-01T00:00:00.000000100",
+                "1970-01-01T00:00:00.000000101",
+                "1970-01-01T00:00:00.000000102"
+            ]
+            ts = np.array(ts, dtype="datetime64[ns]")
+            ch = data["ch1"]
+            self.assertAllEqual(
+                ch.timestamps, ts
+            )
+
+
     def test_dataframe_setting(self):
         data = self.data
         methods = (data.to_dataframe, data.to_dataframe_accumulate, data.to_dataframe_fill)
