@@ -62,18 +62,21 @@ write_file("fake_data/run_test.ARRAYS.h5", data, pids, make_data=False)
 
 
 fname = "fake_data/run_spurious_chans.ARRAYS.h5"
-write_file(fname, data, pids, make_data=False)
-spurious_channels = (
-    "file_create_date", # timestamp (accidentally) is a group and not an attribute
-    "pulse_id"          # spurious pulse_id group in bsread files
-)
-# add additional spurious "channels"
-try:
-    with h5py.File(fname, "a") as f:
-        for ch in spurious_channels:
-            f.create_dataset(ch, data=[0])
-except OSError:
-    pass
+if os.path.exists(fname):
+    print(f"{fname} exists... skipping!")
+else:
+    write_file(fname, data, pids, make_data=False)
+    spurious_channels = (
+        "file_create_date", # timestamp (accidentally) is a group and not an attribute
+        "pulse_id"          # spurious pulse_id group in bsread files
+    )
+    # add additional spurious "channels"
+    try:
+        with h5py.File(fname, "a") as f:
+            for ch in spurious_channels:
+                f.create_dataset(ch, data=[0])
+    except OSError:
+        pass
 
 
 fname = "fake_data/run_spurious_chans_only.ARRAYS.h5"
@@ -113,8 +116,22 @@ else:
         gc = f.create_group(f"/data/{det_name}")
         gc.create_dataset("data", data=[10, 11, 12])
         gc.create_dataset("pulse_id", data=[0, 1, 2])
-
         gc.create_dataset("daq_rec", data=[[0, 1, 2], [0, 1, 2], [0, 1, 2]])
+
+
+
+fname = f"fake_data/run_testjf_bad_frames.{det_name}.h5"
+
+if os.path.exists(fname):
+    print(f"{fname} exists... skipping!")
+else:
+    with h5py.File(fname, "w") as f:
+        f.create_dataset("/general/detector_name", data=det_name.encode())
+        gc = f.create_group(f"/data/{det_name}")
+        gc.create_dataset("data", data=[10, 11, 12])
+        gc.create_dataset("pulse_id", data=[0, 1, 2])
+        gc.create_dataset("daq_rec", data=[[0, 1, 2], [0, 1, 2], [0, 1, 2]])
+        gc.create_dataset("is_good_frame", data=[True, False, True])
 
 
 
