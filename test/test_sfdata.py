@@ -85,4 +85,13 @@ class TestSFData(TestCase):
             )
 
 
+    def test_get_item_with_wrong_key_type(self):
+        with self.assertRaises(KeyError):
+            self.data[1]
+
+    def test_get_item_with_missing_key(self):
+        with self.assertRaises(KeyError):
+            self.data["notakey"]
+
+
 

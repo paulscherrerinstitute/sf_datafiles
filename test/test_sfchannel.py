@@ -47,6 +47,14 @@ class TestSFChannel(TestCase):
             self.ch.valid, Ellipsis
         )
 
+    def test_length(self):
+        self.assertEqual(
+            len(self.ch), self.ch.nvalid
+        )
+        self.assertEqual(
+            len(self.ch), len(self.ch.pids)
+        )
+
     def test_datasets_pids(self):
         self.assertEqual(
             self.ch.datasets.pids.shape, self.ch.pids.shape
@@ -243,13 +251,6 @@ class TestSFChannel(TestCase):
         )
         os.remove(fname)
 
-    def test_get_item_with_wrong_key_type(self):
-        with self.assertRaises(KeyError):
-            self.data[1]
-
-    def test_get_item_with_missing_key(self):
-        with self.assertRaises(KeyError):
-            self.data["notakey"]
 
     def test_read_column_vector(self):
         with SFDataFiles(FNAME_SCALARS) as data:
