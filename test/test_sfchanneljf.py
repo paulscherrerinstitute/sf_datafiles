@@ -20,6 +20,8 @@ class TestSFChannelJF(TestCase):
 
     @unittest.mock.patch("jungfrau_utils.File.detector_name", det_name)
     @unittest.mock.patch("jungfrau_utils.file_adapter.JFDataHandler")
+    @unittest.mock.patch("jungfrau_utils.file_adapter.locate_gain_file", lambda path: "fn_gain")
+    @unittest.mock.patch("jungfrau_utils.file_adapter.locate_pedestal_file", lambda path: "fn_pedestal")
     def test_shape(self, _):
         with SFDataFile(self.fname) as data:
             ch = data[self.det_name]
