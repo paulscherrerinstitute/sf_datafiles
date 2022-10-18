@@ -6,6 +6,7 @@ from utils import TestCase
 
 import sfdata
 from sfdata import SFDataFile
+from sfdata.sfchanneljf import SFChannelJF
 
 
 class TestSFChannelJF(TestCase):
@@ -17,6 +18,27 @@ class TestSFChannelJF(TestCase):
     def test_create(self, _):
         with SFDataFile(self.fname) as data:
             pass
+
+
+    @unittest.mock.patch("jungfrau_utils.File.detector_name", det_name)
+    @unittest.mock.patch("jungfrau_utils.file_adapter.JFDataHandler")
+    @unittest.mock.patch("jungfrau_utils.file_adapter.locate_gain_file", lambda path: "fn_gain")
+    @unittest.mock.patch("jungfrau_utils.file_adapter.locate_pedestal_file", lambda path: "fn_pedestal")
+    def test_create_from_file_object(self, _):
+        with SFDataFile(self.fname) as data:
+            ch1 = data[self.det_name]
+            juf = ch1.juf
+            ch2 = SFChannelJF.from_file(juf)
+            self.assertNotEqual(
+                ch1, ch2
+            )
+            self.assertEqual(
+                ch1.name, ch2.name
+            )
+            self.assertEqual(
+                ch1.juf, ch2.juf
+            )
+
 
     @unittest.mock.patch("jungfrau_utils.File.detector_name", det_name)
     @unittest.mock.patch("jungfrau_utils.file_adapter.JFDataHandler")
