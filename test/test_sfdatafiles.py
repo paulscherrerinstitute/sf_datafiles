@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from utils import TestCase, check_channel_closed
-from consts import FNAME_ALL, REPR_FILES, CH_1D_NAME, CH_1D_DATA, CH_ND_NAME, CH_ND_DATA1
+from consts import FNAME_ALL, FNAME_SCALARS, REPR_FILES, CH_1D_NAME, CH_1D_DATA, CH_ND_NAME, CH_ND_DATA1
 
 import sfdata
 from sfdata import SFDataFiles
@@ -73,6 +73,12 @@ class TestSFDataFiles(TestCase):
             f.file.close() # close only h5 file
             f.close()      # also create ClosedH5, which cannot read file info
         check_channel_closed(self, ch)
+
+
+    def test_warn_mask(self):
+        msg = "The following channels from fake_data/run_test.SCALARS.h5 are masked by channels from fake_data/run_test.SCALARS.h5: ['ch1', 'ch2', 'ch3']"
+        with self.assertWarns(msg):
+            sfdata.sfdatafiles.load_files([FNAME_SCALARS, FNAME_SCALARS])
 
 
 
