@@ -1,7 +1,7 @@
 import re
 
 from utils import TestCase
-from consts import FNAME_ALL, FNAME_SCALARS, REPR_SUBSET, CH_NAMES, CH_1D_NAME, CH_1D_DATA, CH_1D_PIDS, ALL_PIDS, ANY_PIDS, PRINT_STATE_COMPLETE_FALSE, PRINT_STATE_COMPLETE_TRUE
+from consts import FNAME_ALL, FNAME_SCALARS, FNAME_ARRAYS, REPR_SUBSET, CH_NAMES, CH_1D_NAME, CH_ND_NAME, CH_1D_DATA, CH_1D_PIDS, ALL_PIDS, ANY_PIDS, PRINT_STATE_COMPLETE_FALSE, PRINT_STATE_COMPLETE_TRUE
 
 from sfdata import SFDataFile, SFDataFiles
 
@@ -68,6 +68,21 @@ class TestSFData(TestCase):
             self.data.print_stats(show_complete=False, color=False)
         with self.assertStdout(remove_color_codes(PRINT_STATE_COMPLETE_TRUE)):
             self.data.print_stats(show_complete=True, color=False)
+
+
+    def test_add_channel(self):
+        with SFDataFile(FNAME_SCALARS) as data1, SFDataFiles(FNAME_ARRAYS) as data2:
+            old_names = data1.names
+            expected_names = old_names | {CH_ND_NAME}
+
+            addit_ch = data2[CH_ND_NAME]
+            data1.add(addit_ch)
+
+            new_names = data1.names
+
+            self.assertEqual(
+                new_names, expected_names
+            )
 
 
 
