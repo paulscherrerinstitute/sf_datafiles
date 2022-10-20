@@ -22,6 +22,7 @@ if __name__ == '__main__':
     from test_sfdatafile import TestSFDataFile
     from test_sfdatafiles import TestSFDataFiles
     from test_sfdata import TestSFData
+    from test_sfmeta import TestSFMeta
     from test_sfprocfile import TestSFProcFile
     from test_sfscaninfo import TestSFScanInfo
     from test_utils_filestatus import TestUtilsFileStatus
