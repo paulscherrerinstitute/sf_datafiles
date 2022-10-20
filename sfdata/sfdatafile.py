@@ -66,6 +66,8 @@ def load_from_generic_file(fname):
 
     channels = {}
     for name in data:
+        if name == "general": # skip the general meta data group
+            continue
         group = data[name]
         try:
             chan = SFChannel(name, group)
