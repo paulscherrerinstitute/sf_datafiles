@@ -29,6 +29,24 @@ class TestSFDataFile(TestCase):
         )
 
 
+    def test_meta_optional(self):
+        self.assertEqual(
+            self.data.meta, None
+        )
+
+    def test_meta_exists(self): #TODO: better constants?
+        with SFDataFile("fake_data/run_meta.SCALARS.h5") as data:
+            ref = {
+                "g1": [10, 11, 12],
+                "g2": [13, 14, 15, 16],
+                "g3": [17, 18, 19],
+            }
+            for k in ref:
+                self.assertAllEqual(
+                    data.meta[k], ref[k]
+                )
+
+
     def test_closed1(self):
         with SFDataFile(FNAME_SCALARS) as data:
             ch = data[CH_1D_NAME]
