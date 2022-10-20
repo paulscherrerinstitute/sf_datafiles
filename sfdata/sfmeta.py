@@ -24,9 +24,9 @@ class SFMeta(dict):
 
 
 
-def get_meta(group):
+def get_meta(group, name="meta"):
     try:
-        meta = group["meta"]
+        meta = group[name]
     except KeyError:
         #TODO: warning?
         #TODO: return empty SFMeta object?
