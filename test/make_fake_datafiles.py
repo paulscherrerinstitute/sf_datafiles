@@ -54,6 +54,12 @@ write_file("fake_data/run_timestamps.SCALARS.h5", data, pids, timestamps=timesta
 
 
 
+general = {
+    "g1": [10, 11, 12],
+    "g2": [13, 14, 15, 16],
+    "g3": [17, 18, 19],
+}
+
 meta = {
     "m1": [0, 1, 2],
     "m2": [3, 4, 5, 6],
@@ -66,6 +72,9 @@ if os.path.exists(fname):
 else:
     write_file(fname, data, pids)
     with h5py.File(fname, "a") as f:
+        g = f.create_group("general")
+        for k, v in general.items():
+            g[k] = v
         g = f["data/ch1"]
         m = g.create_group("meta")
         for k, v in meta.items():
