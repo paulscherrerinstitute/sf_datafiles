@@ -34,7 +34,7 @@ class TestSFDataFiles(TestCase):
         with self.assertRaises(NoMatchingFileError):
             SFDataFiles("does not exist")
         modfname = sfdata.sfdatafiles.__file__
-        line = 66 #TODO this will break!
+        line = 76 #TODO this will break!
         prefix = f"{modfname}:{line}: UserWarning: "
         suffix = "\n  print_skip_warning(exc, quoted_fn)"
         broken_file = "fake_data/run_broken.SCALARS.h5"
@@ -46,6 +46,27 @@ class TestSFDataFiles(TestCase):
         msg = f"Skipping \"{broken_file}\" since it caused OSError: Unable to open file (file signature not found)"
         with self.assertRaises(NoMatchingFileError), self.assertWarns(msg):
             SFDataFiles(broken_file)
+
+
+    def test_meta_optional(self):
+        self.assertEqual(
+            self.data.meta, None
+        )
+
+    def test_meta_exists(self): #TODO: better constants?
+        with SFDataFiles("fake_data/run_meta.*.h5") as data:
+            ref = {
+                "g1": [10, 11, 12],
+                "g2": [13, 14, 15, 16],
+                "g3": [17, 18, 19],
+                "g4": [30, 31, 32],
+                "g5": [33, 34, 35, 36],
+                "g6": [37, 38, 39],
+            }
+            for k in ref:
+                self.assertAllEqual(
+                    data.meta[k], ref[k]
+                )
 
 
     def test_closed1(self):
