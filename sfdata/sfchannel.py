@@ -1,7 +1,7 @@
 from types import SimpleNamespace
 import numpy as np
 
-from .sfmeta import SFMeta
+from .sfmeta import SFMeta, get_meta
 from .errors import DatasetNotInGroupError
 from .utils import typename, adjust_shape, batched, apply_batched, ClosedH5, FileStatus
 
@@ -137,17 +137,6 @@ def get_dataset(name, group):
         raise DatasetNotInGroupError(name, group) from exc
     else:
         return res
-
-
-def get_meta(group):
-    try:
-        meta = group["meta"]
-    except KeyError:
-        #TODO: warning?
-        #TODO: return empty SFMeta object?
-        return None
-    else:
-        return SFMeta(meta)
 
 
 

@@ -2,7 +2,7 @@
 
 from utils import TestCase
 
-from sfdata.sfmeta import SFMeta
+from sfdata.sfmeta import SFMeta, get_meta
 
 
 class TestSFMeta(TestCase):
@@ -37,6 +37,20 @@ class TestSFMeta(TestCase):
     def test_repr(self):
         self.assertEqual(
             repr(self.meta), "SFMeta: 2 entries"
+        )
+
+
+    def test_get_meta(self):
+        res = {"test": 123}
+        group = {"meta": res}
+        self.assertEqual(
+            get_meta(group), res
+        )
+
+    def test_get_meta_missing(self):
+        group = {}
+        self.assertEqual(
+            get_meta(group), None
         )
 
 

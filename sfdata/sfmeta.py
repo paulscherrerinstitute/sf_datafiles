@@ -24,3 +24,15 @@ class SFMeta(dict):
 
 
 
+def get_meta(group):
+    try:
+        meta = group["meta"]
+    except KeyError:
+        #TODO: warning?
+        #TODO: return empty SFMeta object?
+        return None
+    else:
+        return SFMeta(meta)
+
+
+

@@ -9,7 +9,7 @@ from utils import TestCase, identity, make_temp_filename, read_names, load_df_fr
 from consts import FNAME_ALL, FNAME_SCALARS, FNAME_DF, CH_1D_COL_NAME, CH_1D_COL_DATA, CH_1D_NAME, CH_1D_PIDS, CH_1D_DATA, CH_ND_NAME, CH_ND_SHAPE, CH_ND_DATA1, REPR_CHANNEL
 
 from sfdata import SFDataFiles
-from sfdata.sfchannel import SFChannel, get_dataset, get_meta
+from sfdata.sfchannel import SFChannel, get_dataset
 from sfdata.errors import DatasetNotInGroupError
 
 
@@ -107,6 +107,25 @@ class TestSFChannel(TestCase):
             self.assertAllEqual(
                 ch.timestamps, ts
             )
+
+
+    def test_meta_optional(self):
+        self.assertEqual(
+            self.ch.meta, None
+        )
+
+    def test_meta_exists(self): #TODO: better constants?
+        with SFDataFiles("fake_data/run_meta.SCALARS.h5") as data:
+            ref = {
+                "m1": [0, 1, 2],
+                "m2": [3, 4, 5, 6],
+                "m3": [7, 8, 9],
+            }
+            ch = data["ch1"]
+            for k in ref:
+                self.assertAllEqual(
+                    ch.meta[k], ref[k]
+                )
 
 
     def test_dataframe_setting(self):
@@ -352,20 +371,6 @@ class TestSFChannel(TestCase):
         group = {}
         with self.assertRaises(DatasetNotInGroupError):
             get_dataset("test", group)
-
-
-    def test_get_meta(self):
-        res = {"test": 123}
-        group = {"meta": res}
-        self.assertEqual(
-            get_meta(group), res
-        )
-
-    def test_get_meta_missing(self):
-        group = {}
-        self.assertEqual(
-            get_meta(group), None
-        )
 
 
 
