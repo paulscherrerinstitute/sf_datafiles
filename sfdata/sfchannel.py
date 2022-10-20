@@ -1,6 +1,7 @@
 from types import SimpleNamespace
 import numpy as np
 
+from .sfmeta import SFMeta
 from .errors import DatasetNotInGroupError
 from .utils import typename, adjust_shape, batched, apply_batched, ClosedH5, FileStatus
 
@@ -16,6 +17,7 @@ class SFChannel:
             pids = get_dataset("pulse_id", group),
             timestamps = group.get("timestamp") # treat timestamps as optional
         )
+        self.meta = get_meta(group)
         self.offset = 0
         self.reset_valid()
 
@@ -135,6 +137,17 @@ def get_dataset(name, group):
         raise DatasetNotInGroupError(name, group) from exc
     else:
         return res
+
+
+def get_meta(group):
+    try:
+        meta = group["meta"]
+    except KeyError:
+        #TODO: warning?
+        #TODO: return empty SFMeta object?
+        return None
+    else:
+        return SFMeta(meta)
 
 
 
