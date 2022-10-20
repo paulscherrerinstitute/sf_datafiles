@@ -102,6 +102,34 @@ write_file("fake_data/run_test.ARRAYS.h5", data, pids, make_data=False)
 
 
 
+general = {
+    "g4": [30, 31, 32],
+    "g5": [33, 34, 35, 36],
+    "g6": [37, 38, 39],
+}
+
+meta = {
+    "m4": [20, 21, 22],
+    "m5": [23, 24, 25, 26],
+    "m6": [27, 28, 29],
+}
+
+fname = "fake_data/run_meta.ARRAYS.h5"
+if os.path.exists(fname):
+    print(f"{fname} exists... skipping!")
+else:
+    write_file(fname, data, pids, make_data=False)
+    with h5py.File(fname, "a") as f:
+        g = f.create_group("general")
+        for k, v in general.items():
+            g[k] = v
+        g = f["ch4"]
+        m = g.create_group("meta")
+        for k, v in meta.items():
+            m[k] = v
+
+
+
 fname = "fake_data/run_spurious_chans.ARRAYS.h5"
 if os.path.exists(fname):
     print(f"{fname} exists... skipping!")
