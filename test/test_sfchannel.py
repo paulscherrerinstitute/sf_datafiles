@@ -9,7 +9,7 @@ from utils import TestCase, identity, make_temp_filename, read_names, load_df_fr
 from consts import FNAME_ALL, FNAME_SCALARS, FNAME_DF, CH_1D_COL_NAME, CH_1D_COL_DATA, CH_1D_NAME, CH_1D_PIDS, CH_1D_DATA, CH_ND_NAME, CH_ND_SHAPE, CH_ND_DATA1, REPR_CHANNEL
 
 from sfdata import SFDataFiles
-from sfdata.sfchannel import SFChannel
+from sfdata.sfchannel import SFChannel, get_dataset, get_meta
 from sfdata.errors import DatasetNotInGroupError
 
 
@@ -340,6 +340,32 @@ class TestSFChannel(TestCase):
         self.assertAllEqual(next(gen), ch.data)
         with self.assertRaises(StopIteration):
             next(gen)
+
+
+    def test_get_dataset(self):
+        group = {"test": 123}
+        self.assertEqual(
+            get_dataset("test", group), 123
+        )
+
+    def test_get_dataset_missing(self):
+        group = {}
+        with self.assertRaises(DatasetNotInGroupError):
+            get_dataset("test", group)
+
+
+    def test_get_meta(self):
+        res = {"test": 123}
+        group = {"meta": res}
+        self.assertEqual(
+            get_meta(group), res
+        )
+
+    def test_get_meta_missing(self):
+        group = {}
+        self.assertEqual(
+            get_meta(group), None
+        )
 
 
 
