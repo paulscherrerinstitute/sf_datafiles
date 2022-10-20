@@ -33,7 +33,7 @@ class SFProcFile(FileContext, SFData):
     @property
     def meta(self):
         if self._meta is None:
-            self._meta = self.file.create_group("meta")
+            self._meta = self.file.create_group("general")
         return self._meta
 
     @property

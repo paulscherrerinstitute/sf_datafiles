@@ -23,7 +23,7 @@ def read_h5_data(fname, name):
 
 def read_h5_meta(fname, name):
     with h5py.File(fname, "r") as f:
-        value = f[f"/meta/{name}"][:]
+        value = f[f"/general/{name}"][:]
     return value
 
 def read_h5_attr(fname, name):
