@@ -8,6 +8,7 @@ from .utils import typename, enquote, print_skip_warning, FileContext, FileStatu
 from .sfdata import SFData
 from .sfchannel import SFChannel
 from .sfchanneljf import SFChannelJF
+from .sfmeta import get_meta
 
 #TODO: treat ju as optional for now
 try:
@@ -22,6 +23,7 @@ class SFDataFile(FileContext, SFData):
         self.fname = fname
         self.fs = FileStatus(fname)
         self.file, channels = load_from_file(fname)
+        self.meta = get_meta(self.file, "general")
         super().__init__(channels)
 
     def close(self):
