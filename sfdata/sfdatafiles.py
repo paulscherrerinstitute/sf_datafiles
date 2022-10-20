@@ -5,6 +5,7 @@ from .errors import NoMatchingFileError
 from .utils import typename, enquote, printable_string_sequence, print_skip_warning, FileContext
 from .sfdata import SFData
 from .sfdatafile import SFDataFile
+from .sfmeta import SFMeta
 from .ign import remove_ignored_filetypes_run
 
 
@@ -14,6 +15,7 @@ class SFDataFiles(FileContext, SFData):
         super().__init__()
         self.fnames = []
         self.files = []
+        self.meta = None
         self.load(*patterns)
 
 
@@ -43,6 +45,14 @@ class SFDataFiles(FileContext, SFData):
 
         self.fnames.extend(fnames)
         self.files.extend(files)
+
+        meta = {}
+        for f in files:
+            if f.meta is not None:
+                meta.update(f.meta)
+
+        if meta:
+            self.meta = SFMeta(meta)
 
 
 
