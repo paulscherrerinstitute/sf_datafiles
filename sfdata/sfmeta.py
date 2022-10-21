@@ -6,6 +6,7 @@ from .utils import typename
 class SFMeta(dict):
 
     names = property(dict.keys)
+    entries = property(dict.values)
 
     # dict defines __eq__ (which invalidates the default __hash__ to maintain consistency)
     # but not __hash__ due to being mutable
@@ -16,6 +17,11 @@ class SFMeta(dict):
     @functools.lru_cache(maxsize=None)
     def __getitem__(self, key):
         return super().__getitem__(key)[:]
+
+    def close(self):
+        #TODO replace entries with ClosedH5
+        #TODO clear the getitem cache to avoid memory leaks
+        pass
 
     def __repr__(self):
         tn = typename(self)
