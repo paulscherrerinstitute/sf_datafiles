@@ -25,6 +25,8 @@ class SFChannel:
         self._group = ClosedH5(self._group)
         self.datasets.data = ClosedH5(self.datasets.data)
         self.datasets.pids = ClosedH5(self.datasets.pids)
+        if self.meta:
+            self.meta.close()
 
     def in_batches(self, size=100, n=None):
         dataset = self.datasets.data

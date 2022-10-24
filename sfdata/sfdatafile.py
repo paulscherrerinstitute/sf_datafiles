@@ -27,8 +27,11 @@ class SFDataFile(FileContext, SFData):
         super().__init__(channels)
 
     def close(self):
+        # channels and meta should be closed before the underlying file such that file name and group name still exist and can be used in error messages
         for ch in self.channels:
-            ch.close() # channels should be closed before the underlying file such that file name and group name still exist and can be used in error messages
+            ch.close()
+        if self.meta:
+            self.meta.close()
         self.file.close()
 
     def __repr__(self):
