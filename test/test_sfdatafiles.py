@@ -34,7 +34,7 @@ class TestSFDataFiles(TestCase):
         with self.assertRaises(NoMatchingFileError):
             SFDataFiles("does not exist")
         modfname = sfdata.sfdatafiles.__file__
-        line = 76 #TODO this will break!
+        line = 77 #TODO this will break!
         prefix = f"{modfname}:{line}: UserWarning: "
         suffix = "\n  print_skip_warning(exc, quoted_fn)"
         broken_file = "fake_data/run_broken.SCALARS.h5"
