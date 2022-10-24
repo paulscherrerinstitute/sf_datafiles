@@ -54,4 +54,79 @@ class TestSFMeta(TestCase):
         )
 
 
+    def test_cache(self):
+        m = SFMeta(self.orig)
+        self.helper_test_meta_cache(m)
+
+    def test_cache_test_helper(self):
+        m = SFMeta(self.orig)
+        self.helper_test_meta_cache(m)
+        # should fail on the second run
+        with self.assertRaises(AssertionError):
+            self.helper_test_meta_cache(m)
+
+    def test_cache_reset_with_clear(self):
+        m = SFMeta(self.orig)
+        self.helper_test_meta_cache(m)
+        m._getitem.cache_clear()
+        self.helper_test_meta_cache(m)
+
+    def test_cache_reset_with_close(self):
+        m = SFMeta(self.orig)
+        self.helper_test_meta_cache(m)
+        m.close()
+        self.helper_test_meta_cache(m)
+
+    def test_caches_independent(self):
+        m1 = SFMeta(self.orig)
+        m2 = SFMeta(self.orig)
+        self.helper_test_meta_cache(m1)
+        self.helper_test_meta_cache(m2)
+
+    def test_caches_independent_with_clear(self):
+        m1 = SFMeta(self.orig)
+        m2 = SFMeta(self.orig)
+        self.helper_test_meta_cache(m1)
+        m1._getitem.cache_clear()
+        self.helper_test_meta_cache(m2)
+
+    def test_caches_independent_with_close(self):
+        m1 = SFMeta(self.orig)
+        m2 = SFMeta(self.orig)
+        self.helper_test_meta_cache(m1)
+        m1.close()
+        self.helper_test_meta_cache(m2)
+
+    def helper_test_meta_cache(self, m):
+        ci = m._getitem.cache_info()
+        self.assertEqual(ci.hits, 0)
+        self.assertEqual(ci.misses, 0)
+        self.assertEqual(ci.currsize, 0)
+        m["a"]
+        ci = m._getitem.cache_info()
+        self.assertEqual(ci.hits, 0)
+        self.assertEqual(ci.misses, 1)
+        self.assertEqual(ci.currsize, 1)
+        m["a"]
+        ci = m._getitem.cache_info()
+        self.assertEqual(ci.hits, 1)
+        self.assertEqual(ci.misses, 1)
+        self.assertEqual(ci.currsize, 1)
+        m["a"]
+        ci = m._getitem.cache_info()
+        self.assertEqual(ci.hits, 2)
+        self.assertEqual(ci.misses, 1)
+        self.assertEqual(ci.currsize, 1)
+        m["b"]
+        ci = m._getitem.cache_info()
+        self.assertEqual(ci.hits, 2)
+        self.assertEqual(ci.misses, 2)
+        self.assertEqual(ci.currsize, 2)
+        m["b"]
+        ci = m._getitem.cache_info()
+        self.assertEqual(ci.hits, 3)
+        self.assertEqual(ci.misses, 2)
+        self.assertEqual(ci.currsize, 2)
+
+
 
