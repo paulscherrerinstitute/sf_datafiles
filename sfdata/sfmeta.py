@@ -1,6 +1,7 @@
 import functools
+import h5py
 
-from .utils import typename
+from .utils import ClosedH5, typename
 
 
 class SFMeta(dict):
@@ -29,8 +30,15 @@ class SFMeta(dict):
         return self._getitem(key)
 
     def close(self):
-        #TODO replace entries with ClosedH5
-        self._getitem.cache_clear() # clear the getitem cache to avoid memory leaks
+        # replace entries with ClosedH5
+        #TODO: is the isinstance check needed?
+        closed = {
+            k: ClosedH5(v) if isinstance(v, h5py.Dataset) else v
+            for k, v in self.items()
+        }
+        self.update(closed)
+        # clear the getitem cache to avoid memory leaks
+        self._getitem.cache_clear()
 
     def __repr__(self):
         tn = typename(self)
