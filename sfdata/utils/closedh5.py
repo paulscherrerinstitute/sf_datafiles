@@ -34,6 +34,12 @@ class ClosedH5:
         self.gname = group.name # is None if file is closed
 
 
+    def __repr__(self):
+        fname = format_name("file", self.fname)
+        gname = format_name("group", self.gname)
+        return f"Closed HDF5 {gname} from {fname}"
+
+
     def _raise_error(self, *args, **kwargs):
         raise ClosedH5Error(self.fname, self.gname)
 
