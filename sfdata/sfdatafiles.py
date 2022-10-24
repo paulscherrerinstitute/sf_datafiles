@@ -46,6 +46,7 @@ class SFDataFiles(FileContext, SFData):
         self.fnames.extend(fnames)
         self.files.extend(files)
 
+        #TODO: handle shadowed entries
         meta = {}
         for f in files:
             if f.meta is not None:
