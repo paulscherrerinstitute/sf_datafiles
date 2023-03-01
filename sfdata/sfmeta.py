@@ -4,6 +4,9 @@ import h5py
 from .utils import ClosedH5, typename
 
 
+cached = functools.lru_cache(maxsize=None)
+
+
 class SFMeta(dict):
 
     names = property(dict.keys)
@@ -19,10 +22,10 @@ class SFMeta(dict):
         #   dict defines __eq__ (which invalidates the default __hash__ to maintain consistency)
         #   but not __hash__ due to being mutable
         #   lru_cache expects hashable function arguments, which self would not be
-        getitem = super().__getitem__
-        @functools.lru_cache(maxsize=None)
+        super_getitem = super().__getitem__
+        @cached
         def _getitem(key):
-            return getitem(key)[:]
+            return super_getitem(key)[()]
         self._getitem = _getitem
 
 
