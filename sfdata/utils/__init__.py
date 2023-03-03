@@ -1,7 +1,7 @@
 
 from .utils import typename
 from .batching import apply_batched, batched
-from .closedh5 import ClosedH5
+from .closedh5 import ClosedH5, ClosedH5Error
 from .cprint import cprint, ncprint
 from .filecontext import FileContext
 from .filestatus import FileStatus
