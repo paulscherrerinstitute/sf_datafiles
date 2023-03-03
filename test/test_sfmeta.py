@@ -4,6 +4,7 @@ import h5py
 from utils import TestCase
 
 from sfdata.sfmeta import SFMeta, get_meta
+from sfdata.utils import ClosedH5Error
 
 
 def virtual_h5(ID):
@@ -66,6 +67,14 @@ class TestSFMeta(TestCase):
         self.assertEqual(
             get_meta(group), None
         )
+
+
+    def test_close(self):
+        m = SFMeta(self.orig)
+        self.helper_test_meta_cache(m)
+        m.close()
+        with self.assertRaises(ClosedH5Error):
+            m["a"]
 
 
     def test_cache(self):
