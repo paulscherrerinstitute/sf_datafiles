@@ -1,4 +1,4 @@
-from collections import UserDict
+from collections.abc import Mapping
 import functools
 import h5py
 
@@ -8,34 +8,7 @@ from .utils import ClosedH5, typename
 cached = functools.lru_cache(maxsize=None)
 
 
-
-class ImmutableUserDict(UserDict):
-
-    def __init__(self, *args, **kwargs):
-        # ImmutableUserDict is supposed to be read-only, but the UserDict constructor uses __setitem__
-        # the following flag controls whether this is allowed or not
-        self._initialized = False
-        super().__init__(*args, **kwargs)
-        self._initialized = True
-
-    def __setitem__(self, key, value):
-        if self._initialized:
-            tn = typename(self)
-            raise TypeError(f"'{tn}' object does not support item assignment")
-        else:
-            return super().__setitem__(key, value)
-
-    def __delitem__(self, key):
-        tn = typename(self)
-        raise TypeError(f"'{tn}' object doesn't support item deletion")
-
-    # ipython cannot tab complete UserDict keys without this
-    def _ipython_key_completions_(self):
-        return self.keys()
-
-
-
-class SFMeta(ImmutableUserDict):
+class SFMeta(Mapping):
 
     @property
     def names(self):
@@ -46,8 +19,9 @@ class SFMeta(ImmutableUserDict):
         return tuple(self.values())
 
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, group):
+        super().__init__()
+        self._group = group
 
         # create a cached version of getitem here so that it is per object and not per class
         # allows to clear the cache (via close) per object
@@ -55,10 +29,9 @@ class SFMeta(ImmutableUserDict):
         #   dict defines __eq__ (which invalidates the default __hash__ to maintain consistency)
         #   but not __hash__ due to being mutable
         #   lru_cache expects hashable function arguments, which self would not be
-        super_getitem = super().__getitem__
         @cached
         def _getitem(key):
-            return super_getitem(key)[()]
+            return self._group[key][()]
         self._getitem = _getitem
 
 
@@ -68,18 +41,27 @@ class SFMeta(ImmutableUserDict):
     def close(self):
         # replace entries with ClosedH5
         #TODO: is the isinstance check needed?
-        closed = {
+        self._group = {
             k: ClosedH5(v) if isinstance(v, h5py.Dataset) else v
-            for k, v in self.items()
+            for k, v in self._group.items()
         }
-        self.update(closed)
         # clear the getitem cache to avoid memory leaks
         self._getitem.cache_clear()
+
+    def __iter__(self):
+        return iter(self._group)
+
+    def __len__(self):
+        return len(self._group)
 
     def __repr__(self):
         tn = typename(self)
         entries = len(self)
         return f"{tn}: {entries} entries"
+
+    # ipython cannot tab complete Mapping keys without this
+    def _ipython_key_completions_(self):
+        return self.keys()
 
 
 
