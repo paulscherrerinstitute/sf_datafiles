@@ -8,7 +8,34 @@ from .utils import ClosedH5, typename
 cached = functools.lru_cache(maxsize=None)
 
 
-class SFMeta(UserDict):
+
+class ImmutableUserDict(UserDict):
+
+    def __init__(self, *args, **kwargs):
+        # ImmutableUserDict is supposed to be read-only, but the UserDict constructor uses __setitem__
+        # the following flag controls whether this is allowed or not
+        self._initialized = False
+        super().__init__(*args, **kwargs)
+        self._initialized = True
+
+    def __setitem__(self, key, value):
+        if self._initialized:
+            tn = typename(self)
+            raise TypeError(f"'{tn}' object does not support item assignment")
+        else:
+            return super().__setitem__(key, value)
+
+    def __delitem__(self, key):
+        tn = typename(self)
+        raise TypeError(f"'{tn}' object doesn't support item deletion")
+
+    # ipython cannot tab complete UserDict keys without this
+    def _ipython_key_completions_(self):
+        return self.keys()
+
+
+
+class SFMeta(ImmutableUserDict):
 
     @property
     def names(self):
@@ -20,11 +47,7 @@ class SFMeta(UserDict):
 
 
     def __init__(self, *args, **kwargs):
-        # SFMeta is supposed to be read-only, but the UserDict constructor uses __setitem__
-        # the following flag controls whether this is allowed or not
-        self._initialized = False
         super().__init__(*args, **kwargs)
-        self._initialized = True
 
         # create a cached version of getitem here so that it is per object and not per class
         # allows to clear the cache (via close) per object
@@ -41,23 +64,6 @@ class SFMeta(UserDict):
 
     def __getitem__(self, key):
         return self._getitem(key)
-
-    def __setitem__(self, key, value):
-        if self._initialized:
-            tn = typename(self)
-            raise TypeError(f"'{tn}' object does not support item assignment")
-        else:
-            return super().__setitem__(key, value)
-
-    def __delitem__(self, key):
-        tn = typename(self)
-        raise TypeError(f"'{tn}' object doesn't support item deletion")
-
-
-    # ipython cannot tab complete UserDict keys without this
-    def _ipython_key_completions_(self):
-        return self.keys()
-
 
     def close(self):
         # replace entries with ClosedH5
