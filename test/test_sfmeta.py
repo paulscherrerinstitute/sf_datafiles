@@ -1,32 +1,44 @@
 #!/usr/bin/env python
+import h5py
 
 from utils import TestCase
 
 from sfdata.sfmeta import SFMeta, get_meta
 
 
+def virtual_h5(ID):
+    return h5py.File(f"virtual{ID}.h5", driver="core", mode="x", backing_store=False)
+
+
+
 class TestSFMeta(TestCase):
 
     def run(self, *args, **kwargs):
-        self.orig = d = {
+        d = {
             "a": [0, 1],
             "b": [1, 2, 3]
         }
-        self.meta = SFMeta(d)
-        super().run(*args, **kwargs)
+
+        with virtual_h5(0) as f:
+            f.update(d)
+            self.orig = f
+            self.meta = SFMeta(f)
+            super().run(*args, **kwargs)
 
 
     def test_names(self):
-        self.assertEqual(
-            self.meta.names, self.meta.keys()
+        keys = self.meta.keys()
+        self.assertAllEqual(
+            self.meta.names, tuple(keys)
         )
-        self.assertEqual(
-            self.meta.names, self.orig.keys()
+        keys = self.orig.keys()
+        self.assertAllEqual(
+            self.meta.names, tuple(keys)
         )
 
     def test_getitem(self):
         for k, v in self.orig.items():
-            self.assertEqual(
+            self.assertAllEqual(
                 self.meta[k], v
             )
 
@@ -41,11 +53,13 @@ class TestSFMeta(TestCase):
 
 
     def test_get_meta(self):
-        res = {"test": 123}
-        group = {"meta": res}
-        self.assertEqual(
-            get_meta(group), res
-        )
+        with virtual_h5(1) as f:
+            res = {"test": 123}
+            g = f.create_group("meta")
+            g.update(res)
+            self.assertEqual(
+                get_meta(f), res
+            )
 
     def test_get_meta_missing(self):
         group = {}
@@ -75,7 +89,10 @@ class TestSFMeta(TestCase):
         m = SFMeta(self.orig)
         self.helper_test_meta_cache(m)
         m.close()
-        self.helper_test_meta_cache(m)
+        ci = m._getitem.cache_info()
+        self.assertEqual(ci.hits, 0)
+        self.assertEqual(ci.misses, 0)
+        self.assertEqual(ci.currsize, 0)
 
     def test_caches_independent(self):
         m1 = SFMeta(self.orig)
