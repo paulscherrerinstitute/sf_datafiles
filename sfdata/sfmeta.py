@@ -1,3 +1,4 @@
+from collections import UserDict
 import functools
 import h5py
 
@@ -7,14 +8,23 @@ from .utils import ClosedH5, typename
 cached = functools.lru_cache(maxsize=None)
 
 
-class SFMeta(dict):
+class SFMeta(UserDict):
 
-    names = property(dict.keys)
-    entries = property(dict.values)
+    @property
+    def names(self):
+        return tuple(self.keys())
+
+    @property
+    def entries(self):
+        return tuple(self.values())
 
 
     def __init__(self, *args, **kwargs):
+        # SFMeta is supposed to be read-only, but the UserDict constructor uses __setitem__
+        # the following flag controls whether this is allowed or not
+        self._initialized = False
         super().__init__(*args, **kwargs)
+        self._initialized = True
 
         # create a cached version of getitem here so that it is per object and not per class
         # allows to clear the cache (via close) per object
@@ -31,6 +41,23 @@ class SFMeta(dict):
 
     def __getitem__(self, key):
         return self._getitem(key)
+
+    def __setitem__(self, key, value):
+        if self._initialized:
+            tn = typename(self)
+            raise TypeError(f"'{tn}' object does not support item assignment")
+        else:
+            return super().__setitem__(key, value)
+
+    def __delitem__(self, key):
+        tn = typename(self)
+        raise TypeError(f"'{tn}' object doesn't support item deletion")
+
+
+    # ipython cannot tab complete UserDict keys without this
+    def _ipython_key_completions_(self):
+        return self.keys()
+
 
     def close(self):
         # replace entries with ClosedH5
