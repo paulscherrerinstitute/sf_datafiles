@@ -6,6 +6,12 @@ from .errors import DatasetNotInGroupError
 from .utils import typename, adjust_shape, batched, apply_batched, ClosedH5, FileStatus
 
 
+NAME_CHAN_DATA = "data"
+NAME_CHAN_PIDS = "pulse_id"
+NAME_CHAN_TIMESTAMPS = "timestamp"
+NAME_CHAN_META = "meta"
+
+
 class SFChannel:
 
     def __init__(self, name, group):
@@ -13,11 +19,11 @@ class SFChannel:
         self._group = group
         self.fs = FileStatus(group.file.filename)
         self.datasets = SimpleNamespace(
-            data = get_dataset("data", group),
-            pids = get_dataset("pulse_id", group),
-            timestamps = group.get("timestamp") # treat timestamps as optional
+            data = get_dataset(NAME_CHAN_DATA, group),
+            pids = get_dataset(NAME_CHAN_PIDS, group),
+            timestamps = group.get(NAME_CHAN_TIMESTAMPS) # treat timestamps as optional
         )
-        self.meta = get_meta(group)
+        self.meta = get_meta(group, NAME_CHAN_META)
         self.offset = 0
         self.reset_valid()
 

@@ -5,6 +5,9 @@ from .utils import typename, enquote, FileContext, FileStatus
 from .sfdata import SFData
 from .sfchannel import SFChannel
 
+from .sfdatafile import NAME_FILE_META, NAME_FILE_DATA_ROOT
+from .sfchannel import NAME_CHAN_DATA, NAME_CHAN_PIDS, NAME_CHAN_TIMESTAMPS, NAME_CHAN_META
+
 
 ALLOWED_MODES = ("w", "w-", "x")
 
@@ -27,13 +30,13 @@ class SFProcFile(FileContext, SFData):
     @property
     def data(self):
         if self._data is None:
-            self._data = self.file.create_group("data")
+            self._data = self.file.create_group(NAME_FILE_DATA_ROOT)
         return self._data
 
     @property
     def meta(self):
         if self._meta is None:
-            self._meta = self.file.create_group("general")
+            self._meta = self.file.create_group(NAME_FILE_META)
         return self._meta
 
     @property
@@ -82,8 +85,8 @@ class SFProcFile(FileContext, SFData):
             raise ArrayLengthMismatch(name, npids, ndata)
 
         group = self.data.create_group(name)
-        group.create_dataset("pulse_id", data=pids)
-        group.create_dataset("data",     data=data)
+        group.create_dataset(NAME_CHAN_PIDS, data=pids)
+        group.create_dataset(NAME_CHAN_DATA, data=data)
 
         chan = SFChannel(name, group)
         super().__setitem__(name, chan)

@@ -17,13 +17,17 @@ except ImportError:
     ju = None
 
 
+NAME_FILE_META = "general"
+NAME_FILE_DATA_ROOT = "data"
+
+
 class SFDataFile(FileContext, SFData):
 
     def __init__(self, fname):
         self.fname = fname
         self.fs = FileStatus(fname)
         self.file, channels = load_from_file(fname)
-        self.meta = get_meta(self.file, "general")
+        self.meta = get_meta(self.file, NAME_FILE_META)
         super().__init__(channels)
 
     def close(self):
@@ -62,14 +66,14 @@ def load_from_ju_file(fname):
 def load_from_generic_file(fname):
     h5 = h5py.File(fname, mode="r")
 
-    if "data" in h5:
-        data = h5["data"] # some files have /data/, e.g., bsread
+    if NAME_FILE_DATA_ROOT in h5:
+        data = h5[NAME_FILE_DATA_ROOT] # some files have /data/, e.g., bsread
     else:
         data = h5 # some files do not, e.g., camera
 
     channels = {}
     for name in data:
-        if name == "general": # skip the general meta data group
+        if name == NAME_FILE_META: # skip the file meta data group
             continue
         group = data[name]
         try:
