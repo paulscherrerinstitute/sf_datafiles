@@ -12,8 +12,9 @@ class NoUsableFileError(SFDataError):
 
 class NoMatchingFileError(SFDataError):
 
-    def __init__(self, patterns):
-        msg = f"No matching file for patterns: {patterns}"
+    def __init__(self, patterns, ftype=None):
+        ftype = f"{ftype} " if ftype else ""
+        msg = f"No matching {ftype}file for patterns: {patterns}"
         super().__init__(msg)
 
 
