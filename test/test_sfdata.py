@@ -57,8 +57,6 @@ class TestSFData(TestCase):
 
 
     def test_print_stats(self):
-#        self.maxDiff = None
-
         with self.assertStdout(PRINT_STATE_COMPLETE_FALSE):
             self.data.print_stats(show_complete=False, color=True)
         with self.assertStdout(PRINT_STATE_COMPLETE_TRUE):

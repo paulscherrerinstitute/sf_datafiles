@@ -56,7 +56,6 @@ class TestSFScanInfo(TestCase):
 
     @unittest.mock.patch("sfdata.SFDataFiles.__init__", side_effect=Exception("test"))
     def test_broken(self, _):
-#        self.maxDiff = None
         modfname = sfdata.sfscaninfo.__file__
         line = 57 #TODO this will break!
         prefix = f"{modfname}:{line}: UserWarning: "
@@ -76,7 +75,6 @@ class TestSFScanInfo(TestCase):
 
 
     def test_no_files(self):
-#        self.maxDiff = None
         modfname = sfdata.sfscaninfo.__file__
         line = 57 #TODO this will break!
         prefix = f"{modfname}:{line}: UserWarning: "
