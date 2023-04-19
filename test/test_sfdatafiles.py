@@ -95,6 +95,13 @@ class TestSFDataFiles(TestCase):
             f.close()      # also create ClosedH5, which cannot read file info
         check_channel_closed(self, ch)
 
+    def test_closed_repr(self):
+        with SFDataFiles(FNAME_SCALARS) as data:
+            ch = data[CH_1D_NAME]
+        rep = repr(ch._group)
+        ref = 'Closed HDF5 group "/data/ch1" from file "fake_data/run_test.SCALARS.h5"'
+        self.assertEqual(rep, ref)
+
 
     def test_warn_mask(self):
         msg = "The following channels from fake_data/run_test.SCALARS.h5 are masked by channels from fake_data/run_test.SCALARS.h5: ['ch1', 'ch2', 'ch3']"

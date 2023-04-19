@@ -72,6 +72,14 @@ class TestSFDataFile(TestCase):
         data.close()      # also create ClosedH5, which cannot read file info
         check_channel_closed(self, ch)
 
+    def test_closed_repr(self):
+        with SFDataFile(FNAME_SCALARS) as data:
+            ch = data[CH_1D_NAME]
+        rep = repr(ch._group)
+        ref = 'Closed HDF5 group "/data/ch1" from file "fake_data/run_test.SCALARS.h5"'
+        self.assertEqual(rep, ref)
+
+
     def test_spurious_chans(self):
         msg = [
             'Skipping channel "file_create_date" since it caused DatasetNotInGroupError: Cannot get dataset "data" from: <HDF5 dataset "file_create_date": shape (1,), type "<i8">',
