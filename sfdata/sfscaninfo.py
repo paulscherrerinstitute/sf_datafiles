@@ -1,5 +1,5 @@
 from collections.abc import Sequence
-from .errors import NoMatchingFileError, NoUsableFileError
+from .errors import NoUsableFileError
 from .utils import typename, enquote, adjust_shape, json_load, print_skip_warning, FileStatus
 from .sfdatafiles import SFDataFiles
 from .ign import remove_ignored_filetypes_scan
