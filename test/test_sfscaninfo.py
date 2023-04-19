@@ -81,7 +81,7 @@ class TestSFScanInfo(TestCase):
         line = 57 #TODO this will break!
         prefix = f"{modfname}:{line}: UserWarning: "
         suffix = "\n  print_skip_warning(exc, sn)"
-        msg_fmt = "Skipping step {} ['does not exist'] since it caused NoMatchingFileError: No matching file for patterns: \"does not exist\""
+        msg_fmt = "Skipping step {} ['does not exist'] since it caused NoMatchingFileError: No matching hdf5 file for patterns: \"does not exist\""
         msg_fmt = prefix + msg_fmt + suffix
         msg = (msg_fmt.format(i) for i in range(self.nsteps))
         empty = SFScanInfo("fake_data/run_no_files.json")
@@ -89,7 +89,7 @@ class TestSFScanInfo(TestCase):
             for step in empty:
                 pass
 
-        msg_fmt = "Skipping step {} ['does not exist'] since it caused NoMatchingFileError: No matching file for patterns: \"does not exist\""
+        msg_fmt = "Skipping step {} ['does not exist'] since it caused NoMatchingFileError: No matching hdf5 file for patterns: \"does not exist\""
         msg = (msg_fmt.format(i) for i in range(self.nsteps))
         with self.assertRaises(NoUsableFileError), self.assertWarns(*msg):
             for step in empty:

@@ -38,7 +38,7 @@ class SFDataFiles(FileContext, SFData):
 
         if not files:
             patterns = printable_string_sequence(patterns)
-            raise NoMatchingFileError(patterns)
+            raise NoMatchingFileError(patterns, ftype="hdf5")
 
         for f in files:
             self.update(f)
