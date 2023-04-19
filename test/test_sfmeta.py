@@ -28,14 +28,25 @@ class TestSFMeta(TestCase):
 
 
     def test_names(self):
+        names = self.meta.names
         keys = self.meta.keys()
         self.assertAllEqual(
-            self.meta.names, tuple(keys)
+            names, tuple(keys)
         )
         keys = self.orig.keys()
         self.assertAllEqual(
-            self.meta.names, tuple(keys)
+            names, tuple(keys)
         )
+
+    def test_entries(self):
+        entries = self.meta.entries
+        vals = self.meta.values()
+        for e, v in zip(entries, vals):
+            self.assertAllEqual(e, v)
+        vals = self.orig.values()
+        for e, v in zip(entries, vals):
+            self.assertAllEqual(e, v)
+
 
     def test_getitem(self):
         for k, v in self.orig.items():
