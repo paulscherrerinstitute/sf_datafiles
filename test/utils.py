@@ -44,6 +44,8 @@ def load_df_from_csv(fname):
 
 class TestCase(unittest.TestCase):
 
+    maxDiff = None
+
 #    def assertAllTrue(self, test):
 #        return self.assertTrue(all(test))
 
