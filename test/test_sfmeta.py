@@ -47,6 +47,13 @@ class TestSFMeta(TestCase):
         for e, v in zip(entries, vals):
             self.assertAllEqual(e, v)
 
+    def test_ipython_key_completions(self):
+        ikcs = self.meta._ipython_key_completions_()
+        keys = self.meta.keys()
+        self.assertAllEqual(
+            tuple(ikcs), tuple(keys)
+        )
+
 
     def test_getitem(self):
         for k, v in self.orig.items():
