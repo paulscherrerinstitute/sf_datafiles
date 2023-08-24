@@ -85,6 +85,10 @@ class TestSFMeta(TestCase):
         self.assertEqual(
             get_meta(group), None
         )
+        group = set()
+        self.assertEqual(
+            get_meta(group), None
+        )
 
 
     def test_close(self):
