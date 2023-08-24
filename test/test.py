@@ -15,6 +15,7 @@ sys.path.insert(0, (os.path.join(this_dir, "..")))
 
 if __name__ == '__main__':
     from test_errors import TestErrors
+    from test_fdemux import TestFileDemultiplexer
     from test_filecontext import TestFileContext
     from test_ign import TestIgn
     from test_sfchannel import TestSFChannel
