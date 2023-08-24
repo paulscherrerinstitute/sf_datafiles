@@ -9,7 +9,11 @@ import numpy as np
 import pandas as pd
 
 
-from pandas.core.common import SettingWithCopyError
+try:
+    from pandas.core.common import SettingWithCopyError
+except ImportError:
+    from pandas.errors import SettingWithCopyWarning
+
 pd.options.mode.chained_assignment = "raise" # make SettingWithCopyWarning an exception
 
 
