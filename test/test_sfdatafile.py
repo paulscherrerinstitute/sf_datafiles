@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import unittest
 import sys
 
 from utils import TestCase, check_channel_closed
@@ -111,6 +112,17 @@ class TestSFDataFile(TestCase):
         self.assertNotEqual(
             sfdata.sfdatafile.ju, None
         )
+
+
+    @unittest.mock.patch("jungfrau_utils.File.detector_name", "JF_ROI0")
+    @unittest.mock.patch("jungfrau_utils.file_adapter.JFDataHandler")
+    @unittest.mock.patch("jungfrau_utils.file_adapter.locate_gain_file", lambda path: "fn_gain")
+    @unittest.mock.patch("jungfrau_utils.file_adapter.locate_pedestal_file", lambda path: "fn_pedestal")
+    def test_multiple_JF_chans(self, _):
+        with SFDataFile("fake_data/run_testjf.JF_ROI.h5") as data:
+            self.assertEqual(
+                sorted(data.names), ["JF_ROI0", "JF_ROI1", "JF_ROI2"]
+            )
 
 
 
