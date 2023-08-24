@@ -204,6 +204,22 @@ else:
 
 
 
+det_name = "JF_ROI"
+fname = f"fake_data/run_testjf.{det_name}.h5"
+
+if os.path.exists(fname):
+    print(f"{fname} exists... skipping!")
+else:
+    with h5py.File(fname, "w") as f:
+        for i in range(3):
+            n = f"{det_name}{i}"
+            gc = f.create_group(f"/data/{n}")
+            gc.create_dataset("data", data=[10, 11, 12])
+            gc.create_dataset("pulse_id", data=[0, 1, 2])
+            gc.create_dataset("daq_rec", data=[[0, 1, 2], [0, 1, 2], [0, 1, 2]])
+
+
+
 # b: bool
 # i: int
 # f: float
