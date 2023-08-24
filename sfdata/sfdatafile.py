@@ -82,7 +82,7 @@ def load_from_ju_file_multiple_channels(fname, names):
         chan = SFChannelJF(n, juf)
         fdemux.add(juf)
         chans[n] = chan
-    return f, chans
+    return fdemux, chans
 
 
 class FileDemultiplexer(set):
