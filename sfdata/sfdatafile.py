@@ -61,6 +61,20 @@ def load_from_ju_file(fname):
         names = f["data"].keys()
         names = sorted(names)
 
+    if len(names) == 1:
+        return load_from_ju_file_single_channel(fname)
+    else:
+        return load_from_ju_file_multiple_channels(fname, names)
+
+
+def load_from_ju_file_single_channel(fname):
+    juf = ju.File(fname)
+    name = juf.detector_name
+    chan = SFChannelJF(name, juf)
+    return juf, {name: chan}
+
+
+def load_from_ju_file_multiple_channels(fname, names):
     fdemux = FileDemultiplexer()
     chans = {}
     for n in names:
@@ -68,8 +82,6 @@ def load_from_ju_file(fname):
         chan = SFChannelJF(n, juf)
         fdemux.add(juf)
         chans[n] = chan
-
-    f = fdemux.pop() if len(fdemux) == 1 else fdemux
     return f, chans
 
 
