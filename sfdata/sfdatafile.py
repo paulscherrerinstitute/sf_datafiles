@@ -57,10 +57,27 @@ def load_from_file(fname):
 
 
 def load_from_ju_file(fname):
-    juf = ju.File(fname)
-    name = juf.detector_name
-    chan = SFChannelJF(name, juf)
-    return juf, {name: chan}
+    with h5py.File(fname) as f:
+        names = f["data"].keys()
+        names = sorted(names)
+
+    fdemux = FileDemultiplexer()
+    chans = {}
+    for n in names:
+        juf = ju.File(fname, detector_name=n)
+        chan = SFChannelJF(n, juf)
+        fdemux.add(juf)
+        chans[n] = chan
+
+    f = fdemux.pop() if len(fdemux) == 1 else fdemux
+    return f, chans
+
+
+class FileDemultiplexer(set):
+
+    def close(self):
+        for f in self:
+            f.close()
 
 
 def load_from_generic_file(fname):

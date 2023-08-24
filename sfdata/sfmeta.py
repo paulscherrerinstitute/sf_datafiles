@@ -68,7 +68,7 @@ class SFMeta(Mapping):
 def get_meta(group, name="meta"):
     try:
         meta = group[name]
-    except KeyError:
+    except (KeyError, TypeError): # TypeError if group does not have __getitem__ #TODO: needed for FileDemultiplexer
         #TODO: warning?
         #TODO: return empty SFMeta object?
         return None
