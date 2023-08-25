@@ -124,5 +124,48 @@ class TestSFDataFile(TestCase):
                 sorted(data.names), ["JF_ROI0", "JF_ROI1", "JF_ROI2"]
             )
 
+            # h5 group
+            meta = data.file["general"]
+
+            ref = {
+                "g4": [30, 31, 32],
+                "g5": [33, 34, 35, 36],
+                "g6": [37, 38, 39],
+            }
+
+            for k in ref:
+                self.assertAllEqual(
+                    meta[k], ref[k]
+                )
+
+            # file meta
+            meta = data.meta
+
+            ref = {
+                "g4": [30, 31, 32],
+                "g5": [33, 34, 35, 36],
+                "g6": [37, 38, 39],
+            }
+
+            for k in ref:
+                self.assertAllEqual(
+                    meta[k], ref[k]
+                )
+
+            # channel meta
+            ch = data["JF_ROI0"]
+            meta = ch.meta
+
+            ref = {
+                "m4": [20, 21, 22],
+                "m5": [23, 24, 25, 26],
+                "m6": [27, 28, 29],
+            }
+
+            for k in ref:
+                self.assertAllEqual(
+                    meta[k], ref[k]
+                )
+
 
 
