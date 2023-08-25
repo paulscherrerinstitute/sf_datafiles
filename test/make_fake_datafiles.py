@@ -218,6 +218,14 @@ else:
             gc.create_dataset("pulse_id", data=[0, 1, 2])
             gc.create_dataset("daq_rec", data=[[0, 1, 2], [0, 1, 2], [0, 1, 2]])
 
+            m = gc.create_group("meta")
+            for k, v in meta.items():
+                m[k] = v
+
+        g = f.create_group("general")
+        for k, v in general.items():
+            g[k] = v
+
 
 
 # b: bool
