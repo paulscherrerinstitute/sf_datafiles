@@ -3,6 +3,7 @@ from .utils import typename
 from .batching import apply_batched, batched
 from .closedh5 import ClosedH5, ClosedH5Error
 from .cprint import cprint, ncprint
+from .fdemux import FileDemultiplexer
 from .filecontext import FileContext
 from .filestatus import FileStatus
 from .h5 import h5_boolean_indexing

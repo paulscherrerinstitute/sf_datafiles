@@ -4,7 +4,7 @@ import h5py
 import bitshuffle.h5
 
 from .errors import NoUsableChannelError
-from .utils import typename, enquote, print_skip_warning, FileContext, FileStatus
+from .utils import typename, enquote, print_skip_warning, FileDemultiplexer, FileContext, FileStatus
 from .sfdata import SFData
 from .sfchannel import SFChannel
 from .sfchanneljf import SFChannelJF
@@ -83,13 +83,6 @@ def load_from_ju_file_multiple_channels(fname, names):
         fdemux.add(juf)
         chans[n] = chan
     return fdemux, chans
-
-
-class FileDemultiplexer(set):
-
-    def close(self):
-        for f in self:
-            f.close()
 
 
 def load_from_generic_file(fname):

@@ -4,7 +4,7 @@ import unittest.mock
 
 from utils import TestCase
 
-from sfdata.sfdatafile import FileDemultiplexer
+from sfdata.utils import FileDemultiplexer
 
 
 class TestFileDemultiplexer(TestCase):
