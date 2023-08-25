@@ -12,27 +12,25 @@ def mopen(*args, **kwargs):
     return mo(*args, **kwargs)
 
 
+
 class TestFileDemultiplexer(TestCase):
 
     def test_closed(self):
-        fnames = ["f{i}" for i in range(5)]
-        fs = [mopen(fn) for fn in fnames]
-
-        subs = mopen("subs")
+        fs, subs = mk_demux_args()
 
         fdemux = FileDemultiplexer(fs, substitute=subs)
 
         for f in fs:
             f.close.assert_not_called()
 
-        fdemux.substitute.close.assert_not_called()
+        subs.close.assert_not_called()
 
         fdemux.close()
 
         for f in fs:
             f.close.assert_called_once()
 
-        fdemux.substitute.close.assert_called_once()
+        subs.close.assert_called_once()
 
 
     def test_substitute(self):
@@ -48,6 +46,38 @@ class TestFileDemultiplexer(TestCase):
         fdemux = FileDemultiplexer(substitute=None)
         with self.assertRaises(ValueError):
             fdemux["substitue_entry"]
+
+
+    def test_repr_name(self):
+        fs, subs = mk_demux_args()
+
+        fdemux = FileDemultiplexer(fs, substitute=subs, name="test_name")
+
+        ref = '<FileDemultiplexer "test_name" (5 instances)>'
+
+        self.assertEqual(
+            repr(fdemux), ref
+        )
+
+
+    def test_repr_no_name(self):
+        fs, subs = mk_demux_args()
+
+        fdemux = FileDemultiplexer(fs, substitute=subs, name=None)
+
+        ref = '<Unnamed FileDemultiplexer (5 instances)>'
+
+        self.assertEqual(
+            repr(fdemux), ref
+        )
+
+
+
+def mk_demux_args():
+    fnames = ["f{i}" for i in range(5)]
+    fs = [mopen(fn) for fn in fnames]
+    subs = mopen("subs")
+    return fs, subs
 
 
 
