@@ -75,7 +75,8 @@ def load_from_ju_file_single_channel(fname):
 
 
 def load_from_ju_file_multiple_channels(fname, names):
-    fdemux = FileDemultiplexer()
+    f = h5py.File(fname)
+    fdemux = FileDemultiplexer(name=fname, substitute=f)
     chans = {}
     for n in names:
         juf = ju.File(fname, detector_name=n)
