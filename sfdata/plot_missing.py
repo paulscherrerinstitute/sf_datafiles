@@ -3,7 +3,7 @@ from matplotlib.colors import ListedColormap
 import numpy as np
 
 
-def plot_missing(sfd, **kwargs):
+def plot_missing(sfd, show_pids=False, **kwargs):
     data = {}
 
     sfd.reset_valid()
@@ -18,7 +18,11 @@ def plot_missing(sfd, **kwargs):
         bools = indices_to_boolean(chan.valid, N)
         data[name] = bools
 
-    plot_bools(data, start=start, stop=stop, **kwargs)
+    if show_pids:
+        kwargs.setdefault("start", start)
+        kwargs.setdefault("stop", stop)
+
+    plot_bools(data, **kwargs)
 
 
 def indices_to_boolean(indices, N):
