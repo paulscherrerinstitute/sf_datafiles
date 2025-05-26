@@ -8,14 +8,17 @@ def plot_missing(sfd, **kwargs):
 
     sfd.reset_valid()
     pids = sfd.all_pids
-    N = max(pids) - min(pids) + 1
     sfd.drop_missing()
+
+    start = min(pids)
+    stop = max(pids)
+    N = stop - start + 1
 
     for name, chan in sfd.items():
         bools = indices_to_boolean(chan.valid, N)
         data[name] = bools
 
-    plot_bools(data, **kwargs)
+    plot_bools(data, start=start, stop=stop, **kwargs)
 
 
 def indices_to_boolean(indices, N):
@@ -24,14 +27,17 @@ def indices_to_boolean(indices, N):
     return res
 
 
-def plot_bools(data, color_true="turquoise", color_false="darkslategrey"):
+def plot_bools(data, start=0, stop=None, color_true="turquoise", color_false="darkslategrey"):
     cmap = ListedColormap((color_false, color_true))
 
-    ndata = len(data)
-    length = len(next(iter(data.values())))
-    extent = (0, length, 0, 1) #TODO: pulse IDs?
+    if stop is None:
+        stop = len(next(iter(data.values())))
 
-    fig, axes = plt.subplots(ndata, 1, figsize=(10, ndata/2), sharex=True, squeeze=False)
+    extent = (start, stop, 0, 1)
+
+    ndata = len(data)
+    figsize = (10, ndata/2)
+    fig, axes = plt.subplots(ndata, 1, figsize=figsize, sharex=True, squeeze=False)
     axes = axes.ravel()
 
     for i, (ax, (lbl, arr)) in enumerate(zip(axes, data.items())):
