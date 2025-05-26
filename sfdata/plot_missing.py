@@ -41,10 +41,10 @@ def plot_bools(data, start=0, stop=None, color_true="turquoise", color_false="da
 
     ndata = len(data)
     figsize = (10, ndata/2)
-    fig, axes = plt.subplots(ndata, 1, figsize=figsize, sharex=True, squeeze=False)
+    _fig, axes = plt.subplots(ndata, 1, figsize=figsize, sharex=True, squeeze=False)
     axes = axes.ravel()
 
-    for i, (ax, (lbl, arr)) in enumerate(zip(axes, data.items())):
+    for ax, (lbl, arr) in zip(axes, data.items()):
         img = arr[np.newaxis, :]
         ax.imshow(img, aspect="auto", interpolation="nearest", extent=extent, cmap=cmap, vmin=0, vmax=1)
         ax.set_ylabel(lbl, rotation=0, ha="right", va="center")
