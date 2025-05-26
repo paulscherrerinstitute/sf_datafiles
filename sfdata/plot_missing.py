@@ -31,7 +31,7 @@ def plot_bools(data, color_true="tab:green", color_false="tab:red"):
     length = len(next(iter(data.values())))
     extent = (0, length, 0, 1) #TODO: pulse IDs?
 
-    fig, axes = plt.subplots(ndata, 1, figsize=(10, ndata), sharex=True, squeeze=False)
+    fig, axes = plt.subplots(ndata, 1, figsize=(10, ndata/2), sharex=True, squeeze=False)
     axes = axes.ravel()
 
     for i, (ax, (lbl, arr)) in enumerate(zip(axes, data.items())):
