@@ -24,7 +24,7 @@ def indices_to_boolean(indices, N):
     return res
 
 
-def plot_bools(data, color_true="tab:green", color_false="tab:red"):
+def plot_bools(data, color_true="turquoise", color_false="darkslategrey"):
     cmap = ListedColormap((color_false, color_true))
 
     ndata = len(data)
