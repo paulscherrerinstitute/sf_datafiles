@@ -18,9 +18,13 @@ def plot_missing(sfd, show_pids=False, **kwargs):
         bools = indices_to_boolean(chan.valid, N)
         data[name] = bools
 
+    xlabel = "Pulse Indices"
     if show_pids:
+        xlabel = "Pulses IDs"
         kwargs.setdefault("start", start)
         kwargs.setdefault("stop", stop)
+
+    kwargs.setdefault("xlabel", xlabel)
 
     plot_bools(data, **kwargs)
 
@@ -31,7 +35,7 @@ def indices_to_boolean(indices, N):
     return res
 
 
-def plot_bools(data, start=0, stop=None, color_true="turquoise", color_false="darkslategrey"):
+def plot_bools(data, start=0, stop=None, xlabel="Indices", color_true="turquoise", color_false="darkslategrey"):
     cmap = ListedColormap((color_false, color_true))
 
     if stop is None:
@@ -52,7 +56,7 @@ def plot_bools(data, start=0, stop=None, color_true="turquoise", color_false="da
         ax.tick_params(labelbottom=False)
 
     ax.tick_params(labelbottom=True)
-    ax.set_xlabel("Pulses")
+    ax.set_xlabel(xlabel)
 
     plt.tight_layout()
     plt.show()
