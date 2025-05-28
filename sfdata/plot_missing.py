@@ -1,6 +1,6 @@
-import matplotlib.pyplot as plt
-from matplotlib.colors import ListedColormap
 import numpy as np
+from matplotlib import pyplot as plt
+from matplotlib.colors import ListedColormap
 
 
 def plot_missing(sfd, show_pids=False, **kwargs):
