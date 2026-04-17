@@ -108,11 +108,22 @@ class SFData(dict):
         return ds
 
 
-    def drop_missing(self, show_progress=False):
+    def drop_missing(self, show_stats=True, color=True, show_progress=False):
         shared_pids = self.pids
+
+        if show_stats:
+            n_shared_pids = len(shared_pids)
+            n_all_pids = len(self.all_pids)
+            max_perc = percentage_missing(n_shared_pids, n_all_pids)
+
+            fprint = cprint if color else ncprint
+            color = decide_color(n_shared_pids, n_shared_pids, n_all_pids)
+            fprint(f"remaining: {n_shared_pids} / {n_all_pids} -> {max_perc}% loss", color=color)
+
         channels = self.values()
         if show_progress:
             channels = tqdm(channels)
+
         for chan in channels:
             chan.reset_valid()
             _inters, ind_chan, _ind_shared = np.intersect1d(chan.pids, shared_pids, return_indices=True)
