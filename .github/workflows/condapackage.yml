@@ -21,7 +21,7 @@ jobs:
         $CONDA/bin/conda install --quiet conda-libmamba-solver
         $CONDA/bin/conda config --set solver libmamba
 
-        $CONDA/bin/conda install --quiet anaconda-client conda-build conda-verify
+        $CONDA/bin/conda install --quiet anaconda-client conda-build #conda-verify
 
         $CONDA/bin/conda config --append channels conda-forge
         $CONDA/bin/conda config --append channels paulscherrerinstitute
