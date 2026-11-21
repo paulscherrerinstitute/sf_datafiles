@@ -31,5 +31,7 @@ requirements:
         - pandas
         - tqdm
         - xarray
+    run_constrained:
+        - yokai
 
 
