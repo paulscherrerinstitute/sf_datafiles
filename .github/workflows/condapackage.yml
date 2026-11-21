@@ -1,6 +1,7 @@
 name: Conda Package
 
 on:
+  workflow_dispatch: # allow manual triggering from the UI
   push:
     tags:
       - '*'
@@ -14,6 +15,7 @@ jobs:
 
     - name: Prepare
       run: |
+        $CONDA/bin/conda config --set report_errors false
         $CONDA/bin/conda config --set always_yes yes
         $CONDA/bin/conda config --set changeps1 no
         $CONDA/bin/conda config --set anaconda_upload yes
@@ -26,6 +28,7 @@ jobs:
         $CONDA/bin/conda config --append channels conda-forge
         $CONDA/bin/conda config --append channels paulscherrerinstitute
 
+        $CONDA/bin/conda config --show-sources
         $CONDA/bin/conda info -a
 
     - name: Build and upload
