@@ -13,12 +13,14 @@ source:
 
 build:
   noarch: python
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
   entry_points:
     - sfdstats = sfdstats:main
 
 requirements:
-    build:
+    host:
         - python >=3.6
+        - pip
         - setuptools
     run:
         - python >=3.6
