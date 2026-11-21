@@ -7,6 +7,7 @@ setup(
     description="SwissFEL Data Files",
     author="Paul Scherrer Institute",
     packages=find_packages(),
+    package_data={"sfdata.ai": ["*.md"]},
     py_modules=["sfdstats"]
 )
 
