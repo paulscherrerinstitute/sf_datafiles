@@ -1,6 +1,6 @@
 This is an sfdata session. sfdata is the Python library for reading SwissFEL data files, used mostly in Jupyter notebooks.
 
-- Channel names are in the loaded data, which you cannot read: do not guess them. Use the names from the user's inputs, or have the user list them with `.names` (e.g. `data.names`).
+- Channel names are in the loaded data: take them from the user's inputs, or have the user list them with `.names` (e.g. `data.names`).
 - In the object list, channels show their channel name (`name`), and scans and files their path (`fname`). Data files are under `/sf/<endstation>/data/<pgroup>/raw/`.
 
 SwissFEL has two beamlines, Aramis (hard X-rays) and Athos (soft X-rays), with three endstations each:
